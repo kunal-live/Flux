@@ -8,17 +8,28 @@ import { TransferManager } from "./transfer.js";
 import { UI, DEFAULT_DEVICES } from "./ui.js";
 import { renderQR } from "./qr.js";
 
-const DEFAULT_USER_NAME = "Maya's MacBook Pro";
+const DEFAULT_USER_NAME = "Kunal";
 
 function getAlias() {
   try {
     const s = localStorage.getItem("flux-alias");
-    if (s) return s;
+    if (s && s !== "Maya's MacBook Pro") return s;
   } catch {}
   try {
     localStorage.setItem("flux-alias", DEFAULT_USER_NAME);
   } catch {}
   return DEFAULT_USER_NAME;
+}
+
+function getAvatar() {
+  try {
+    const a = localStorage.getItem("flux-avatar");
+    if (a) return a;
+  } catch {}
+  try {
+    localStorage.setItem("flux-avatar", "dog");
+  } catch {}
+  return "dog";
 }
 
 const THEMES = [
@@ -245,13 +256,14 @@ async function main() {
     onDeclineIncoming: (id) => transfer.rejectIncoming(id),
     onPause: (id) => transfer.pauseSend(id),
     onResume: (id) => transfer.resumeSend(id),
-    onAliasSave: (newAlias) => {
+    onAliasSave: (newAlias, newAvatar) => {
       alias = newAlias;
       try {
         localStorage.setItem("flux-alias", newAlias);
+        if (newAvatar) localStorage.setItem("flux-avatar", newAvatar);
         localStorage.setItem("flux-custom-alias-set", "1");
       } catch {}
-      UI.setSelf(newAlias);
+      UI.setSelf(newAlias, newAvatar);
       signaling.updateRegistration(buildRegistration(newAlias));
     },
     onRandomAlias: () => {
@@ -291,7 +303,7 @@ async function main() {
     },
   });
 
-  UI.setSelf(alias);
+  UI.setSelf(alias, getAvatar());
   UI.setPresence("connecting", false);
 
   const reg = buildRegistration(alias);

@@ -4,17 +4,20 @@
 // modals, and real-time P2P status updates.
 // ==========================================================================
 
+import { AVATARS, getAvatarById, getAvatarSvg } from "./avatars.js";
+
 const $ = (id) => document.getElementById(id);
 
 export const DEFAULT_DEVICES = [
   {
     id: "dev-macbook",
-    alias: "Maya's MacBook Pro",
-    platform: "macos",
+    alias: "Kunal",
+    platform: "windows",
     deviceType: "laptop",
     isSelf: true,
     statusText: "This device",
     statusType: "gold",
+    avatar: "dog",
   },
   {
     id: "dev-imac",
@@ -24,6 +27,7 @@ export const DEFAULT_DEVICES = [
     isSelf: false,
     statusText: "Available",
     statusType: "green",
+    avatar: "cat",
   },
   {
     id: "dev-pixel",
@@ -33,6 +37,17 @@ export const DEFAULT_DEVICES = [
     isSelf: false,
     statusText: "Available",
     statusType: "green",
+    avatar: "fox",
+  },
+  {
+    id: "dev-ipad",
+    alias: "Jordan's iPad",
+    platform: "ios",
+    deviceType: "tablet",
+    isSelf: false,
+    statusText: "Available",
+    statusType: "green",
+    avatar: "bunny",
   },
 ];
 
@@ -140,10 +155,14 @@ export const UI = {
   _currentPeers: [],
   _activeView: "dashboard",
   _activeTransferTab: "active",
-  _stagedFiles: [...DEFAULT_QUEUE_FILES],
+  _currentAlias: "Kunal",
+  _currentAvatar: "dog",
+  _selectedProfileAvatar: "dog",
+  _activeDashboardMode: "send",
+  _stagedFiles: [],
   _selectedTargetPeer: null,
   _heroTransfer: {
-    peerName: "Maya's MacBook Pro",
+    peerName: "Kunal",
     pct: 68,
     bytesSent: 1.74 * 1024 * 1024 * 1024,
     bytesTotal: 2.57 * 1024 * 1024 * 1024,
@@ -160,6 +179,27 @@ export const UI = {
 
   init(handlers) {
     this.h = handlers || {};
+
+    // Load persisted device name and cartoon avatar
+    try {
+      const savedAlias = localStorage.getItem("flux-alias");
+      if (savedAlias && savedAlias !== "Maya's MacBook Pro") {
+        this._currentAlias = savedAlias;
+      } else {
+        this._currentAlias = "Kunal";
+        localStorage.setItem("flux-alias", "Kunal");
+      }
+
+      const savedAvatar = localStorage.getItem("flux-avatar");
+      if (savedAvatar) {
+        this._currentAvatar = savedAvatar;
+      } else {
+        this._currentAvatar = "dog";
+        localStorage.setItem("flux-avatar", "dog");
+      }
+    } catch {}
+
+    this.setSelf(this._currentAlias, this._currentAvatar);
 
     // 1. macOS Window Traffic Light Controls
     document.querySelector(".win-close")?.addEventListener("click", () => {
@@ -214,10 +254,16 @@ export const UI = {
     $("btn-network-scope")?.addEventListener("click", () => this.openDiagnostics());
     $("btn-conn-status")?.addEventListener("click", () => this.openDiagnostics());
 
-    $("btn-edit-alias")?.addEventListener("click", () => this.openSettings());
-    $("btn-node-info")?.addEventListener("click", () => this.openDiagnostics());
+    $("btn-node-info")?.addEventListener("click", () => this.openProfileModal());
+    $("btn-profile-pill")?.addEventListener("click", () => this.openProfileModal());
+    $("btn-edit-alias")?.addEventListener("click", () => this.openProfileModal());
+    $("btn-edit-device-name")?.addEventListener("click", () => this.openProfileModal());
 
-    // 4. Orbital Radar Antenna
+    // 4. Primary Mode Switcher (Send & Receive)
+    $("tab-mode-send")?.addEventListener("click", () => this.switchDashboardMode("send"));
+    $("tab-mode-receive")?.addEventListener("click", () => this.switchDashboardMode("receive"));
+
+    // 5. Orbital Radar Antenna
     $("orbital-radar-widget")?.addEventListener("click", () => {
       const sym = document.querySelector(".refresh-symbol");
       if (sym) {
@@ -228,7 +274,7 @@ export const UI = {
       if (this.h.onRefresh) this.h.onRefresh();
     });
 
-    // 5. Dashboard Controls
+    // 6. Dashboard Controls
     const dashDrop = $("dash-dropzone");
     if (dashDrop) {
       dashDrop.addEventListener("click", () => $("file-input")?.click());
@@ -237,6 +283,112 @@ export const UI = {
     $("btn-choose-files")?.addEventListener("click", (e) => {
       e.stopPropagation();
       $("file-input")?.click();
+    });
+    $("btn-choose-folder")?.addEventListener("click", (e) => {
+      e.stopPropagation();
+      $("file-input-folder")?.click();
+    });
+
+    // Clipboard Paste Button & Global Shortcut
+    $("btn-paste-clipboard")?.addEventListener("click", async () => {
+      try {
+        if (navigator.clipboard && navigator.clipboard.read) {
+          const items = await navigator.clipboard.read();
+          const files = [];
+          for (const item of items) {
+            for (const type of item.types) {
+              if (type.startsWith("image/") || type.startsWith("application/") || type.startsWith("text/")) {
+                const blob = await item.getType(type);
+                const ext = type.split("/")[1] || "dat";
+                const file = new File([blob], `clipboard-${Date.now()}.${ext}`, { type });
+                files.push(file);
+                break;
+              }
+            }
+          }
+          if (files.length > 0) {
+            this.setStagedFiles(files);
+            this.toast(`${files.length} file(s) staged from clipboard!`, "success");
+            this.switchDashboardMode("send");
+            return;
+          }
+        }
+        this.toast("Press Ctrl+V (or Cmd+V) to paste any copied file or screenshot here!", "info");
+      } catch {
+        this.toast("Press Ctrl+V (or Cmd+V) to paste any copied file or screenshot here!", "info");
+      }
+    });
+
+    window.addEventListener("paste", (e) => {
+      if (["INPUT", "TEXTAREA", "SELECT"].includes(e.target.tagName)) return;
+      if (e.clipboardData && e.clipboardData.files && e.clipboardData.files.length > 0) {
+        const files = Array.from(e.clipboardData.files);
+        this.setStagedFiles(files);
+        this.toast(`${files.length} file(s) pasted from clipboard!`, "success");
+        this.switchDashboardMode("send");
+      }
+    });
+
+    // Staged Files Controls
+    $("btn-send-change-files")?.addEventListener("click", () => $("file-input")?.click());
+    $("btn-send-clear-files")?.addEventListener("click", () => {
+      this.clearStagedFiles();
+      this.toast("Staged files cleared");
+    });
+
+    // Receive Section Controls
+    $("btn-receive-refresh-conn")?.addEventListener("click", () => {
+      const sym = $("btn-receive-refresh-conn")?.querySelector(".refresh-symbol");
+      if (sym) {
+        sym.style.transform = "rotate(360deg)";
+        setTimeout(() => sym.style.transform = "", 400);
+      }
+      this.checkReceiveConnectivity();
+      this.toast("Wi-Fi & Bluetooth checked • Radar active", "success");
+    });
+
+    $("btn-change-folder")?.addEventListener("click", () => $("display-save-folder")?.click());
+
+    // Profile Modal Listeners
+    $("btn-close-profile")?.addEventListener("click", () => this.closeProfileModal());
+    $("btn-profile-cancel")?.addEventListener("click", () => this.closeProfileModal());
+    $("profile-modal")?.addEventListener("click", (e) => {
+      if (e.target.id === "profile-modal") this.closeProfileModal();
+    });
+
+    $("profile-name-input")?.addEventListener("input", (e) => {
+      const val = e.target.value.trim() || "Your Name";
+      if ($("profile-preview-name")) $("profile-preview-name").textContent = val;
+    });
+
+    $("btn-profile-random-name")?.addEventListener("click", () => {
+      const creativeNames = [
+        "Kunal's Laptop", "Kunal (Flux)", "Astro Kunal", "Cosmic Node",
+        "Cyber Spark", "Quantum Flux", "Neon Pilot", "Hyper Kunal"
+      ];
+      const rand = creativeNames[Math.floor(Math.random() * creativeNames.length)];
+      if ($("profile-name-input")) $("profile-name-input").value = rand;
+      if ($("profile-preview-name")) $("profile-preview-name").textContent = rand;
+    });
+
+    $("btn-save-profile")?.addEventListener("click", () => {
+      const nameInput = $("profile-name-input");
+      const nameVal = nameInput ? nameInput.value.trim() : "";
+      const finalAlias = nameVal || "Kunal";
+      const finalAvatar = this._selectedProfileAvatar || "dog";
+
+      try {
+        localStorage.setItem("flux-alias", finalAlias);
+        localStorage.setItem("flux-avatar", finalAvatar);
+      } catch {}
+
+      this.setSelf(finalAlias, finalAvatar);
+      this.closeProfileModal();
+      this.toast(`Profile updated: ${finalAlias} (${getAvatarById(finalAvatar).name})`, "success");
+
+      if (this.h.onAliasSave) {
+        this.h.onAliasSave(finalAlias, finalAvatar);
+      }
     });
 
     $("toggle-receive")?.addEventListener("change", (e) => {
@@ -747,10 +899,31 @@ export const UI = {
     }
   },
 
-  setSelf(alias) {
-    if ($("display-device-name")) $("display-device-name").textContent = alias;
-    if ($("setting-alias")) $("setting-alias").value = alias;
-    if ($("pair-input-alias")) $("pair-input-alias").value = alias;
+  setSelf(alias, avatarId) {
+    if (alias) this._currentAlias = alias;
+    if (avatarId) this._currentAvatar = avatarId;
+    const currentAlias = this._currentAlias || "Kunal";
+    const currentAvatar = this._currentAvatar || "dog";
+
+    if ($("display-device-name")) $("display-device-name").textContent = currentAlias;
+    if ($("receive-self-name")) $("receive-self-name").textContent = currentAlias;
+    if ($("topbar-name-mini")) $("topbar-name-mini").textContent = currentAlias;
+    if ($("profile-name-input")) $("profile-name-input").value = currentAlias;
+    if ($("profile-preview-name")) $("profile-preview-name").textContent = currentAlias;
+    if ($("setting-alias")) $("setting-alias").value = currentAlias;
+    if ($("pair-input-alias")) $("pair-input-alias").value = currentAlias;
+
+    // Render cartoon avatars across all UI places
+    const svg24 = getAvatarSvg(currentAvatar, 24);
+    const svg48 = getAvatarSvg(currentAvatar, 48);
+    const svg58 = getAvatarSvg(currentAvatar, 58);
+    const svg72 = getAvatarSvg(currentAvatar, 72);
+
+    if ($("topbar-avatar-mini")) $("topbar-avatar-mini").innerHTML = svg24;
+    if ($("receive-radar-self-avatar")) $("receive-radar-self-avatar").innerHTML = svg72;
+    if ($("receive-identity-avatar-thumb")) $("receive-identity-avatar-thumb").innerHTML = svg48;
+    if ($("send-radar-self-avatar")) $("send-radar-self-avatar").innerHTML = svg58;
+    if ($("profile-preview-avatar")) $("profile-preview-avatar").innerHTML = svg48;
   },
 
   setPresence(state, connected) {
@@ -784,11 +957,13 @@ export const UI = {
       card.className = "device-item-card";
       card.dataset.id = dev.id;
 
+      const avatarId = dev.avatar || (dev.isSelf ? this._currentAvatar : (dev.id.includes("imac") ? "cat" : dev.id.includes("pixel") ? "fox" : "bunny"));
+
       card.innerHTML = `
-        <div class="device-vector-icon">
-          ${getDeviceVectorSVG(dev.deviceType)}
+        <div class="device-vector-icon" style="border-radius: 50%; overflow: hidden; width: 44px; height: 44px; border: 1.5px solid var(--gold-primary); display: flex; align-items: center; justify-content: center;">
+          ${getAvatarSvg(avatarId, 44)}
         </div>
-        <div class="device-item-name" title="${dev.alias}">${dev.alias}</div>
+        <div class="device-item-name" title="${dev.alias}">${dev.alias}${dev.isSelf ? ' (You)' : ''}</div>
         <div class="device-status-badge">
           <span class="badge-dot ${dev.statusType}"></span>
           <span class="badge-text-${dev.statusType}">${dev.statusText}</span>
@@ -797,17 +972,23 @@ export const UI = {
 
       card.addEventListener("click", () => {
         if (dev.isSelf) {
-          this.openSettings();
+          this.openProfileModal();
         } else {
           this._selectedTargetPeer = dev;
           if ($("send-target-name")) $("send-target-name").textContent = dev.alias;
-          this.switchView("send");
-          this.toast(`Ready to send files to ${dev.alias}`);
+          if (this._stagedFiles && this._stagedFiles.length > 0) {
+            this._executeSendQueue();
+          } else {
+            this.toast(`Selected target: ${dev.alias} — choose or drop files to send`);
+            $("file-input")?.click();
+          }
         }
       });
 
       container.appendChild(card);
     });
+
+    this.renderSendRadar();
   },
 
   renderFullDevicesGrid() {
@@ -919,6 +1100,7 @@ export const UI = {
       row.querySelector(".btn-remove-q").addEventListener("click", () => {
         this._stagedFiles.splice(idx, 1);
         this.renderQueue();
+        this._updateSendStagingView();
       });
 
       list.appendChild(row);
@@ -947,6 +1129,122 @@ export const UI = {
     });
     this._stagedFiles = [...this._stagedFiles, ...newItems];
     this.renderQueue();
+    this._updateSendStagingView();
+    if (this.h.onStagedChanged) this.h.onStagedChanged(this._stagedFiles.map(x => x.rawFile).filter(Boolean));
+  },
+
+  clearStagedFiles() {
+    this._stagedFiles = [];
+    this.renderQueue();
+    this._updateSendStagingView();
+    if (this.h.onClearStaged) this.h.onClearStaged();
+  },
+
+  _updateSendStagingView() {
+    const dropzone = $("send-dropzone-container");
+    const radar = $("send-radar-container");
+    const hasStaged = this._stagedFiles && this._stagedFiles.length > 0;
+
+    if (hasStaged) {
+      if (dropzone) dropzone.hidden = true;
+      if (radar) radar.hidden = false;
+      const totalBytes = this._stagedFiles.reduce((acc, f) => acc + (f.size || 0), 0);
+      if ($("send-staged-summary")) {
+        $("send-staged-summary").textContent = `${this._stagedFiles.length} file(s) staged • ${formatBytes(totalBytes)}`;
+      }
+      this.renderSendRadar();
+    } else {
+      if (dropzone) dropzone.hidden = false;
+      if (radar) radar.hidden = true;
+    }
+  },
+
+  switchDashboardMode(mode) {
+    this._activeDashboardMode = mode;
+    const tabSend = $("tab-mode-send");
+    const tabRecv = $("tab-mode-receive");
+    const secSend = $("section-send");
+    const secRecv = $("section-receive");
+
+    if (mode === "send") {
+      if (tabSend) tabSend.classList.add("active");
+      if (tabRecv) tabRecv.classList.remove("active");
+      if (secSend) secSend.hidden = false;
+      if (secRecv) secRecv.hidden = true;
+      this._updateSendStagingView();
+    } else {
+      if (tabRecv) tabRecv.classList.add("active");
+      if (tabSend) tabSend.classList.remove("active");
+      if (secRecv) secRecv.hidden = false;
+      if (secSend) secSend.hidden = true;
+      this.checkReceiveConnectivity();
+    }
+  },
+
+  checkReceiveConnectivity() {
+    const isOnline = navigator.onLine !== false;
+    const hasBluetooth = "bluetooth" in navigator;
+
+    if ($("conn-wifi-text")) {
+      $("conn-wifi-text").textContent = isOnline ? "Wi-Fi: Connected" : "Wi-Fi: Disconnected";
+    }
+    const dotWifi = $("conn-pill-wifi")?.querySelector(".conn-dot");
+    if (dotWifi) {
+      dotWifi.className = isOnline ? "conn-dot green" : "conn-dot gold";
+    }
+
+    if ($("conn-bt-text")) {
+      $("conn-bt-text").textContent = hasBluetooth ? "Bluetooth: Active" : "Bluetooth: Ready";
+    }
+
+    const alertCard = $("receive-connectivity-alert");
+    if (alertCard) {
+      alertCard.style.borderColor = isOnline ? "rgba(245, 190, 56, 0.35)" : "#EF4444";
+    }
+  },
+
+  renderSendRadar() {
+    const container = $("send-radar-targets");
+    if (!container) return;
+    container.innerHTML = "";
+
+    const devs = (this._currentPeers && this._currentPeers.length > 0)
+      ? this._currentPeers
+      : DEFAULT_DEVICES.filter((d) => !d.isSelf);
+
+    const count = devs.length;
+    if (!count) return;
+
+    const radius = 135;
+    devs.forEach((dev, idx) => {
+      const angle = (idx * (2 * Math.PI) / count) - (Math.PI / 2);
+      const x = 50 + (radius / 3.8) * Math.cos(angle);
+      const y = 50 + (radius / 3.8) * Math.sin(angle);
+
+      const node = document.createElement("div");
+      node.className = "radar-target-node";
+      node.style.left = `${x}%`;
+      node.style.top = `${y}%`;
+      node.title = `Send files to ${dev.alias}`;
+
+      const avatarId = dev.avatar || (idx % 2 === 0 ? "cat" : "fox");
+      node.innerHTML = `
+        <div class="target-avatar-circle">
+          ${getAvatarSvg(avatarId, 46)}
+          <span class="target-pulse-beacon"></span>
+        </div>
+        <span class="target-node-title">${dev.alias}</span>
+      `;
+
+      node.addEventListener("click", () => {
+        this.toast(`Sending files to ${dev.alias}…`, "success");
+        this._selectedTargetPeer = dev;
+        if ($("send-target-name")) $("send-target-name").textContent = dev.alias;
+        this._executeSendQueue();
+      });
+
+      container.appendChild(node);
+    });
   },
 
   _executeSendQueue() {
@@ -1443,6 +1741,51 @@ export const UI = {
     this._managedDevice = null;
   },
 
+  openProfileModal() {
+    const modal = $("profile-modal");
+    if (!modal) return;
+    this._selectedProfileAvatar = this._currentAvatar || "dog";
+    const currentName = this._currentAlias || "Kunal";
+    if ($("profile-name-input")) $("profile-name-input").value = currentName;
+    if ($("profile-preview-name")) $("profile-preview-name").textContent = currentName;
+    if ($("profile-preview-avatar")) $("profile-preview-avatar").innerHTML = getAvatarSvg(this._selectedProfileAvatar, 48);
+
+    this._renderProfileAvatarGrid();
+    modal.hidden = false;
+  },
+
+  closeProfileModal() {
+    const modal = $("profile-modal");
+    if (modal) modal.hidden = true;
+  },
+
+  _renderProfileAvatarGrid() {
+    const grid = $("profile-avatar-grid");
+    if (!grid) return;
+    grid.innerHTML = "";
+
+    AVATARS.forEach((av) => {
+      const tile = document.createElement("div");
+      tile.className = "avatar-tile" + (av.id === this._selectedProfileAvatar ? " selected" : "");
+      tile.dataset.id = av.id;
+
+      tile.innerHTML = `
+        <div class="avatar-tile-svg">${getAvatarSvg(av.id, 44)}</div>
+        <span class="avatar-tile-name">${av.name}</span>
+        <span class="avatar-tile-check">✓</span>
+      `;
+
+      tile.addEventListener("click", () => {
+        document.querySelectorAll(".avatar-tile").forEach(t => t.classList.remove("selected"));
+        tile.classList.add("selected");
+        this._selectedProfileAvatar = av.id;
+        if ($("profile-preview-avatar")) $("profile-preview-avatar").innerHTML = getAvatarSvg(av.id, 48);
+      });
+
+      grid.appendChild(tile);
+    });
+  },
+
   closeAllModals() {
     this.closeHelp();
     this.closeDiagnostics();
@@ -1451,6 +1794,7 @@ export const UI = {
     this.closePair();
     this.closeSettings();
     this.closeIncoming();
+    this.closeProfileModal();
     const pickerDropdown = document.querySelector(".target-picker-dropdown");
     if (pickerDropdown) pickerDropdown.remove();
   },

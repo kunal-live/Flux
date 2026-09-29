@@ -192,6 +192,13 @@
           <span>You're offline — transfers resume when connected</span>
         </div>
 
+        <!-- Profile / Avatar Pill -->
+        <button class="btn-profile-pill" id="btn-profile-pill" title="Customize Device Profile &amp; Cartoon Avatar">
+          <span class="profile-avatar-mini" id="topbar-avatar-mini"></span>
+          <span class="profile-name-mini" id="topbar-name-mini">Kunal</span>
+          <span class="profile-edit-badge">✏️</span>
+        </button>
+
         <!-- Pair with Code Button -->
         <button class="btn-topbar-pair" id="btn-open-pair">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -221,13 +228,34 @@
 
       <!-- ==================== VIEW 1: DASHBOARD ==================== -->
       <section class="stage-view active" id="view-dashboard">
-        <div class="dashboard-grid">
-          
-          <!-- Top Row: Send Files (Left) & Receive (Right) -->
-          <div class="dash-card dash-send-card">
-            <div class="card-head">
-              <h2 class="card-title">Send files</h2>
-              <p class="card-sub">Drag and drop files or folders to send</p>
+        <!-- Primary Mode Switcher: Send & Receive -->
+        <div class="primary-mode-bar" id="primary-mode-bar">
+          <button class="mode-tab-btn active" id="tab-mode-send" data-section="send">
+            <span class="mode-tab-icon">📤</span>
+            <div class="mode-tab-meta">
+              <span class="mode-tab-title">Send Files</span>
+              <span class="mode-tab-sub">Choose, drag &amp; drop, or paste files</span>
+            </div>
+          </button>
+          <button class="mode-tab-btn" id="tab-mode-receive" data-section="receive">
+            <span class="mode-tab-icon">📥</span>
+            <div class="mode-tab-meta">
+              <span class="mode-tab-title">Receive</span>
+              <span class="mode-tab-sub">Wi-Fi &amp; Bluetooth radar active</span>
+            </div>
+          </button>
+        </div>
+
+        <!-- ================= SECTION 1: SEND ================= -->
+        <div class="dash-mode-section active" id="section-send">
+          <!-- Step 1: File Staging Dropzone (Shown when no files staged) -->
+          <div class="dash-card dash-send-card" id="send-dropzone-container">
+            <div class="card-head space-between">
+              <div>
+                <h2 class="card-title">Stage files to send</h2>
+                <p class="card-sub">Choose files, drag &amp; drop, or paste directly from your clipboard</p>
+              </div>
+              <div class="staging-badge-hint">Step 1 of 2</div>
             </div>
             
             <div class="drop-zone-dashed" id="dash-dropzone">
@@ -236,56 +264,59 @@
                   <path d="M12 19V5M5 12l7-7 7 7"/>
                 </svg>
               </div>
-              <button class="btn-gold-solid" id="btn-choose-files">Choose files</button>
+              <div class="dropzone-actions-row">
+                <button class="btn-gold-solid" id="btn-choose-files">Choose Files</button>
+                <button class="btn-dark-pill" id="btn-choose-folder">Choose Folder</button>
+                <button class="btn-dark-pill" id="btn-paste-clipboard" title="Paste files copied in your clipboard">📋 Paste from Clipboard (Ctrl+V)</button>
+              </div>
+              <p class="dropzone-tip-caption">💡 Drag &amp; drop any files or folders here, or press <b>Ctrl+V</b> to paste copied screenshots/files.</p>
             </div>
           </div>
 
-          <div class="dash-card dash-receive-card">
+          <!-- Step 2: Staged Files Bar & Discovery Radar (Shown when files are staged) -->
+          <div class="dash-card dash-radar-card" id="send-radar-container" hidden>
             <div class="card-head space-between">
-              <h2 class="card-title">Receive</h2>
-              <!-- Gold Toggle Switch -->
-              <label class="flux-switch">
-                <input type="checkbox" id="toggle-receive" checked />
-                <span class="slider round"></span>
-              </label>
-            </div>
-
-            <div class="receive-body">
-              <div class="recv-status-group">
-                <b class="recv-lead">Ready to receive files</b>
-                <p class="recv-desc">Other devices can send files to this device.</p>
+              <div>
+                <h2 class="card-title">Target Device Radar</h2>
+                <p class="card-sub" id="send-radar-subtitle">Files ready — select a nearby device on the radar to transfer</p>
               </div>
-
-              <div class="recv-setting-row">
-                <div class="recv-label-col">
-                  <span class="setting-caption">Device name</span>
-                  <div class="device-name-row">
-                    <span class="device-name-val" id="display-device-name">Maya's MacBook Pro</span>
-                    <button class="btn-icon-subtle" id="btn-edit-alias" title="Edit device name">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>
-                      </svg>
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <div class="recv-setting-row">
-                <div class="recv-label-col">
-                  <span class="setting-caption">Receive folder</span>
-                  <div class="folder-name-row">
-                    <span class="folder-icon">📁</span>
-                    <span class="folder-val" id="display-save-folder">~/Downloads/Flux Received</span>
-                  </div>
-                </div>
+              <div class="staged-summary-pill-group">
+                <span class="staged-pill-tag" id="send-staged-summary">0 files staged</span>
+                <button class="btn-xs btn-dark-pill" id="btn-send-change-files">+ Add More</button>
+                <button class="btn-xs btn-text-gold" id="btn-send-clear-files">Clear</button>
               </div>
             </div>
+
+            <!-- Radar Scanner Animation -->
+            <div class="send-radar-stage" id="send-radar-display">
+              <div class="radar-circle ring-1"></div>
+              <div class="radar-circle ring-2"></div>
+              <div class="radar-circle ring-3"></div>
+              <div class="radar-circle ring-4"></div>
+              <div class="radar-sweep-beam"></div>
+              
+              <!-- Center Core: Sender's Cartoon Avatar -->
+              <div class="radar-center-node" id="send-radar-self-node" title="Your device">
+                <div class="radar-self-avatar-wrap" id="send-radar-self-avatar"></div>
+                <span class="radar-self-label">You (Sender)</span>
+              </div>
+
+              <!-- Nearby Orbiting Devices Placed via JS -->
+              <div class="radar-targets-layer" id="send-radar-targets">
+                <!-- Dynamically populated with nearby device nodes -->
+              </div>
+            </div>
+            
+            <p class="radar-action-hint">👆 Click any device on the radar to send the staged files immediately.</p>
           </div>
 
-          <!-- Middle Row: Nearby Devices (Left) & Network/Troubleshoot Box (Right) -->
-          <div class="dash-card dash-devices-card">
+          <!-- Nearby Devices Grid -->
+          <div class="dash-card dash-devices-card" id="send-nearby-devices-card">
             <div class="card-head space-between">
-              <h2 class="card-title">Nearby devices</h2>
+              <div>
+                <h2 class="card-title">Nearby devices</h2>
+                <p class="card-sub">Available peers on your local Wi-Fi / network</p>
+              </div>
               <button class="btn-text-gold" id="btn-dash-refresh">
                 <span>Refresh</span>
                 <span class="refresh-symbol">↻</span>
@@ -293,11 +324,12 @@
             </div>
 
             <div class="devices-row-grid" id="nearby-devices-grid">
-              <!-- Rendered via JavaScript: Device cards with gold outline icons -->
+              <!-- Rendered via JavaScript: Device cards with cartoon avatars & direct send buttons -->
             </div>
           </div>
 
-          <div class="dash-card dash-assistant-card">
+          <!-- Network Troubleshoot / Help Box -->
+          <div class="dash-card dash-assistant-card" id="dash-assistant-card">
             <div class="assistant-content">
               <div class="no-wifi-icon">
                 <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -310,14 +342,101 @@
                   <line x1="12" y1="20" x2="12.01" y2="20"/>
                 </svg>
               </div>
-              <h3 class="assistant-title">No nearby devices</h3>
-              <p class="assistant-sub">Make sure devices are on the same network and Flux is open.</p>
+              <h3 class="assistant-title">Don't see your device?</h3>
+              <p class="assistant-sub">Ensure both devices are on the same Wi-Fi with Flux open, or pair instantly with code.</p>
               <div class="assistant-actions">
                 <button class="btn-dark-pill" id="btn-troubleshoot">Troubleshoot</button>
                 <button class="btn-gold-outline" id="btn-quick-pair">Pair with Code</button>
               </div>
             </div>
           </div>
+        </div>
+
+        <!-- ================= SECTION 2: RECEIVE ================= -->
+        <div class="dash-mode-section" id="section-receive" hidden>
+          <!-- Wi-Fi & Bluetooth Connectivity Alert Card -->
+          <div class="dash-card dash-conn-alert-card" id="receive-connectivity-alert">
+            <div class="conn-alert-inner">
+              <div class="conn-badges-row">
+                <span class="conn-pill" id="conn-pill-wifi">
+                  <span class="conn-dot green"></span>
+                  <span id="conn-wifi-text">Wi-Fi: Connected</span>
+                </span>
+                <span class="conn-pill" id="conn-pill-bt">
+                  <span class="conn-dot gold"></span>
+                  <span id="conn-bt-text">Bluetooth: Active</span>
+                </span>
+                <span class="conn-pill" id="conn-pill-mesh">
+                  <span class="conn-dot green"></span>
+                  <span>P2P Mesh: Ready</span>
+                </span>
+              </div>
+              <div class="conn-alert-meta">
+                <h3 class="conn-alert-title">Wi-Fi &amp; Bluetooth Discovery Active</h3>
+                <p class="conn-alert-sub">Make sure your Wi-Fi and Bluetooth remain turned <b>ON</b> so nearby senders can discover your device.</p>
+              </div>
+              <button class="btn-gold-solid btn-sm" id="btn-receive-refresh-conn">
+                <span class="refresh-symbol">↻</span> Check &amp; Refresh
+              </button>
+            </div>
+          </div>
+
+          <!-- Active Receive Radar & Identity Card -->
+          <div class="dash-card dash-receive-radar-card" id="receive-radar-card">
+            <div class="card-head space-between">
+              <div>
+                <h2 class="card-title">Ready to receive files</h2>
+                <p class="card-sub">Your device is broadcasting discovery signals to nearby peers.</p>
+              </div>
+              <!-- Gold Toggle Switch -->
+              <label class="flux-switch">
+                <input type="checkbox" id="toggle-receive" checked />
+                <span class="slider round"></span>
+              </label>
+            </div>
+
+            <!-- Concentric Golden Sonar Waves Animation -->
+            <div class="receive-radar-stage" id="receive-radar-display">
+              <div class="sonar-ring sonar-1"></div>
+              <div class="sonar-ring sonar-2"></div>
+              <div class="sonar-ring sonar-3"></div>
+              <div class="sonar-ring sonar-4"></div>
+              
+              <!-- Center Core: Receiver's Cartoon Avatar -->
+              <div class="receive-center-core">
+                <div class="receive-avatar-halo" id="receive-radar-self-avatar"></div>
+                <span class="receive-listening-badge">● Listening for Senders</span>
+              </div>
+            </div>
+
+            <!-- Device Identity Box -->
+            <div class="receive-identity-box">
+              <div class="rec-id-row">
+                <div class="rec-avatar-thumb" id="receive-identity-avatar-thumb"></div>
+                <div class="rec-id-meta">
+                  <div class="rec-label">Your Device Name (Visible to peers):</div>
+                  <div class="rec-name-row">
+                    <span class="rec-name-text" id="receive-self-name">Kunal</span>
+                    <button class="btn-xs btn-dark-pill" id="btn-edit-device-name">✏️ Change Name / Avatar</button>
+                  </div>
+                  <p class="rec-desc-hint">💡 <b>This will be your device name</b> visible to other devices on the network.</p>
+                </div>
+              </div>
+
+              <!-- Destination Folder Row -->
+              <div class="recv-setting-row" style="margin-top: 16px;">
+                <div class="recv-label-col">
+                  <span class="setting-caption">Save incoming files to:</span>
+                  <div class="folder-name-row">
+                    <span class="folder-icon">📁</span>
+                    <span class="folder-val" id="display-save-folder">~/Downloads/Flux Received</span>
+                    <button class="btn-xs btn-text-gold" id="btn-change-folder">Change</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
           <!-- Bottom Row: Recent Transfers Table -->
           <div class="dash-card dash-transfers-card">
@@ -1193,6 +1312,49 @@
       <button class="btn-gold-solid" id="btn-dev-send-files">Send Files to Device</button>
       <button class="btn-dark-pill" id="btn-dev-ping">Ping</button>
       <button class="btn-ghost-cancel" id="btn-dev-forget" style="color: #EF4444;">Forget Device</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== MODAL: PROFILE & CARTOON AVATARS ==================== -->
+<div class="modal-backdrop" id="profile-modal" hidden>
+  <div class="modal-box modal-profile">
+    <button class="modal-close-btn" id="btn-close-profile" title="Close">✕</button>
+    <h2 class="modal-title">Device Profile &amp; Cartoon Avatar</h2>
+    <p class="modal-sub">Choose a cartoon avatar and set your device name for local P2P sharing.</p>
+
+    <!-- First Name / Device Name Input -->
+    <div class="profile-input-section">
+      <label class="form-label" for="profile-name-input">First Name / Device Name</label>
+      <div class="profile-name-row">
+        <input type="text" class="pair-input" id="profile-name-input" value="Kunal" maxlength="32" placeholder="e.g. Kunal" spellcheck="false" />
+        <button class="btn-dark-pill btn-xs" id="btn-profile-random-name" title="Generate creative device name">Randomize</button>
+      </div>
+      <p class="profile-hint-text">💡 <b>This will be your device name</b> visible to other nearby devices on the network.</p>
+    </div>
+
+    <!-- Cartoon Avatar Gallery -->
+    <div class="profile-avatar-section">
+      <div class="section-sub-title">Choose Your Cartoon Device Logo</div>
+      <div class="avatar-grid" id="profile-avatar-grid">
+        <!-- Rendered dynamically from avatars.js: 8 unique cartoon characters -->
+      </div>
+    </div>
+
+    <!-- Live Preview Card -->
+    <div class="profile-preview-card">
+      <div class="preview-avatar-box" id="profile-preview-avatar"></div>
+      <div class="preview-meta">
+        <b class="preview-name" id="profile-preview-name">Kunal</b>
+        <span class="preview-sub">Visible to nearby peers on Wi-Fi &amp; Bluetooth</span>
+        <span class="preview-status-pill">● Ready to transfer</span>
+      </div>
+    </div>
+
+    <!-- Modal Footer Actions -->
+    <div class="modal-footer-action">
+      <button class="btn-dark-pill" id="btn-profile-cancel">Cancel</button>
+      <button class="btn-gold-solid" id="btn-save-profile">Save Profile</button>
     </div>
   </div>
 </div>

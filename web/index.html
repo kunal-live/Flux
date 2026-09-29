@@ -1027,6 +1027,176 @@
   </div>
 </div>
 
+<!-- ==================== MODAL: HELP & DOCUMENTATION ==================== -->
+<div class="modal-backdrop" id="help-modal" hidden>
+  <div class="modal-box modal-help">
+    <button class="modal-close-btn" id="btn-close-help" title="Close">✕</button>
+    <h2 class="modal-title">Flux Guide &amp; Documentation</h2>
+    <p class="modal-sub">Fast, zero-install, peer-to-peer sharing across any device.</p>
+
+    <div class="help-content-scroll">
+      <div class="help-section">
+        <h4 class="help-sec-title">⚡ How It Works</h4>
+        <p class="help-text">Flux connects nearby devices directly using <b>WebRTC DataChannels</b> with <b>DTLS 1.2</b> encryption. Files fly directly device-to-device at native Wi-Fi speeds without cloud uploads or size limits.</p>
+      </div>
+
+      <div class="help-section">
+        <h4 class="help-sec-title">🔗 Pairing Across Networks</h4>
+        <p class="help-text">Devices on the same local subnet (/24) discover each other automatically. For devices on different networks, mobile hotspots, or public tunnels, click <b>Pair Device</b> to connect using a 6-digit PIN or QR code.</p>
+      </div>
+
+      <div class="help-section">
+        <h4 class="help-sec-title">🛡️ Cryptographic Integrity</h4>
+        <p class="help-text">Every byte is streamed and hashed with incremental <b>SHA-256</b> on both sender and receiver. Transfers are only verified when both cryptographic digests match exactly.</p>
+      </div>
+
+      <div class="help-section">
+        <h4 class="help-sec-title">⌨️ Keyboard Shortcuts</h4>
+        <div class="shortcuts-grid">
+          <div><kbd>1</kbd> <span>Dashboard</span></div>
+          <div><kbd>2</kbd> <span>Send</span></div>
+          <div><kbd>3</kbd> <span>Transfers</span></div>
+          <div><kbd>4</kbd> <span>History</span></div>
+          <div><kbd>5</kbd> <span>Devices</span></div>
+          <div><kbd>6</kbd> <span>Settings</span></div>
+          <div><kbd>Esc</kbd> <span>Close Modals</span></div>
+          <div><kbd>?</kbd> <span>This Help Guide</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer-action">
+      <button class="btn-gold-solid btn-full" id="btn-help-ok">Got it</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== MODAL: DIAGNOSTICS & METRICS ==================== -->
+<div class="modal-backdrop" id="diagnostics-modal" hidden>
+  <div class="modal-box modal-diagnostics">
+    <button class="modal-close-btn" id="btn-close-diagnostics" title="Close">✕</button>
+    <h2 class="modal-title">P2P Network Diagnostics</h2>
+    <p class="modal-sub">Live operational metrics and transport telemetry.</p>
+
+    <div class="diagnostics-grid">
+      <div class="diag-card">
+        <span class="diag-label">Server Status</span>
+        <b class="diag-val diag-green" id="diag-server-status">Healthy (200 OK)</b>
+      </div>
+      <div class="diag-card">
+        <span class="diag-label">Active Connections</span>
+        <b class="diag-val" id="diag-active-conns">1</b>
+      </div>
+      <div class="diag-card">
+        <span class="diag-label">Total Connections</span>
+        <b class="diag-val" id="diag-total-conns">1</b>
+      </div>
+      <div class="diag-card">
+        <span class="diag-label">Transfers Started</span>
+        <b class="diag-val" id="diag-transfers-started">0</b>
+      </div>
+      <div class="diag-card">
+        <span class="diag-label">Relayed Bytes</span>
+        <b class="diag-val" id="diag-relayed-bytes">0 B</b>
+      </div>
+      <div class="diag-card">
+        <span class="diag-label">Primary Path</span>
+        <b class="diag-val diag-gold" id="diag-primary-path">WebRTC DataChannel (Direct)</b>
+      </div>
+    </div>
+
+    <div class="diagnostics-detail-box">
+      <div><b>Subnet Scope:</b> <span id="diag-scope-key">net:192.168.1.0/24</span></div>
+      <div><b>LAN IP:</b> <span id="diag-lan-ip">192.168.1.5</span></div>
+      <div><b>STUN Relay:</b> <span id="diag-stun-server">stun:stun.l.google.com:19302</span></div>
+      <div><b>Integrity Engine:</b> <span>WebCrypto Subtle SHA-256 Active</span></div>
+    </div>
+
+    <div class="modal-footer-action">
+      <button class="btn-dark-pill" id="btn-refresh-diagnostics">↻ Refresh Metrics</button>
+      <button class="btn-gold-solid" id="btn-diagnostics-close">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== MODAL: TROUBLESHOOTING ==================== -->
+<div class="modal-backdrop" id="troubleshoot-modal" hidden>
+  <div class="modal-box modal-troubleshoot">
+    <button class="modal-close-btn" id="btn-close-troubleshoot" title="Close">✕</button>
+    <h2 class="modal-title">Network Troubleshoot Guide</h2>
+    <p class="modal-sub">Follow these quick checks if nearby devices aren't appearing.</p>
+
+    <div class="troubleshoot-steps-list">
+      <div class="ts-step">
+        <span class="ts-step-num">1</span>
+        <div>
+          <b>Connect to the same Wi-Fi</b>
+          <p>Both devices must be connected to the same Wi-Fi network or router for auto-discovery.</p>
+        </div>
+      </div>
+      <div class="ts-step">
+        <span class="ts-step-num">2</span>
+        <div>
+          <b>Check AP / Client Isolation</b>
+          <p>Some corporate or guest Wi-Fi networks block direct peer communication. If so, use <b>Pair with Code</b> to route through the secure relay.</p>
+        </div>
+      </div>
+      <div class="ts-step">
+        <span class="ts-step-num">3</span>
+        <div>
+          <b>Manual Pairing (Across Any Network)</b>
+          <p>Click "Pair Device" to display a 6-digit PIN and QR code. This works across guest networks and hotspots.</p>
+        </div>
+      </div>
+      <div class="ts-step">
+        <span class="ts-step-num">4</span>
+        <div>
+          <b>Browser Permissions</b>
+          <p>Make sure Flux is running on HTTPS (or localhost) so the browser enables WebRTC and File System Access.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer-action">
+      <button class="btn-gold-solid btn-full" id="btn-troubleshoot-pair">Pair with Code Instead</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== MODAL: DEVICE MANAGEMENT ==================== -->
+<div class="modal-backdrop" id="device-manage-modal" hidden>
+  <div class="modal-box modal-device-manage">
+    <button class="modal-close-btn" id="btn-close-dev-manage" title="Close">✕</button>
+    <h2 class="modal-title" id="dev-manage-title">Device Profile</h2>
+    <p class="modal-sub" id="dev-manage-sub">Trusted P2P node on your local mesh.</p>
+
+    <div class="dev-manage-stats">
+      <div class="dev-stat-row">
+        <span>Device Name</span>
+        <input type="text" class="pair-input" id="dev-manage-name-input" value="Maya's MacBook Pro" />
+      </div>
+      <div class="dev-stat-row">
+        <span>Network Address</span>
+        <span class="dev-stat-val" id="dev-manage-ip-val">192.168.1.12</span>
+      </div>
+      <div class="dev-stat-row">
+        <span>Status</span>
+        <span class="dev-stat-val status-green">Online • Trusted</span>
+      </div>
+      <div class="dev-stat-row">
+        <span>Encryption</span>
+        <span class="dev-stat-val">DTLS 1.2 End-to-End</span>
+      </div>
+    </div>
+
+    <div class="dev-manage-actions">
+      <button class="btn-gold-solid" id="btn-dev-send-files">Send Files to Device</button>
+      <button class="btn-dark-pill" id="btn-dev-ping">Ping</button>
+      <button class="btn-ghost-cancel" id="btn-dev-forget" style="color: #EF4444;">Forget Device</button>
+    </div>
+  </div>
+</div>
+
 <!-- Hidden File Inputs -->
 <input id="file-input" type="file" multiple hidden />
 <input id="file-input-folder" type="file" webkitdirectory directory multiple hidden />

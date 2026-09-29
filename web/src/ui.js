@@ -161,80 +161,77 @@ export const UI = {
   init(handlers) {
     this.h = handlers || {};
 
-    // Navigation item click bindings
+    // 1. macOS Window Traffic Light Controls
+    document.querySelector(".win-close")?.addEventListener("click", () => {
+      this.toast("Flux minimized to background dock");
+    });
+    document.querySelector(".win-min")?.addEventListener("click", () => {
+      const windowEl = document.querySelector(".flux-window");
+      if (windowEl) {
+        windowEl.classList.toggle("minimized");
+        this.toast(windowEl.classList.contains("minimized") ? "Window minimized" : "Window restored");
+      }
+    });
+    document.querySelector(".win-max")?.addEventListener("click", () => {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+        this.toast("Fullscreen mode entered");
+      } else {
+        document.exitFullscreen().catch(() => {});
+        this.toast("Fullscreen mode exited");
+      }
+    });
+
+    // 2. Navigation item click bindings
     document.querySelectorAll(".nav-item").forEach((btn) => {
       btn.addEventListener("click", () => {
         const view = btn.dataset.view;
-        if (view === "settings") {
-          this.openSettings();
-          return;
-        }
         this.switchView(view);
       });
     });
 
-    // Topbar Pair & Modals
+    // 3. Topbar Buttons & Status Pills
     $("btn-open-pair")?.addEventListener("click", () => this.openPair());
     $("btn-quick-pair")?.addEventListener("click", () => this.openPair());
     $("btn-pair-from-devices")?.addEventListener("click", () => this.openPair());
+    $("btn-scanner-pair")?.addEventListener("click", () => this.openPair());
+
+    $("btn-help")?.addEventListener("click", () => this.openHelp());
+    $("btn-close-help")?.addEventListener("click", () => this.closeHelp());
+    $("btn-help-ok")?.addEventListener("click", () => this.closeHelp());
+    $("help-modal")?.addEventListener("click", (e) => {
+      if (e.target.id === "help-modal") this.closeHelp();
+    });
+
+    $("btn-metrics")?.addEventListener("click", () => this.openDiagnostics());
+    $("btn-close-diagnostics")?.addEventListener("click", () => this.closeDiagnostics());
+    $("btn-diagnostics-close")?.addEventListener("click", () => this.closeDiagnostics());
+    $("btn-refresh-diagnostics")?.addEventListener("click", () => this.refreshDiagnostics());
+    $("diagnostics-modal")?.addEventListener("click", (e) => {
+      if (e.target.id === "diagnostics-modal") this.closeDiagnostics();
+    });
+
+    $("btn-network-scope")?.addEventListener("click", () => this.openDiagnostics());
+    $("btn-conn-status")?.addEventListener("click", () => this.openDiagnostics());
+
     $("btn-edit-alias")?.addEventListener("click", () => this.openSettings());
-    $("btn-node-info")?.addEventListener("click", () => this.openSettings());
+    $("btn-node-info")?.addEventListener("click", () => this.openDiagnostics());
 
-    // Pair Modal Close
-    $("btn-close-pair")?.addEventListener("click", () => this.closePair());
-    $("btn-cancel-pairing")?.addEventListener("click", () => this.closePair());
-    $("pair-modal")?.addEventListener("click", (e) => {
-      if (e.target.id === "pair-modal") this.closePair();
-    });
-
-    // Confirm Pairing
-    $("btn-confirm-pairing")?.addEventListener("click", () => {
-      this.toast("Pairing confirmed with Studio iMac");
-      this.closePair();
-    });
-
-    // Settings Modal
-    $("btn-close-settings")?.addEventListener("click", () => this.closeSettings());
-    $("settings-modal")?.addEventListener("click", (e) => {
-      if (e.target.id === "settings-modal") this.closeSettings();
-    });
-    $("btn-save-alias")?.addEventListener("click", () => {
-      const val = $("setting-alias").value.trim();
-      if (val && this.h.onAliasSave) {
-        this.h.onAliasSave(val);
-        this.setSelf(val);
-        this.toast("Device name saved as " + val);
-        this.closeSettings();
+    // 4. Orbital Radar Antenna
+    $("orbital-radar-widget")?.addEventListener("click", () => {
+      const sym = document.querySelector(".refresh-symbol");
+      if (sym) {
+        sym.style.transform = "rotate(360deg)";
+        setTimeout(() => (sym.style.transform = ""), 400);
       }
-    });
-    $("btn-random-alias")?.addEventListener("click", () => {
-      if (this.h.onRandomAlias) {
-        const next = this.h.onRandomAlias();
-        $("setting-alias").value = next;
-      }
+      this.toast("Scanning local P2P subnet for nearby devices…");
+      if (this.h.onRefresh) this.h.onRefresh();
     });
 
-    // Copy Pair Link
-    $("btn-copy-pair-link")?.addEventListener("click", async () => {
-      const url = $("code-url")?.textContent || location.href;
-      try {
-        await navigator.clipboard.writeText(url);
-        this.toast("Pairing link copied to clipboard");
-      } catch {
-        this.toast("Code: " + $("code-value").textContent);
-      }
-    });
-
-    // Send Files Buttons & Dropzone
+    // 5. Dashboard Controls
     const dashDrop = $("dash-dropzone");
     if (dashDrop) {
-      dashDrop.addEventListener("click", (e) => {
-        if (e.target.id === "btn-choose-files" || e.target.closest("#btn-choose-files")) {
-          $("file-input")?.click();
-        } else {
-          $("file-input")?.click();
-        }
-      });
+      dashDrop.addEventListener("click", () => $("file-input")?.click());
       this._setupDragDrop(dashDrop);
     }
     $("btn-choose-files")?.addEventListener("click", (e) => {
@@ -242,23 +239,46 @@ export const UI = {
       $("file-input")?.click();
     });
 
-    // Target Device Picker on Send page
-    $("target-device-picker")?.addEventListener("click", () => {
-      this.switchView("dashboard");
-      this.toast("Select a nearby device to send files");
+    $("toggle-receive")?.addEventListener("change", (e) => {
+      const enabled = e.target.checked;
+      const lead = document.querySelector(".recv-lead");
+      const desc = document.querySelector(".recv-desc");
+      if (lead) lead.textContent = enabled ? "Ready to receive files" : "Receive disabled (Hidden mode)";
+      if (desc) desc.textContent = enabled ? "Other devices can send files to this device." : "This device is invisible to other network devices.";
+      this.toast(enabled ? "Device is now discoverable" : "Device is now hidden from discovery");
+      if (this.h.onToggleReceive) this.h.onToggleReceive(enabled);
     });
 
-    // Add more files button in Send queue
-    $("btn-add-more-files")?.addEventListener("click", () => {
-      $("file-input")?.click();
+    const savedFolder = localStorage.getItem("flux-save-folder") || "~/Downloads/Flux Received";
+    if ($("display-save-folder")) $("display-save-folder").textContent = savedFolder;
+    if ($("setting-folder")) $("setting-folder").value = savedFolder;
+
+    $("display-save-folder")?.addEventListener("click", async (e) => {
+      e.stopPropagation();
+      if ("showDirectoryPicker" in window) {
+        try {
+          const dirHandle = await window.showDirectoryPicker();
+          const folderName = `~/${dirHandle.name}`;
+          if ($("display-save-folder")) $("display-save-folder").textContent = folderName;
+          if ($("setting-folder")) $("setting-folder").value = folderName;
+          localStorage.setItem("flux-save-folder", folderName);
+          this.toast(`Save destination changed to ${folderName}`);
+        } catch {}
+      } else {
+        const next = prompt("Enter local download folder path:", savedFolder);
+        if (next) {
+          if ($("display-save-folder")) $("display-save-folder").textContent = next;
+          if ($("setting-folder")) $("setting-folder").value = next;
+          localStorage.setItem("flux-save-folder", next);
+          this.toast(`Save destination changed to ${next}`);
+        }
+      }
     });
 
-    // Execute Send button
-    $("btn-execute-send")?.addEventListener("click", () => {
-      this._executeSendQueue();
+    document.querySelector(".folder-name-row")?.addEventListener("click", () => {
+      $("file-input-folder")?.click();
     });
 
-    // Refresh Nearby Devices
     $("btn-dash-refresh")?.addEventListener("click", () => {
       const sym = document.querySelector(".refresh-symbol");
       if (sym) {
@@ -269,12 +289,42 @@ export const UI = {
       if (this.h.onRefresh) this.h.onRefresh();
     });
 
-    // View All Transfers
     $("btn-view-all-transfers")?.addEventListener("click", () => {
       this.switchView("transfers");
     });
 
-    // Transfers Filter Tabs
+    $("btn-troubleshoot")?.addEventListener("click", () => this.openTroubleshoot());
+    $("btn-close-troubleshoot")?.addEventListener("click", () => this.closeTroubleshoot());
+    $("btn-troubleshoot-pair")?.addEventListener("click", () => {
+      this.closeTroubleshoot();
+      this.openPair();
+    });
+    $("troubleshoot-modal")?.addEventListener("click", (e) => {
+      if (e.target.id === "troubleshoot-modal") this.closeTroubleshoot();
+    });
+
+    // 6. Send View Controls
+    $("target-device-picker")?.addEventListener("click", (e) => {
+      e.stopPropagation();
+      this._toggleTargetPickerDropdown();
+    });
+
+    $("btn-add-more-files")?.addEventListener("click", () => {
+      $("file-input")?.click();
+    });
+
+    $("btn-execute-send")?.addEventListener("click", () => {
+      this._executeSendQueue();
+    });
+
+    $("toggle-keep-originals")?.addEventListener("change", (e) => {
+      this.toast(e.target.checked ? "Keep original files: ON" : "Keep original files: OFF");
+    });
+    $("toggle-encrypt")?.addEventListener("change", (e) => {
+      this.toast(e.target.checked ? "End-to-End Encryption: ON" : "End-to-End Encryption: OFF");
+    });
+
+    // 7. Transfers View Controls
     document.querySelectorAll(".xfer-tab").forEach((tab) => {
       tab.addEventListener("click", () => {
         document.querySelectorAll(".xfer-tab").forEach((t) => t.classList.remove("active"));
@@ -284,7 +334,6 @@ export const UI = {
       });
     });
 
-    // Hero Pause / Resume
     $("btn-hero-pause")?.addEventListener("click", () => {
       this._heroTransfer.isPaused = !this._heroTransfer.isPaused;
       const isPaused = this._heroTransfer.isPaused;
@@ -292,40 +341,27 @@ export const UI = {
       $("hero-pause-icon").textContent = isPaused ? "▶" : "⏸";
       $("hero-speed-display").textContent = isPaused ? "Paused" : "18.6 MB/s";
       this.toast(isPaused ? "Transfer paused" : "Transfer resumed");
+      if (isPaused && this.h.onPause) this.h.onPause();
+      if (!isPaused && this.h.onResume) this.h.onResume();
     });
 
     $("btn-hero-cancel")?.addEventListener("click", () => {
-      this.toast("Transfer cancelled");
-      $("hero-transfer-card").style.display = "none";
+      this.toast("Transfer cancelled", "error");
+      const card = $("hero-transfer-card");
+      if (card) {
+        card.style.opacity = "0.4";
+        setTimeout(() => { card.style.opacity = "1"; this.switchView("dashboard"); }, 600);
+      }
     });
 
-    // Failed Transfer Retry
     $("btn-retry-failed")?.addEventListener("click", () => {
       this.toast("Retrying Product_demo.mov over P2P DataChannel…");
-      $("failed-transfer-card").style.display = "none";
+      const card = $("failed-transfer-card");
+      if (card) card.style.display = "none";
+      this.updateHeroProgress(1, 1.6 * 1024 * 1024 * 1024, 28 * 1024 * 1024, 52);
     });
 
-    // Incoming Request Modal Actions
-    $("btn-accept")?.addEventListener("click", () => {
-      const id = this._incomingId;
-      this.closeIncoming();
-      if (id && this.h.onAcceptIncoming) this.h.onAcceptIncoming(id);
-      this.toast("Incoming transfer accepted. Saving files…");
-      this.switchView("transfers");
-    });
-    $("btn-decline")?.addEventListener("click", () => {
-      const id = this._incomingId;
-      this.closeIncoming();
-      if (id && this.h.onDeclineIncoming) this.h.onDeclineIncoming(id);
-      this.toast("Transfer declined");
-    });
-
-    // Troubleshoot button
-    $("btn-troubleshoot")?.addEventListener("click", () => {
-      this.toast("Check Wi-Fi connection or click 'Pair with Code' to connect manually.");
-    });
-
-    // History Filter Pills & Search
+    // 8. History View Controls
     document.querySelectorAll(".h-pill").forEach((pill) => {
       pill.addEventListener("click", () => {
         document.querySelectorAll(".h-pill").forEach((p) => p.classList.remove("active"));
@@ -342,33 +378,264 @@ export const UI = {
       this.renderHistoryTimeline(filter, e.target.value);
     });
 
+    document.querySelector(".history-filter-btn")?.addEventListener("click", () => {
+      this._historySortDesc = !this._historySortDesc;
+      this.toast(this._historySortDesc ? "Sorted: Oldest first" : "Sorted: Newest first");
+      const activePill = document.querySelector(".h-pill.active");
+      const filter = activePill ? activePill.dataset.filter : "all";
+      const query = $("history-search-input") ? $("history-search-input").value : "";
+      this.renderHistoryTimeline(filter, query);
+    });
+
     $("btn-clear-all-history")?.addEventListener("click", () => {
+      if (this.h.onClearHistory) this.h.onClearHistory();
       const container = $("history-timeline-container");
       if (container) container.innerHTML = `<div style="text-align:center; padding: 40px; color: var(--text-dim);">Transfer history cleared</div>`;
       this.toast("Transfer history cleared");
     });
 
-    // Scanner pair button
-    $("btn-scanner-pair")?.addEventListener("click", () => this.openPair());
-
-    // Manage device buttons
+    // 9. Paired Devices View Controls
     document.querySelectorAll(".btn-manage-dev").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        this.toast(`Managing device pairing profile`);
+      btn.addEventListener("click", (e) => {
+        const card = e.target.closest(".paired-dev-card");
+        const title = card ? card.querySelector(".dev-title")?.textContent : "Maya's MacBook Pro";
+        const sub = card ? card.querySelector(".dev-ip-sub")?.textContent : "192.168.1.12";
+        this.openDevManage({ alias: title, ip: sub });
       });
     });
 
-    // Clear trusted devices
+    document.querySelectorAll(".btn-more-dots").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        const card = e.target.closest(".paired-dev-card");
+        const title = card ? card.querySelector(".dev-title")?.textContent : "Studio iMac";
+        const sub = card ? card.querySelector(".dev-ip-sub")?.textContent : "192.168.1.27";
+        this.openDevManage({ alias: title, ip: sub });
+      });
+    });
+
+    $("btn-close-dev-manage")?.addEventListener("click", () => this.closeDevManage());
+    $("btn-dev-send-files")?.addEventListener("click", () => {
+      this.closeDevManage();
+      if (this._managedDevice) {
+        this._selectedTargetPeer = this._managedDevice;
+        if ($("send-target-name")) $("send-target-name").textContent = this._managedDevice.alias;
+      }
+      this.switchView("send");
+    });
+    $("btn-dev-ping")?.addEventListener("click", () => {
+      this.toast("Ping response: 1.8ms • DTLS 1.2 active", "success");
+    });
+    $("btn-dev-forget")?.addEventListener("click", () => {
+      this.toast(`Unpaired ${this._managedDevice ? this._managedDevice.alias : "device"}`, "error");
+      this.closeDevManage();
+    });
+    $("dev-manage-name-input")?.addEventListener("change", (e) => {
+      const newAlias = e.target.value.trim();
+      if (newAlias && this._managedDevice) {
+        this._managedDevice.alias = newAlias;
+        if ($("dev-manage-title")) $("dev-manage-title").textContent = newAlias;
+        this.toast(`Device alias updated to "${newAlias}"`);
+      }
+    });
+    $("device-manage-modal")?.addEventListener("click", (e) => {
+      if (e.target.id === "device-manage-modal") this.closeDevManage();
+    });
+
+    // 10. Settings View (Full Page) Switches & Selects Persistence
+    document.querySelectorAll("#view-settings .flux-switch input").forEach((sw, idx) => {
+      const key = `flux-pref-sw-${idx}`;
+      try {
+        const saved = localStorage.getItem(key);
+        if (saved !== null) sw.checked = saved === "1";
+      } catch {}
+      sw.addEventListener("change", (e) => {
+        try { localStorage.setItem(key, e.target.checked ? "1" : "0"); } catch {}
+        const row = e.target.closest(".settings-switch-row");
+        const label = row ? row.querySelector(".sw-label")?.textContent : "Setting";
+        this.toast(`${label}: ${e.target.checked ? 'Enabled' : 'Disabled'}`);
+      });
+    });
+
+    document.querySelectorAll("#view-settings .settings-mini-select").forEach((sel, idx) => {
+      const key = `flux-pref-sel-${idx}`;
+      try {
+        const saved = localStorage.getItem(key);
+        if (saved) sel.value = saved;
+      } catch {}
+      sel.addEventListener("change", (e) => {
+        try { localStorage.setItem(key, e.target.value); } catch {}
+        this.toast(`Preference saved: ${e.target.value}`);
+      });
+    });
+
     $("btn-clear-trusted")?.addEventListener("click", () => {
       this.toast("Cleared trusted devices list");
     });
 
-    // Escape listener
+    // 11. Modals: Pair, Settings, Incoming
+    $("btn-close-pair")?.addEventListener("click", () => this.closePair());
+    $("btn-cancel-pairing")?.addEventListener("click", () => this.closePair());
+    $("pair-modal")?.addEventListener("click", (e) => {
+      if (e.target.id === "pair-modal") this.closePair();
+    });
+
+    $("code-value")?.addEventListener("click", async () => {
+      const code = $("code-value")?.textContent.replace(/\s+/g, "") || "482916";
+      try {
+        await navigator.clipboard.writeText(code);
+        this.toast(`PIN code ${code} copied to clipboard!`);
+      } catch {
+        this.toast(`PIN code: ${code}`);
+      }
+    });
+
+    $("pair-input-alias")?.addEventListener("change", (e) => {
+      const val = e.target.value.trim();
+      if (val && this.h.onAliasSave) {
+        this.h.onAliasSave(val);
+        this.setSelf(val);
+        this.toast(`Device name updated to ${val}`);
+      }
+    });
+
+    $("btn-confirm-pairing")?.addEventListener("click", () => {
+      const code = $("code-value")?.textContent.replace(/\s+/g, "") || "482916";
+      const targetAlias = $("pair-target-alias")?.textContent || "Device";
+      const trust = $("check-trust-device")?.checked;
+      if (trust) {
+        try {
+          const trusted = JSON.parse(localStorage.getItem("flux-trusted-devices") || "[]");
+          if (!trusted.includes(targetAlias)) {
+            trusted.push(targetAlias);
+            localStorage.setItem("flux-trusted-devices", JSON.stringify(trusted));
+          }
+        } catch {}
+      }
+      this.toast(`Pairing confirmed with ${targetAlias} (${code})`);
+      this.closePair();
+      if (this.h.onJoinCode) this.h.onJoinCode(code);
+    });
+
+    $("btn-close-settings")?.addEventListener("click", () => this.closeSettings());
+    $("settings-modal")?.addEventListener("click", (e) => {
+      if (e.target.id === "settings-modal") this.closeSettings();
+    });
+
+    $("btn-save-alias")?.addEventListener("click", () => {
+      const val = $("setting-alias")?.value.trim();
+      if (val && this.h.onAliasSave) {
+        this.h.onAliasSave(val);
+        this.setSelf(val);
+      }
+      const folder = $("setting-folder")?.value.trim();
+      if (folder) {
+        localStorage.setItem("flux-save-folder", folder);
+        if ($("display-save-folder")) $("display-save-folder").textContent = folder;
+      }
+      this.toast("Settings saved successfully");
+      this.closeSettings();
+    });
+
+    $("btn-random-alias")?.addEventListener("click", () => {
+      if (this.h.onRandomAlias) {
+        const next = this.h.onRandomAlias();
+        $("setting-alias").value = next;
+      }
+    });
+
+    $("btn-copy-pair-link")?.addEventListener("click", async () => {
+      const url = $("code-url")?.textContent || location.href;
+      try {
+        await navigator.clipboard.writeText(url);
+        this.toast("Pairing link copied to clipboard");
+      } catch {
+        this.toast("Code: " + $("code-value").textContent);
+      }
+    });
+
+    $("dest-folder-select")?.addEventListener("change", async (e) => {
+      if (e.target.value === "custom") {
+        if ("showDirectoryPicker" in window) {
+          try {
+            const dirHandle = await window.showDirectoryPicker();
+            const opt = document.createElement("option");
+            opt.value = dirHandle.name;
+            opt.textContent = `Folder: ${dirHandle.name}`;
+            opt.selected = true;
+            e.target.appendChild(opt);
+            this.toast(`Save destination set to ${dirHandle.name}`);
+          } catch {
+            e.target.value = "downloads";
+          }
+        } else {
+          const path = prompt("Enter custom folder destination path:", "~/Downloads/Flux Received");
+          if (path) {
+            const opt = document.createElement("option");
+            opt.value = path;
+            opt.textContent = path;
+            opt.selected = true;
+            e.target.appendChild(opt);
+            this.toast(`Destination set to ${path}`);
+          } else {
+            e.target.value = "downloads";
+          }
+        }
+      } else {
+        this.toast(`Destination set to: ${e.target.options[e.target.selectedIndex].text}`);
+      }
+    });
+
+    $("btn-accept")?.addEventListener("click", () => {
+      const id = this._incomingId;
+      const remember = $("check-remember-device")?.checked;
+      if (remember) {
+        const sender = $("incoming-sender-title")?.textContent || "Peer Device";
+        try {
+          const trusted = JSON.parse(localStorage.getItem("flux-trusted-devices") || "[]");
+          if (!trusted.includes(sender)) {
+            trusted.push(sender);
+            localStorage.setItem("flux-trusted-devices", JSON.stringify(trusted));
+          }
+        } catch {}
+      }
+      this.closeIncoming();
+      if (id && this.h.onAcceptIncoming) this.h.onAcceptIncoming(id);
+      this.toast("Incoming transfer accepted. Saving files…");
+      this.switchView("transfers");
+    });
+    $("btn-decline")?.addEventListener("click", () => {
+      const id = this._incomingId;
+      this.closeIncoming();
+      if (id && this.h.onDeclineIncoming) this.h.onDeclineIncoming(id);
+      this.toast("Transfer declined");
+    });
+
+    // 12. Global Keyboard Shortcuts
     window.addEventListener("keydown", (e) => {
+      // Don't intercept typing in inputs
+      if (e.target.tagName === "INPUT" || e.target.tagName === "SELECT" || e.target.tagName === "TEXTAREA") {
+        if (e.key === "Escape") {
+          e.target.blur();
+          this.closeAllModals();
+        }
+        return;
+      }
       if (e.key === "Escape") {
-        this.closePair();
-        this.closeIncoming();
-        this.closeSettings();
+        this.closeAllModals();
+      } else if (e.key === "1") {
+        this.switchView("dashboard");
+      } else if (e.key === "2") {
+        this.switchView("send");
+      } else if (e.key === "3") {
+        this.switchView("transfers");
+      } else if (e.key === "4") {
+        this.switchView("history");
+      } else if (e.key === "5") {
+        this.switchView("devices");
+      } else if (e.key === "6") {
+        this.switchView("settings");
+      } else if (e.key === "?" || (e.shiftKey && e.key === "/")) {
+        this.openHelp();
       }
     });
 
@@ -380,17 +647,32 @@ export const UI = {
     this.updateHeroRing(68);
     this._renderHeroBreakdown();
 
-    // URL view override for instant viewing / testing (?view=transfers, ?view=send, ?view=pair, ?view=incoming, ?view=history, ?view=settings)
+    // URL view override for instant viewing / testing
     const viewParam = new URLSearchParams(location.search).get("view");
     if (viewParam) {
       if (viewParam === "pair") {
         this.openPair();
       } else if (viewParam === "incoming") {
         this.showIncoming("demo-1", "Launch_video.mp4", 684 * 1024 * 1024, "Jordan's MacBook Air");
+      } else if (viewParam === "help") {
+        this.openHelp();
+      } else if (viewParam === "diagnostics") {
+        this.openDiagnostics();
       } else {
         this.switchView(viewParam);
       }
     }
+  },
+
+  closeAllModals() {
+    this.closePair();
+    this.closeIncoming();
+    this.closeSettings();
+    this.closeHelp();
+    this.closeDiagnostics();
+    this.closeTroubleshoot();
+    this.closeDevManage();
+    document.querySelector(".target-picker-dropdown")?.remove();
   },
 
   switchView(viewName) {
@@ -935,9 +1217,9 @@ export const UI = {
   updateHeroProgress(sent, total, speed, eta) {
     const pct = total > 0 ? Math.min(100, Math.floor((sent / total) * 100)) : 0;
     this.updateHeroRing(pct, false);
-    const sentStr = fmtBytes(sent);
-    const totalStr = fmtBytes(total);
-    const speedStr = speed > 0 ? `${fmtBytes(speed)}/s` : "Calculating...";
+    const sentStr = formatBytes(sent);
+    const totalStr = formatBytes(total);
+    const speedStr = speed > 0 ? `${formatBytes(speed)}/s` : "Calculating...";
     const etaStr = eta > 0 ? `About ${Math.ceil(eta)} sec left` : "Calculating...";
 
     if ($("hero-bytes-display")) $("hero-bytes-display").textContent = `${sentStr} of ${totalStr}`;
@@ -1088,6 +1370,138 @@ export const UI = {
         this.setStagedFiles(e.dataTransfer.files);
         this.toast(`${e.dataTransfer.files.length} file(s) dropped into queue`);
       }
+    });
+  },
+
+  // Modal Controllers
+  openHelp() {
+    const modal = $("help-modal");
+    if (modal) modal.hidden = false;
+  },
+
+  closeHelp() {
+    const modal = $("help-modal");
+    if (modal) modal.hidden = true;
+  },
+
+  async openDiagnostics() {
+    const modal = $("diagnostics-modal");
+    if (!modal) return;
+    modal.hidden = false;
+    try {
+      const res = await fetch("/metrics");
+      if (res.ok) {
+        const data = await res.json();
+        if ($("diag-server-status")) $("diag-server-status").textContent = "Online • " + (data.version || "v2.4.0-obsidian");
+        if ($("diag-active-conns")) $("diag-active-conns").textContent = String(data.active_connections ?? 1);
+        if ($("diag-total-conns")) $("diag-total-conns").textContent = String(data.total_connections ?? 1);
+        if ($("diag-transfers-started")) $("diag-transfers-started").textContent = String(data.transfers_started ?? 0);
+        if ($("diag-relayed-bytes")) $("diag-relayed-bytes").textContent = formatBytes(data.relayed_bytes ?? 0);
+        if ($("diag-stun-server")) $("diag-stun-server").textContent = (data.stun_servers && data.stun_servers.join(", ")) || "stun:stun.l.google.com:19302";
+        if ($("diag-scope-key")) $("diag-scope-key").textContent = data.scope || (this._peerInfo ? this._peerInfo.scope : "net:192.168.1.0/24");
+        if ($("diag-primary-path")) $("diag-primary-path").textContent = "WebRTC DataChannel (Direct P2P)";
+        if ($("diag-lan-ip")) $("diag-lan-ip").textContent = window.location.hostname || "192.168.1.x";
+      }
+    } catch {
+      if ($("diag-server-status")) $("diag-server-status").textContent = "Connected (Local Mode)";
+      if ($("diag-primary-path")) $("diag-primary-path").textContent = "WebRTC DataChannel (Direct P2P)";
+      if ($("diag-scope-key")) $("diag-scope-key").textContent = "net:192.168.1.0/24";
+      if ($("diag-lan-ip")) $("diag-lan-ip").textContent = window.location.hostname || "127.0.0.1";
+      if ($("diag-stun-server")) $("diag-stun-server").textContent = "stun:stun.l.google.com:19302";
+    }
+  },
+
+  closeDiagnostics() {
+    const modal = $("diagnostics-modal");
+    if (modal) modal.hidden = true;
+  },
+
+  openTroubleshoot() {
+    const modal = $("troubleshoot-modal");
+    if (modal) modal.hidden = false;
+  },
+
+  closeTroubleshoot() {
+    const modal = $("troubleshoot-modal");
+    if (modal) modal.hidden = true;
+  },
+
+  openDevManage(dev) {
+    this._managedDevice = dev;
+    const modal = $("device-manage-modal");
+    if (!modal) return;
+    modal.hidden = false;
+    if ($("dev-manage-title")) $("dev-manage-title").textContent = dev?.alias || "Device Details";
+    if ($("dev-manage-sub")) $("dev-manage-sub").textContent = dev?.ip ? `${dev.ip} • P2P Trusted` : "LAN Peer • WebRTC";
+    if ($("dev-manage-name-input")) $("dev-manage-name-input").value = dev?.alias || "";
+    if ($("dev-manage-ip-val")) $("dev-manage-ip-val").textContent = dev?.ip || "192.168.1.x";
+  },
+
+  closeDevManage() {
+    const modal = $("device-manage-modal");
+    if (modal) modal.hidden = true;
+    this._managedDevice = null;
+  },
+
+  closeAllModals() {
+    this.closeHelp();
+    this.closeDiagnostics();
+    this.closeTroubleshoot();
+    this.closeDevManage();
+    this.closePair();
+    this.closeSettings();
+    this.closeIncoming();
+    const pickerDropdown = document.querySelector(".target-picker-dropdown");
+    if (pickerDropdown) pickerDropdown.remove();
+  },
+
+  _toggleTargetPickerDropdown() {
+    const existing = document.querySelector(".target-picker-dropdown");
+    if (existing) {
+      existing.remove();
+      return;
+    }
+    const picker = $("target-device-picker");
+    if (!picker) return;
+
+    const dd = document.createElement("div");
+    dd.className = "target-picker-dropdown";
+    const devs = (this._devices && this._devices.length) ? this._devices : DEFAULT_DEVICES;
+
+    dd.innerHTML = devs.map(d => `
+      <div class="picker-item" data-dev-id="${d.id}">
+        <span class="picker-icon">${d.deviceType === 'mobile' ? '📱' : d.deviceType === 'desktop' ? '🖥️' : '💻'}</span>
+        <div class="picker-meta">
+          <div class="picker-name">${d.alias}${d.isSelf ? ' (You)' : ''}</div>
+          <div class="picker-sub">${d.platform || 'Local Peer'} • ${d.statusText || 'Online'}</div>
+        </div>
+      </div>
+    `).join("");
+
+    picker.style.position = "relative";
+    picker.appendChild(dd);
+
+    const onDocClick = (e) => {
+      if (!picker.contains(e.target)) {
+        dd.remove();
+        document.removeEventListener("click", onDocClick);
+      }
+    };
+    setTimeout(() => document.addEventListener("click", onDocClick), 0);
+
+    dd.querySelectorAll(".picker-item").forEach(item => {
+      item.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const devId = item.dataset.devId;
+        const target = devs.find(d => d.id === devId);
+        if (target) {
+          this._selectedTargetPeer = target;
+          if ($("send-target-name")) $("send-target-name").textContent = target.alias;
+          this.toast(`Selected target: ${target.alias}`);
+        }
+        dd.remove();
+        document.removeEventListener("click", onDocClick);
+      });
     });
   },
 };

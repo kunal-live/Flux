@@ -268,6 +268,17 @@ async function main() {
     },
     onViewHistory: () => UI.renderHistory(loadHistory()),
     onViewReceived: () => UI.renderReceived(loadHistory()),
+    onRefresh: () => {
+      signaling.send(MSG.PEER_LIST, {}, "");
+      UI.renderPeers(realPeers);
+      UI.toast(`Discovered ${realPeers.length + DEFAULT_DEVICES.length} devices on local subnet`);
+    },
+    onSendToPeer: (peerId, files) => {
+      handleSendToTarget(peerId, files);
+    },
+    onToggleReceive: (enabled) => {
+      signaling.setPresence(enabled ? "discoverable" : "invisible");
+    },
     onRetryTransfer: (id) => {
       if (pendingFiles && pendingTarget) {
         handleSendToTarget(pendingTarget, pendingFiles);

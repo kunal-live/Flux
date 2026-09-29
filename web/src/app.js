@@ -268,6 +268,16 @@ async function main() {
     },
     onViewHistory: () => UI.renderHistory(loadHistory()),
     onViewReceived: () => UI.renderReceived(loadHistory()),
+    onRetryTransfer: (id) => {
+      if (pendingFiles && pendingTarget) {
+        handleSendToTarget(pendingTarget, pendingFiles);
+        UI.toast("Retrying transfer with fresh checksum verification…");
+      } else {
+        UI.toast("Select the file to retry transfer", "error");
+        const fileInput = document.getElementById("file-input");
+        if (fileInput) fileInput.click();
+      }
+    },
   });
 
   UI.setSelf(alias);
@@ -320,7 +330,7 @@ async function main() {
         UI.progress(ev.transferId, ev.sent, ev.total, ev.speed, ev.eta);
         break;
       case "done":
-        UI.finishSend(ev.transferId, ev.verified);
+        UI.finishSend(ev.transferId, ev.verified, ev.name);
         saveHistoryItem({
           transferId: ev.transferId,
           name: ev.name,
@@ -334,7 +344,7 @@ async function main() {
       case "received":
         UI.finishReceive(ev.transferId, ev.name, ev.blob, ev.streaming, ev.verified);
         let blobUrl = null;
-        if (ev.blob) {
+        if (ev.blob && ev.verified) {
           try { blobUrl = URL.createObjectURL(ev.blob); } catch {}
         }
         saveHistoryItem({

@@ -434,21 +434,27 @@ export const UI = {
       container.appendChild(dateHeader);
 
       filteredItems.forEach((item) => {
+        const isCorrupt = item.verified === false;
         const row = document.createElement("div");
-        row.className = "history-item-card";
+        row.className = "history-item-card" + (isCorrupt ? " history-item-corrupt" : "");
         row.innerHTML = `
           <div class="hist-thumb-wrap">
             <span>${item.icon || '📄'}</span>
           </div>
           <div class="hist-meta">
             <span class="hist-title">${item.name}</span>
-            <span class="hist-sub">${item.sub}</span>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="hist-sub">${item.sub}</span>
+              ${isCorrupt ? '<span class="badge-corrupt">⚠️ Corrupted (Hash Mismatch)</span>' : ''}
+            </div>
           </div>
           <div class="hist-stat-col">
             <span class="hist-size">${item.size}</span>
             <span class="hist-time">${item.time}</span>
           </div>
-          <div class="hist-check-icon">✓</div>
+          <div class="hist-check-icon" style="${isCorrupt ? 'color:#EF4444; border-color:#EF4444;' : ''}">
+            ${isCorrupt ? '✕' : '✓'}
+          </div>
         `;
         container.appendChild(row);
       });
@@ -923,6 +929,42 @@ export const UI = {
     this.updateHeroProgress(0, size, 0, 0);
     this._renderHeroBreakdown();
     if ($("hero-target-name")) $("hero-target-name").textContent = this._heroTransfer.peerName;
+    this._clearHeroRetryBanner();
+  },
+
+  updateHeroProgress(sent, total, speed, eta) {
+    const pct = total > 0 ? Math.min(100, Math.floor((sent / total) * 100)) : 0;
+    this.updateHeroRing(pct, false);
+    const sentStr = fmtBytes(sent);
+    const totalStr = fmtBytes(total);
+    const speedStr = speed > 0 ? `${fmtBytes(speed)}/s` : "Calculating...";
+    const etaStr = eta > 0 ? `About ${Math.ceil(eta)} sec left` : "Calculating...";
+
+    if ($("hero-bytes-display")) $("hero-bytes-display").textContent = `${sentStr} of ${totalStr}`;
+    if ($("hero-speed-display")) $("hero-speed-display").textContent = speedStr;
+    if ($("hero-eta-display")) $("hero-eta-display").textContent = etaStr;
+
+    if ($("stat-data-val")) $("stat-data-val").textContent = `${sentStr} / ${totalStr}`;
+    if ($("stat-speed-val")) $("stat-speed-val").textContent = speedStr;
+    if ($("stat-eta-val")) $("stat-eta-val").textContent = eta > 0 ? `About ${Math.ceil(eta)} sec` : "--";
+
+    if ($("hero-bar-fill")) $("hero-bar-fill").style.width = pct + "%";
+  },
+
+  updateHeroRing(pct, isError = false) {
+    const circumference = 339.292;
+    const offset = circumference * (1 - Math.max(0, Math.min(100, pct)) / 100);
+    const circle = $("hero-ring-circle");
+    if (circle) {
+      circle.style.strokeDasharray = `${circumference}`;
+      circle.style.strokeDashoffset = `${offset}`;
+      circle.style.stroke = isError ? "#EF4444" : "#F5BE38";
+    }
+    const pctDisp = $("hero-pct-display");
+    if (pctDisp) {
+      pctDisp.textContent = isError ? "⚠️" : `${pct}%`;
+      pctDisp.style.color = isError ? "#EF4444" : "#F5BE38";
+    }
   },
 
   progress(id, sent, total, speed, eta) {
@@ -933,29 +975,92 @@ export const UI = {
     if ($("hero-speed-display")) $("hero-speed-display").textContent = "Verifying SHA-256…";
   },
 
-  finishSend(id, verified) {
-    this.updateHeroRing(100);
-    this.toast("✓ Transfer complete • All files verified with SHA-256");
+  finishSend(id, verified, name) {
+    if (!verified) {
+      this.updateHeroRing(100, true);
+      if ($("hero-speed-display")) $("hero-speed-display").textContent = "Integrity check failed!";
+      if ($("hero-eta-display")) $("hero-eta-display").innerHTML = `<span style="color:#EF4444;font-weight:600;">SHA-256 Mismatch • Transfer Corrupted</span>`;
+      this.toast(`⚠️ Transfer failed integrity check for ${name || "file"} (SHA-256 mismatch)`, "error");
+      this._showHeroRetryBanner(id, name, "send");
+      return;
+    }
+    this.updateHeroRing(100, false);
+    if ($("hero-speed-display")) $("hero-speed-display").textContent = "Verified with SHA-256";
+    if ($("hero-eta-display")) $("hero-eta-display").textContent = "Transfer complete";
+    this.toast("✓ Transfer complete • All files verified with SHA-256", "success");
+    this._clearHeroRetryBanner();
   },
 
   finishReceive(id, name, blob, streaming, verified) {
-    this.updateHeroRing(100);
-    this.toast(`✓ Received ${name} • Verified integrity`);
+    if (!verified) {
+      this.updateHeroRing(100, true);
+      if ($("hero-speed-display")) $("hero-speed-display").textContent = "Integrity check failed!";
+      if ($("hero-eta-display")) $("hero-eta-display").innerHTML = `<span style="color:#EF4444;font-weight:600;">SHA-256 Mismatch • File Corrupted</span>`;
+      this.toast(`⚠️ Received ${name || "file"} failed integrity verification (SHA-256 mismatch)`, "error");
+      this._showHeroRetryBanner(id, name, "recv");
+      return;
+    }
+    this.updateHeroRing(100, false);
+    if ($("hero-speed-display")) $("hero-speed-display").textContent = "Verified integrity";
+    if ($("hero-eta-display")) $("hero-eta-display").textContent = streaming ? "Saved to disk" : "Downloaded";
+    this.toast(`✓ Received ${name || "file"} • Verified integrity`, "success");
+    this._clearHeroRetryBanner();
+  },
+
+  _showHeroRetryBanner(id, name, role) {
+    this._clearHeroRetryBanner();
+    const card = $("hero-transfer-card");
+    if (!card) return;
+
+    const banner = document.createElement("div");
+    banner.className = "hero-integrity-error-banner";
+    banner.id = "hero-integrity-error-banner";
+    banner.innerHTML = `
+      <div class="integrity-error-msg">
+        <span class="error-badge-icon">⚠️</span>
+        <div>
+          <strong>Cryptographic Integrity Verification Failed</strong>
+          <p>The SHA-256 checksum calculated on received data does not match the sender's origin digest. The file may have suffered transmission corruption.</p>
+        </div>
+      </div>
+      <div class="integrity-error-actions">
+        <button class="btn-retry-transfer" id="btn-hero-retry">Retry Transfer</button>
+        <button class="btn-dismiss-error" id="btn-hero-dismiss">Dismiss</button>
+      </div>
+    `;
+
+    banner.querySelector("#btn-hero-dismiss").addEventListener("click", () => banner.remove());
+    banner.querySelector("#btn-hero-retry").addEventListener("click", () => {
+      banner.remove();
+      if (this.h && typeof this.h.onRetryTransfer === "function") {
+        this.h.onRetryTransfer(id);
+      } else {
+        this.toast("Please re-select the file to retry transfer", "error");
+      }
+    });
+
+    card.appendChild(banner);
+  },
+
+  _clearHeroRetryBanner() {
+    const existing = $("hero-integrity-error-banner");
+    if (existing) existing.remove();
   },
 
   error(id, msg) {
-    this.toast("Transfer alert: " + msg);
+    this.toast("Transfer alert: " + msg, "error");
   },
 
-  // Toast Notification System (Matches Canva Image 4 snackbar)
-  toast(msg) {
+  // Toast Notification System
+  toast(msg, type = "success") {
     const container = $("toasts");
     if (!container) return;
 
+    const isErr = type === "error";
     const item = document.createElement("div");
-    item.className = "toast-item";
+    item.className = "toast-item" + (isErr ? " toast-error" : "");
     item.innerHTML = `
-      <span class="toast-check-icon">✓</span>
+      <span class="toast-check-icon">${isErr ? '⚠️' : '✓'}</span>
       <span>${msg}</span>
       <button class="toast-close-x">✕</button>
     `;
@@ -963,10 +1068,11 @@ export const UI = {
     item.querySelector(".toast-close-x").addEventListener("click", () => item.remove());
     container.appendChild(item);
 
+    const timeout = isErr ? 8000 : 4000;
     setTimeout(() => {
       item.style.opacity = "0";
       setTimeout(() => item.remove(), 250);
-    }, 4000);
+    }, timeout);
   },
 
   _setupDragDrop(el) {

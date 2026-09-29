@@ -42,7 +42,7 @@ func main() {
 			log.Printf("ws upgrade failed: %v", err)
 			return
 		}
-		go h.ServeConn(conn, discovery.ScopeKey(r))
+		go h.ServeConn(conn, discovery.ScopeKey(r), discovery.ClientIP(r))
 	})
 
 	mux.HandleFunc("/api/config", func(w http.ResponseWriter, r *http.Request) {

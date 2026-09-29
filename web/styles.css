@@ -2168,6 +2168,99 @@ input:checked + .slider:before {
 }
 .toast-close-x:hover { color: var(--text-white); }
 
+/* Toast Error Variant */
+.toast-item.toast-error {
+  border-color: rgba(239, 68, 68, 0.7);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 0 16px rgba(239, 68, 68, 0.3);
+  background-color: #1a1215;
+}
+.toast-item.toast-error .toast-check-icon {
+  border-color: #EF4444;
+  color: #EF4444;
+}
+
+/* Integrity Error Banner inside Hero Transfer Card */
+.hero-integrity-error-banner {
+  margin-top: 18px;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  animation: toastSlideUp 0.3s ease-out;
+}
+.integrity-error-msg {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.error-badge-icon {
+  font-size: 20px;
+  line-height: 1;
+}
+.integrity-error-msg strong {
+  display: block;
+  color: #EF4444;
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.integrity-error-msg p {
+  color: var(--text-muted);
+  font-size: 12px;
+  line-height: 1.4;
+  margin: 0;
+}
+.integrity-error-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: 32px;
+}
+.btn-retry-transfer {
+  background: #EF4444;
+  color: #ffffff;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.btn-retry-transfer:hover {
+  background: #dc2626;
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.4);
+}
+.btn-dismiss-error {
+  background: transparent;
+  color: var(--text-dim);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 6px 12px;
+  font-size: 12px;
+  cursor: pointer;
+}
+.btn-dismiss-error:hover {
+  color: var(--text-white);
+  border-color: var(--text-dim);
+}
+
+.badge-corrupt {
+  background: rgba(239, 68, 68, 0.15);
+  color: #EF4444;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
 /* Responsive adjustments */
 @media (max-width: 980px) {
   .dashboard-grid, .send-grid-columns, .pair-two-col-grid {

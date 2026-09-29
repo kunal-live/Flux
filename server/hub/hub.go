@@ -27,6 +27,7 @@ type outFrame struct {
 // Client is one connected Flux device.
 type Client struct {
 	ID         string
+	IP         string
 	Alias      string
 	Platform   string
 	DeviceType string
@@ -84,7 +85,7 @@ func NewHub(ttl, sessionTTL time.Duration, maxRelayMBps int) *Hub {
 
 // ServeConn runs one connection's whole lifetime: register handshake, then
 // bidirectional pumps until the socket closes.
-func (h *Hub) ServeConn(conn *Conn, scope string) {
+func (h *Hub) ServeConn(conn *Conn, scope, clientIP string) {
 	msgType, data, err := conn.ReadMessage()
 	if err != nil || msgType != TextMessage {
 		conn.Close()
@@ -99,6 +100,7 @@ func (h *Hub) ServeConn(conn *Conn, scope string) {
 	reg := decodeRegister(env.Payload)
 	c := &Client{
 		ID:         newID(),
+		IP:         clientIP,
 		Alias:      reg.Alias,
 		Platform:   reg.Platform,
 		DeviceType: reg.DeviceType,

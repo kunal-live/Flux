@@ -30,9 +30,9 @@ import (
 // Behind a trusted reverse proxy / tunnel the real client address is taken from
 // X-Forwarded-For / X-Real-IP.
 func ScopeKey(r *http.Request) string {
-	ip := net.ParseIP(clientIP(r))
+	ip := net.ParseIP(ClientIP(r))
 	if ip == nil {
-		return "addr:" + clientIP(r)
+		return "addr:" + ClientIP(r)
 	}
 	if ip.IsLoopback() {
 		if lan := PrimaryLANIP(); lan != "" {
@@ -78,10 +78,10 @@ func PrimaryLANIP() string {
 	return ""
 }
 
-// clientIP extracts the real client IP, honoring a trusted proxy's forwarding
+// ClientIP extracts the real client IP, honoring a trusted proxy's forwarding
 // headers first (Flux is designed to sit behind localhost, a LAN address, or a
 // tunnel such as cloudflared, all of which set these).
-func clientIP(r *http.Request) string {
+func ClientIP(r *http.Request) string {
 	if xff := r.Header.Get("X-Forwarded-For"); xff != "" {
 		if first := strings.TrimSpace(strings.Split(xff, ",")[0]); first != "" {
 			return first

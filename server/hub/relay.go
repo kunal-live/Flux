@@ -2,6 +2,7 @@ package hub
 
 import (
 	"sync/atomic"
+	"time"
 
 	"flux/server/discovery"
 	"flux/server/protocol"
@@ -84,8 +85,22 @@ func (h *Hub) handleJoinSession(c *Client, env *protocol.Envelope) {
 		})
 		return
 	}
+	allowed, wait := h.sessions.CheckJoin(c.IP, code)
+	if !allowed {
+		msg := "too many attempts, slow down"
+		if wait > 0 {
+			msg = "too many attempts, retry in " + wait.Round(100*time.Millisecond).String()
+		}
+		h.sendEnv(c, protocol.Envelope{
+			Type:    protocol.TypeSessionJoined,
+			To:      c.ID,
+			Payload: map[string]any{"error": msg, "peers": []protocol.PeerInfo{}},
+		})
+		return
+	}
 	s, existing, err := h.sessions.Join(c.ID, code)
 	if err != nil {
+		h.sessions.RecordJoinFailure(c.IP, code)
 		h.sendEnv(c, protocol.Envelope{
 			Type:    protocol.TypeSessionJoined,
 			To:      c.ID,
@@ -93,6 +108,7 @@ func (h *Hub) handleJoinSession(c *Client, env *protocol.Envelope) {
 		})
 		return
 	}
+	h.sessions.RecordJoinSuccess(c.IP, code)
 	// Peers already in the session (look up their live presence info).
 	peers := make([]protocol.PeerInfo, 0, len(existing))
 	for _, id := range existing {

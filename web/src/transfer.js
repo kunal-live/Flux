@@ -19,8 +19,14 @@ import { createWriter } from "./writer.js";
 import { ResumeState } from "./resume.js";
 import { detectPlatform, detectBrowser } from "./discovery.js";
 
-let wireSeq = 1;
-const nextWireId = () => (wireSeq = (wireSeq % 0xffffffff) + 1);
+export function nextWireId() {
+  if (typeof crypto !== "undefined" && typeof crypto.getRandomValues === "function") {
+    const buf = new Uint32Array(1);
+    crypto.getRandomValues(buf);
+    return buf[0] || 1;
+  }
+  return Math.floor(Math.random() * 0xfffffffe) + 1;
+}
 
 export class TransferManager extends EventTarget {
   constructor(signaling) {

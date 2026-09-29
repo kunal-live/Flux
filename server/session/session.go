@@ -21,16 +21,33 @@ type Session struct {
 }
 
 type Manager struct {
-	mu     sync.RWMutex
-	byCode map[string]*Session
-	byID   map[string]*Session
+	mu      sync.RWMutex
+	byCode  map[string]*Session
+	byID    map[string]*Session
+	limiter *Limiter
 }
 
 func NewManager() *Manager {
 	return &Manager{
-		byCode: make(map[string]*Session),
-		byID:   make(map[string]*Session),
+		byCode:  make(map[string]*Session),
+		byID:    make(map[string]*Session),
+		limiter: NewLimiter(),
 	}
+}
+
+// CheckJoin checks if an attempt by client IP for PIN code is rate-limited.
+func (m *Manager) CheckJoin(ip, code string) (bool, time.Duration) {
+	return m.limiter.Check(ip, code)
+}
+
+// RecordJoinFailure notes a failed join attempt and triggers exponential backoff.
+func (m *Manager) RecordJoinFailure(ip, code string) time.Duration {
+	return m.limiter.RecordFailure(ip, code)
+}
+
+// RecordJoinSuccess clears failure counters upon successful pairing.
+func (m *Manager) RecordJoinSuccess(ip, code string) {
+	m.limiter.RecordSuccess(ip, code)
 }
 
 // Create makes a new code session with the creator as its first member.
@@ -129,6 +146,7 @@ func (m *Manager) ExpireIdle(ttl time.Duration) [][]string {
 			delete(m.byID, s.ID)
 		}
 	}
+	m.limiter.Sweep(ttl)
 	return dropped
 }
 

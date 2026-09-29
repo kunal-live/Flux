@@ -1,0 +1,32 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="zipBg" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+    <linearGradient id="zipBorder" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#fbbf24"/>
+      <stop offset="100%" stop-color="#b45309"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Rounded folder / archive background -->
+  <rect x="4" y="4" width="56" height="56" rx="12" fill="url(#zipBg)" stroke="url(#zipBorder)" stroke-width="1"/>
+  
+  <!-- Folder tab -->
+  <path d="M12 12H26L31 17H52V52H12V12Z" fill="#b45309" fill-opacity="0.3"/>
+
+  <!-- Zipper Track -->
+  <line x1="32" y1="12" x2="32" y2="44" stroke="#78350f" stroke-width="3"/>
+  <rect x="29" y="16" width="3" height="2" fill="#fef3c7"/>
+  <rect x="32" y="19" width="3" height="2" fill="#fef3c7"/>
+  <rect x="29" y="22" width="3" height="2" fill="#fef3c7"/>
+  <rect x="32" y="25" width="3" height="2" fill="#fef3c7"/>
+  <rect x="29" y="28" width="3" height="2" fill="#fef3c7"/>
+  <rect x="32" y="31" width="3" height="2" fill="#fef3c7"/>
+  
+  <!-- Zipper Pull / Slider -->
+  <rect x="28" y="34" width="8" height="11" rx="2" fill="#fef3c7" stroke="#78350f" stroke-width="1.2"/>
+  <circle cx="32" cy="40" r="1.5" fill="#78350f"/>
+  <path d="M30 45L32 50L34 45" stroke="#78350f" stroke-width="1.5" stroke-linecap="round"/>
+</svg>

@@ -1,0 +1,55 @@
+<svg width="140" height="140" viewBox="0 0 140 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="globeGlow" cx="70" cy="70" r="65" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#34d399" stop-opacity="0.35"/>
+      <stop offset="60%" stop-color="#059669" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#022c22" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="sphereFill" cx="50" cy="50" r="70" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#10b981" stop-opacity="0.25"/>
+      <stop offset="80%" stop-color="#042f2e" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#021f1e" stop-opacity="0.95"/>
+    </radialGradient>
+    <linearGradient id="gridGrad" x1="0" y1="0" x2="140" y2="140" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#6ee7b7" stop-opacity="0.9"/>
+      <stop offset="50%" stop-color="#34d399" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#059669" stop-opacity="0.3"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Ambient Glow -->
+  <circle cx="70" cy="70" r="66" fill="url(#globeGlow)"/>
+  
+  <!-- Sphere Body -->
+  <circle cx="70" cy="70" r="58" fill="url(#sphereFill)" stroke="#34d399" stroke-opacity="0.4" stroke-width="1.2"/>
+
+  <!-- Latitude Ellipses -->
+  <ellipse cx="70" cy="70" rx="58" ry="18" stroke="url(#gridGrad)" stroke-width="1" stroke-dasharray="2 2"/>
+  <ellipse cx="70" cy="70" rx="58" ry="38" stroke="url(#gridGrad)" stroke-width="1"/>
+  <ellipse cx="70" cy="45" rx="52" ry="12" stroke="url(#gridGrad)" stroke-width="0.8" stroke-dasharray="3 3"/>
+  <ellipse cx="70" cy="95" rx="52" ry="12" stroke="url(#gridGrad)" stroke-width="0.8" stroke-dasharray="3 3"/>
+
+  <!-- Longitude Ellipses -->
+  <ellipse cx="70" cy="70" rx="20" ry="58" stroke="url(#gridGrad)" stroke-width="1"/>
+  <ellipse cx="70" cy="70" rx="42" ry="58" stroke="url(#gridGrad)" stroke-width="1" stroke-dasharray="3 2"/>
+
+  <!-- Equator & Prime Meridian Axis lines -->
+  <line x1="12" y1="70" x2="128" y2="70" stroke="#34d399" stroke-opacity="0.8" stroke-width="1.2"/>
+  <line x1="70" y1="12" x2="70" y2="128" stroke="#34d399" stroke-opacity="0.8" stroke-width="1.2"/>
+
+  <!-- Glowing Network Nodes / Cities -->
+  <circle cx="55" cy="52" r="2.5" fill="#a7f3d0"/>
+  <circle cx="55" cy="52" r="5" stroke="#34d399" stroke-opacity="0.6" stroke-width="0.8"/>
+
+  <circle cx="82" cy="44" r="2" fill="#a7f3d0"/>
+  <circle cx="82" cy="44" r="4.5" stroke="#34d399" stroke-opacity="0.5" stroke-width="0.8"/>
+
+  <circle cx="68" cy="85" r="2.2" fill="#a7f3d0"/>
+  <circle cx="95" cy="70" r="2.5" fill="#a7f3d0"/>
+  <circle cx="95" cy="70" r="5" stroke="#34d399" stroke-opacity="0.5" stroke-width="0.8"/>
+  <circle cx="36" cy="72" r="2" fill="#a7f3d0"/>
+
+  <!-- Data arc connector -->
+  <path d="M55 52 Q 70 35, 82 44" stroke="#6ee7b7" stroke-width="1.2" stroke-dasharray="2 1.5"/>
+  <path d="M55 52 Q 62 70, 68 85" stroke="#6ee7b7" stroke-width="1" stroke-dasharray="2 1.5"/>
+</svg>

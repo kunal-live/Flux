@@ -1,0 +1,43 @@
+<svg width="120" height="80" viewBox="0 0 120 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="macBezel" x1="0" y1="0" x2="120" y2="80" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#2d3238"/>
+      <stop offset="100%" stop-color="#181b1e"/>
+    </linearGradient>
+    <linearGradient id="macWall" x1="15" y1="10" x2="105" y2="65" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#6366f1"/>
+      <stop offset="40%" stop-color="#a855f7"/>
+      <stop offset="70%" stop-color="#ec4899"/>
+      <stop offset="100%" stop-color="#3b82f6"/>
+    </linearGradient>
+    <radialGradient id="macGlow" cx="60" cy="38" r="45" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#c084fc" stop-opacity="0.9"/>
+      <stop offset="60%" stop-color="#7c3aed" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#1e1b4b" stop-opacity="0.95"/>
+    </radialGradient>
+    <linearGradient id="macBody" x1="0" y1="68" x2="120" y2="76" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#475569"/>
+      <stop offset="50%" stop-color="#64748b"/>
+      <stop offset="100%" stop-color="#334155"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Screen Bezel -->
+  <rect x="14" y="6" width="92" height="60" rx="4" fill="url(#macBezel)" stroke="#3f4752" stroke-width="0.8"/>
+  <!-- Display Screen with Monterey / Sonoma Purple Wallpaper -->
+  <rect x="17" y="9" width="86" height="54" rx="2" fill="url(#macWall)"/>
+  <rect x="17" y="9" width="86" height="54" rx="2" fill="url(#macGlow)" style="mix-blend-mode: overlay;"/>
+  <!-- Screen Wallpaper Curves -->
+  <path d="M17 48C35 32 50 60 70 36C85 18 103 40 103 40V63H17V48Z" fill="#a855f7" fill-opacity="0.45"/>
+  <path d="M17 54C40 42 65 58 85 45C95 38 103 48 103 48V63H17V54Z" fill="#ec4899" fill-opacity="0.4"/>
+  <!-- Top notch -->
+  <rect x="56" y="9" width="8" height="2" rx="1" fill="#181b1e"/>
+
+  <!-- Laptop Base -->
+  <path d="M6 67C6 66.4 6.4 66 7 66H113C113.6 66 114 66.4 114 67L118 73C118 74.1 117.1 75 116 75H4C2.9 75 2 74.1 2 73L6 67Z" fill="url(#macBody)"/>
+  <!-- Hinge / Notch cut in base -->
+  <rect x="52" y="66" width="16" height="1.8" rx="0.9" fill="#1e293b"/>
+  <!-- Foot pads -->
+  <rect x="16" y="74.5" width="8" height="1" rx="0.5" fill="#0f172a"/>
+  <rect x="96" y="74.5" width="8" height="1" rx="0.5" fill="#0f172a"/>
+</svg>

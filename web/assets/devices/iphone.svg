@@ -1,0 +1,39 @@
+<svg width="60" height="95" viewBox="0 0 60 95" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="iphoneCase" x1="0" y1="0" x2="60" y2="95" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#475569"/>
+      <stop offset="50%" stop-color="#334155"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+    <linearGradient id="iphoneWall" x1="6" y1="6" x2="54" y2="89" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="40%" stop-color="#7c2d12"/>
+      <stop offset="70%" stop-color="#ea580c"/>
+      <stop offset="100%" stop-color="#fb923c"/>
+    </linearGradient>
+    <radialGradient id="iphoneGlow" cx="30" cy="50" r="28" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#f97316"/>
+      <stop offset="50%" stop-color="#c2410c" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#09090b" stop-opacity="0.9"/>
+    </radialGradient>
+  </defs>
+
+  <!-- iPhone Outer Case & Titanium Border -->
+  <rect x="5" y="4" width="50" height="87" rx="11" fill="url(#iphoneCase)" stroke="#64748b" stroke-width="1.2"/>
+  
+  <!-- Screen Area -->
+  <rect x="8" y="7" width="44" height="81" rx="8" fill="#09090b"/>
+  <rect x="8" y="7" width="44" height="81" rx="8" fill="url(#iphoneWall)"/>
+  <rect x="8" y="7" width="44" height="81" rx="8" fill="url(#iphoneGlow)" style="mix-blend-mode: color-dodge; opacity: 0.6;"/>
+  
+  <!-- Fluid organic ribbon wave -->
+  <path d="M12 25C22 20 38 35 30 55C24 70 42 75 48 83V88H8V25H12Z" fill="#ea580c" fill-opacity="0.7"/>
+  <path d="M22 28C32 25 44 40 38 60C34 72 46 76 52 82V88H18V28H22Z" fill="#fb923c" fill-opacity="0.5"/>
+
+  <!-- Dynamic Island Pill -->
+  <rect x="23" y="10" width="14" height="4" rx="2" fill="#000000"/>
+  <circle cx="34" cy="12" r="1" fill="#1e293b"/>
+  
+  <!-- Home Indicator Bar -->
+  <rect x="22" y="84" width="16" height="1.5" rx="0.75" fill="#f8fafc" fill-opacity="0.7"/>
+</svg>

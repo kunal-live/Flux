@@ -1,0 +1,44 @@
+<svg width="120" height="80" viewBox="0 0 120 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="linBezel" x1="0" y1="0" x2="120" y2="80" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#18181b"/>
+      <stop offset="100%" stop-color="#09090b"/>
+    </linearGradient>
+    <linearGradient id="linBody" x1="0" y1="68" x2="120" y2="76" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#27272a"/>
+      <stop offset="50%" stop-color="#3f3f46"/>
+      <stop offset="100%" stop-color="#18181b"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Laptop Display Screen -->
+  <rect x="14" y="6" width="92" height="60" rx="3" fill="url(#linBezel)" stroke="#27272a" stroke-width="0.8"/>
+  <rect x="17" y="9" width="86" height="54" rx="2" fill="#09090b"/>
+
+  <!-- Tux Linux Penguin Logo -->
+  <g transform="translate(60, 36) scale(0.95)">
+    <!-- Body -->
+    <ellipse cx="0" cy="2" rx="14" ry="18" fill="#18181b"/>
+    <!-- White Belly -->
+    <ellipse cx="0" cy="4" rx="9" ry="13" fill="#fafafa"/>
+    <!-- Head -->
+    <ellipse cx="0" cy="-10" rx="9" ry="8" fill="#18181b"/>
+    <!-- Eyes -->
+    <ellipse cx="-3.5" cy="-11" rx="2.2" ry="3.5" fill="#fafafa"/>
+    <ellipse cx="3.5" cy="-11" rx="2.2" ry="3.5" fill="#fafafa"/>
+    <circle cx="-3" cy="-10.5" r="1.2" fill="#09090b"/>
+    <circle cx="3" cy="-10.5" r="1.2" fill="#09090b"/>
+    <!-- Beak -->
+    <polygon points="-5,-7 5,-7 0,-2" fill="#f59e0b"/>
+    <!-- Flippers -->
+    <path d="M-13 -3C-17 3 -16 11 -12 14C-10 14 -11 9 -9 3Z" fill="#18181b"/>
+    <path d="M13 -3C17 3 16 11 12 14C10 14 11 9 9 3Z" fill="#18181b"/>
+    <!-- Feet -->
+    <ellipse cx="-6" cy="18" rx="6" ry="2.5" fill="#f59e0b"/>
+    <ellipse cx="6" cy="18" rx="6" ry="2.5" fill="#f59e0b"/>
+  </g>
+
+  <!-- Laptop Base -->
+  <path d="M6 67C6 66.4 6.4 66 7 66H113C113.6 66 114 66.4 114 67L118 73C118 74.1 117.1 75 116 75H4C2.9 75 2 74.1 2 73L6 67Z" fill="url(#linBody)"/>
+  <rect x="52" y="66" width="16" height="1.8" rx="0.9" fill="#09090b"/>
+</svg>

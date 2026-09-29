@@ -1,0 +1,40 @@
+<svg width="120" height="80" viewBox="0 0 120 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="winBezel" x1="0" y1="0" x2="120" y2="80" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="winBg" x1="17" y1="9" x2="103" y2="63" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0284c7"/>
+      <stop offset="35%" stop-color="#0369a1"/>
+      <stop offset="70%" stop-color="#075985"/>
+      <stop offset="100%" stop-color="#082f49"/>
+    </linearGradient>
+    <radialGradient id="bloomGlow" cx="60" cy="36" r="32" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#0284c7" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#0369a1" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="winBody" x1="0" y1="68" x2="120" y2="76" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#334155"/>
+      <stop offset="50%" stop-color="#475569"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Laptop Display Screen -->
+  <rect x="14" y="6" width="92" height="60" rx="3" fill="url(#winBezel)" stroke="#334155" stroke-width="0.8"/>
+  <rect x="17" y="9" width="86" height="54" rx="2" fill="url(#winBg)"/>
+  
+  <!-- Windows 11 Blue Bloom Flower -->
+  <circle cx="60" cy="36" r="26" fill="url(#bloomGlow)"/>
+  <path d="M60 20C55 26 47 31 46 39C45 46 51 52 58 50C54 44 55 35 60 20Z" fill="#7dd3fc" fill-opacity="0.9"/>
+  <path d="M60 20C65 26 73 31 74 39C75 46 69 52 62 50C66 44 65 35 60 20Z" fill="#38bdf8" fill-opacity="0.9"/>
+  <path d="M44 35C49 37 56 36 60 41C52 44 46 45 40 42C37 39 40 35 44 35Z" fill="#bae6fd" fill-opacity="0.8"/>
+  <path d="M76 35C71 37 64 36 60 41C68 44 74 45 80 42C83 39 80 35 76 35Z" fill="#93c5fd" fill-opacity="0.8"/>
+  <circle cx="60" cy="37" r="4" fill="#f0f9ff" fill-opacity="0.9"/>
+
+  <!-- Laptop Base -->
+  <path d="M6 67C6 66.4 6.4 66 7 66H113C113.6 66 114 66.4 114 67L118 73C118 74.1 117.1 75 116 75H4C2.9 75 2 74.1 2 73L6 67Z" fill="url(#winBody)"/>
+  <rect x="52" y="66" width="16" height="1.8" rx="0.9" fill="#0f172a"/>
+</svg>

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Flux">
+  <rect width="100" height="100" rx="24" fill="#34d399"/>
+  <g fill="#080d11">
+    <rect x="22" y="32" width="10" height="36" rx="5"/>
+    <rect x="38" y="20" width="10" height="60" rx="5"/>
+    <rect x="54" y="20" width="10" height="60" rx="5"/>
+    <rect x="70" y="32" width="10" height="36" rx="5"/>
+  </g>
+</svg>

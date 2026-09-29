@@ -1,0 +1,30 @@
+# Binaries and compiled files
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+flux
+flux-server
+
+# TLS certificates and private keys
+*.pem
+*.key
+*.crt
+
+# Logs
+*.log
+server_err.log
+server_run.log
+cloudflared.log
+
+# Scratch, benchmark profiles, and runtime files
+tunnel.txt
+scratch/
+Claude outputs/
+
+# OS and Editor metadata
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

@@ -1,0 +1,39 @@
+<svg width="60" height="95" viewBox="0 0 60 95" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="androidCase" x1="0" y1="0" x2="60" y2="95" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="50%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#090d11"/>
+    </linearGradient>
+    <linearGradient id="androidWall" x1="7" y1="7" x2="53" y2="88" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#064e3b"/>
+      <stop offset="35%" stop-color="#059669"/>
+      <stop offset="70%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#34d399"/>
+    </linearGradient>
+    <radialGradient id="androidGlow" cx="30" cy="50" r="28" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#6ee7b7"/>
+      <stop offset="50%" stop-color="#059669" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#022c22" stop-opacity="0.95"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Phone Case -->
+  <rect x="5" y="4" width="50" height="87" rx="10" fill="url(#androidCase)" stroke="#334155" stroke-width="1.2"/>
+  
+  <!-- Screen Area -->
+  <rect x="8" y="7" width="44" height="81" rx="7" fill="#022c22"/>
+  <rect x="8" y="7" width="44" height="81" rx="7" fill="url(#androidWall)"/>
+  <rect x="8" y="7" width="44" height="81" rx="7" fill="url(#androidGlow)" style="mix-blend-mode: color-dodge; opacity: 0.55;"/>
+  
+  <!-- Emerald fluid silk pattern -->
+  <path d="M8 35C20 20 40 45 32 68C26 80 44 82 52 87V88H8V35Z" fill="#34d399" fill-opacity="0.6"/>
+  <path d="M14 42C25 30 45 52 38 72C34 82 48 84 52 87V88H14V42Z" fill="#a7f3d0" fill-opacity="0.4"/>
+
+  <!-- Center Punch-hole Camera -->
+  <circle cx="30" cy="11.5" r="2" fill="#000000"/>
+  <circle cx="30.5" cy="11" r="0.6" fill="#475569"/>
+  
+  <!-- Android Gesture Line -->
+  <rect x="23" y="85" width="14" height="1.4" rx="0.7" fill="#f8fafc" fill-opacity="0.7"/>
+</svg>

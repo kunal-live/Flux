@@ -79,6 +79,16 @@
         <span class="nav-badge" id="transfers-count-badge">2</span>
       </button>
 
+      <button class="nav-item" data-view="history" id="nav-history">
+        <span class="nav-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="12 6 12 12 16 14"/>
+          </svg>
+        </span>
+        <span class="nav-label">History</span>
+      </button>
+
       <button class="nav-item" data-view="devices" id="nav-devices">
         <span class="nav-icon">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -541,19 +551,254 @@
         </div>
       </section>
 
-      <!-- ==================== VIEW 4: DEVICES ==================== -->
+      <!-- ==================== VIEW 4: TRANSFER HISTORY (Canva Image 6 Column 1) ==================== -->
+      <section class="stage-view" id="view-history" hidden>
+        <div class="history-view-layout">
+          <div class="history-panel-head">
+            <h1 class="view-main-title">Transfer History</h1>
+            <div class="history-filter-pills">
+              <button class="h-pill active" data-filter="all">All</button>
+              <button class="h-pill" data-filter="sent">Sent</button>
+              <button class="h-pill" data-filter="received">Received</button>
+            </div>
+          </div>
+
+          <div class="history-search-row">
+            <div class="history-search-box">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"/>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+              <input type="text" id="history-search-input" placeholder="Search history..." autocomplete="off" spellcheck="false" />
+            </div>
+            <button class="btn-icon-subtle history-filter-btn" title="Filter options">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="4" y1="21" x2="4" y2="14"/>
+                <line x1="4" y1="10" x2="4" y2="3"/>
+                <line x1="12" y1="21" x2="12" y2="12"/>
+                <line x1="12" y1="8" x2="12" y2="3"/>
+                <line x1="20" y1="21" x2="20" y2="16"/>
+                <line x1="20" y1="12" x2="20" y2="3"/>
+                <line x1="1" y1="14" x2="7" y2="14"/>
+                <line x1="9" y1="8" x2="15" y2="8"/>
+                <line x1="17" y1="16" x2="23" y2="16"/>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Chronological Timeline Scroll -->
+          <div class="history-timeline-scroll" id="history-timeline-container">
+            <!-- Rendered dynamically in JS -->
+          </div>
+
+          <div class="history-bottom-bar">
+            <button class="btn-dark-pill btn-clear-history" id="btn-clear-all-history">Clear history</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== VIEW 5: PAIRED DEVICES (Canva Image 6 Column 2) ==================== -->
       <section class="stage-view" id="view-devices" hidden>
-        <div class="devices-view-layout">
+        <div class="paired-devices-view-layout">
           <div class="view-header-flex">
             <div>
-              <h1 class="view-main-title">Devices</h1>
-              <p class="card-sub">All nearby and paired nodes on this network</p>
+              <h1 class="view-main-title">Paired Devices</h1>
+              <p class="card-sub">Trusted local peers and network nodes</p>
             </div>
             <button class="btn-gold-outline" id="btn-pair-from-devices">+ Pair New Device</button>
           </div>
 
-          <div class="devices-full-grid" id="devices-full-grid">
-            <!-- Rendered via JS -->
+          <div class="paired-devices-col-list" id="paired-devices-col-list">
+            <!-- Device 1: Maya's MacBook Pro -->
+            <div class="paired-dev-card">
+              <div class="dev-screen-thumb">
+                <div class="fractal-screen fractal-gold"></div>
+              </div>
+              <div class="dev-info-col">
+                <b class="dev-title">Maya's MacBook Pro</b>
+                <span class="dev-ip-sub">LAN connection • 192.168.1.12</span>
+                <span class="dev-trusted-tag">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#F5BE38" stroke-width="2.5">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                  </svg>
+                  <span>Trusted</span>
+                </span>
+              </div>
+              <div class="dev-actions-col">
+                <button class="btn-dark-pill btn-manage-dev" data-id="dev-macbook">Manage</button>
+                <button class="btn-more-dots">⋯</button>
+              </div>
+            </div>
+
+            <!-- Device 2: Studio iMac -->
+            <div class="paired-dev-card">
+              <div class="dev-screen-thumb">
+                <div class="fractal-screen fractal-imac"></div>
+              </div>
+              <div class="dev-info-col">
+                <b class="dev-title">Studio iMac</b>
+                <span class="dev-ip-sub">LAN connection • 192.168.1.27</span>
+                <span class="dev-trusted-tag">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#F5BE38" stroke-width="2.5">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                  </svg>
+                  <span>Trusted</span>
+                </span>
+              </div>
+              <div class="dev-actions-col">
+                <button class="btn-dark-pill btn-manage-dev" data-id="dev-imac">Manage</button>
+                <button class="btn-more-dots">⋯</button>
+              </div>
+            </div>
+
+            <!-- Device 3: Pixel 9 -->
+            <div class="paired-dev-card">
+              <div class="dev-screen-thumb phone-thumb">
+                <div class="fractal-screen fractal-phone"></div>
+              </div>
+              <div class="dev-info-col">
+                <b class="dev-title">Pixel 9</b>
+                <span class="dev-ip-sub">LAN connection • 192.168.1.45</span>
+                <span class="dev-trusted-tag">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#F5BE38" stroke-width="2.5">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                  </svg>
+                  <span>Trusted</span>
+                </span>
+              </div>
+              <div class="dev-actions-col">
+                <button class="btn-dark-pill btn-manage-dev" data-id="dev-pixel">Manage</button>
+                <button class="btn-more-dots">⋯</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom Scanner Card -->
+          <div class="scanner-card-box">
+            <div class="scanner-radar-dish">
+              <div class="dish-ring ring-a"></div>
+              <div class="dish-ring ring-b"></div>
+              <div class="dish-sweep"></div>
+              <div class="dish-core-dot"></div>
+            </div>
+            <p class="scanner-status-text">Searching for nearby devices...</p>
+            <button class="btn-gold-solid btn-sm" id="btn-scanner-pair">Pair new device</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== VIEW 6: FULL SETTINGS (Canva Image 6 Column 3) ==================== -->
+      <section class="stage-view" id="view-settings" hidden>
+        <div class="settings-full-view-layout">
+          <h1 class="view-main-title">Settings</h1>
+
+          <!-- Section 1: General -->
+          <div class="settings-box-section">
+            <h3 class="settings-sec-title">General</h3>
+            <div class="settings-switch-row">
+              <div class="sw-label">Launch Flux at startup</div>
+              <label class="flux-switch"><input type="checkbox" checked /><span class="slider round"></span></label>
+            </div>
+            <div class="settings-switch-row">
+              <div class="sw-label">Auto-accept trusted devices</div>
+              <label class="flux-switch"><input type="checkbox" checked /><span class="slider round"></span></label>
+            </div>
+            <div class="settings-switch-row">
+              <div class="sw-label">Keep transfer history</div>
+              <select class="settings-mini-select">
+                <option selected>30 days</option>
+                <option>60 days</option>
+                <option>Forever</option>
+              </select>
+            </div>
+            <div class="settings-switch-row">
+              <div class="sw-label">Minimize to menu bar</div>
+              <label class="flux-switch"><input type="checkbox" /><span class="slider round"></span></label>
+            </div>
+            <div class="settings-switch-row">
+              <div class="sw-label">Dark mode</div>
+              <label class="flux-switch"><input type="checkbox" checked /><span class="slider round"></span></label>
+            </div>
+          </div>
+
+          <!-- Section 2: Transfers -->
+          <div class="settings-box-section">
+            <h3 class="settings-sec-title">Transfers</h3>
+            <div class="settings-switch-row">
+              <div class="sw-label">Use local network only</div>
+              <label class="flux-switch"><input type="checkbox" checked /><span class="slider round"></span></label>
+            </div>
+            <div class="settings-switch-row">
+              <div class="sw-label">Limit transfer speed</div>
+              <label class="flux-switch"><input type="checkbox" /><span class="slider round"></span></label>
+            </div>
+            <div class="settings-switch-row">
+              <div class="sw-label">Simultaneous transfers</div>
+              <select class="settings-mini-select">
+                <option selected>3</option>
+                <option>5</option>
+                <option>Unlimited</option>
+              </select>
+            </div>
+            <div class="settings-switch-row">
+              <div class="sw-label">Verify files after transfer</div>
+              <label class="flux-switch"><input type="checkbox" checked /><span class="slider round"></span></label>
+            </div>
+            <div class="settings-switch-row">
+              <div class="sw-label">Show transfer notifications</div>
+              <label class="flux-switch"><input type="checkbox" checked /><span class="slider round"></span></label>
+            </div>
+          </div>
+
+          <!-- Section 3: Notifications -->
+          <div class="settings-box-section">
+            <h3 class="settings-sec-title">Notifications</h3>
+            <div class="settings-switch-row">
+              <div class="sw-label">Transfer complete</div>
+              <label class="flux-switch"><input type="checkbox" checked /><span class="slider round"></span></label>
+            </div>
+            <div class="settings-switch-row">
+              <div class="sw-label">Transfer failed</div>
+              <label class="flux-switch"><input type="checkbox" checked /><span class="slider round"></span></label>
+            </div>
+            <div class="settings-switch-row">
+              <div class="sw-label">New device discovered</div>
+              <label class="flux-switch"><input type="checkbox" checked /><span class="slider round"></span></label>
+            </div>
+            <div class="settings-switch-row">
+              <div class="sw-label">Sound alerts</div>
+              <label class="flux-switch"><input type="checkbox" /><span class="slider round"></span></label>
+            </div>
+          </div>
+
+          <!-- Section 4: Privacy -->
+          <div class="settings-box-section">
+            <h3 class="settings-sec-title">Privacy</h3>
+            <div class="settings-switch-row">
+              <div class="sw-label">Share my device name</div>
+              <label class="flux-switch"><input type="checkbox" checked /><span class="slider round"></span></label>
+            </div>
+            <div class="settings-switch-row">
+              <div class="sw-label">Share my library</div>
+              <label class="flux-switch"><input type="checkbox" /><span class="slider round"></span></label>
+            </div>
+            <div class="settings-switch-row">
+              <div class="sw-label">Allow incoming requests</div>
+              <select class="settings-mini-select">
+                <option selected>Trusted only</option>
+                <option>Everyone</option>
+                <option>Block all</option>
+              </select>
+            </div>
+            <div class="settings-switch-row">
+              <div class="sw-label">Clear trusted devices...</div>
+              <button class="btn-dark-pill btn-xs" id="btn-clear-trusted">Clear</button>
+            </div>
+          </div>
+
+          <div class="settings-view-footer">
+            <span>Flux v1.2.0</span>
+            <span>© 2025 Flux Labs</span>
           </div>
         </div>
       </section>

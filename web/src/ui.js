@@ -72,6 +72,32 @@ export const RECENT_TRANSFERS = [
   },
 ];
 
+export const TIMELINE_HISTORY = [
+  {
+    group: "Today",
+    items: [
+      { id: "th-1", name: "Drone_4K_001.mp4", sub: "Studio iMac", size: "2.48 GB", time: "10:42 AM", icon: "🎬", role: "sent" },
+      { id: "th-2", name: "Project_FLux_Assets", sub: "to Maya's MacBook Pro", size: "1.12 GB", time: "9:17 AM", icon: "📁", role: "sent" },
+      { id: "th-3", name: "site_report.pdf", sub: "to Pixel 9", size: "3.2 MB", time: "8:03 AM", icon: "📄", role: "sent" },
+    ]
+  },
+  {
+    group: "Yesterday",
+    items: [
+      { id: "th-4", name: "IMG_7721.jpg", sub: "from Pixel 9", size: "5.6 MB", time: "9:48 PM", icon: "🖼", role: "received" },
+      { id: "th-5", name: "Design_Reference", sub: "from Studio iMac", size: "712 MB", time: "6:21 PM", icon: "📁", role: "received" },
+    ]
+  },
+  {
+    group: "May 19",
+    items: [
+      { id: "th-6", name: "Timelapse_Final.mov", sub: "to Studio iMac", size: "1.94 GB", time: "11:15 PM", icon: "🎬", role: "sent" },
+      { id: "th-7", name: "Ambient_Mix_v2.wav", sub: "from Maya's MacBook Pro", size: "83.7 MB", time: "4:07 PM", icon: "🎵", role: "received" },
+      { id: "th-8", name: "Archive_2025_05_09.zip", sub: "to Pixel 9", size: "420 MB", time: "10:32 AM", icon: "🗜", role: "sent" },
+    ]
+  },
+];
+
 export const DEFAULT_QUEUE_FILES = [
   { name: "Brand_assets.zip", size: 842 * 1024 * 1024, type: "ZIP archive", icon: "🗜" },
   { name: "Product_demo.mov", size: 1.4 * 1024 * 1024 * 1024, type: "QuickTime movie", icon: "🎬" },
@@ -299,6 +325,44 @@ export const UI = {
       this.toast("Check Wi-Fi connection or click 'Pair with Code' to connect manually.");
     });
 
+    // History Filter Pills & Search
+    document.querySelectorAll(".h-pill").forEach((pill) => {
+      pill.addEventListener("click", () => {
+        document.querySelectorAll(".h-pill").forEach((p) => p.classList.remove("active"));
+        pill.classList.add("active");
+        const filter = pill.dataset.filter || "all";
+        const query = $("history-search-input") ? $("history-search-input").value : "";
+        this.renderHistoryTimeline(filter, query);
+      });
+    });
+
+    $("history-search-input")?.addEventListener("input", (e) => {
+      const activePill = document.querySelector(".h-pill.active");
+      const filter = activePill ? activePill.dataset.filter : "all";
+      this.renderHistoryTimeline(filter, e.target.value);
+    });
+
+    $("btn-clear-all-history")?.addEventListener("click", () => {
+      const container = $("history-timeline-container");
+      if (container) container.innerHTML = `<div style="text-align:center; padding: 40px; color: var(--text-dim);">Transfer history cleared</div>`;
+      this.toast("Transfer history cleared");
+    });
+
+    // Scanner pair button
+    $("btn-scanner-pair")?.addEventListener("click", () => this.openPair());
+
+    // Manage device buttons
+    document.querySelectorAll(".btn-manage-dev").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        this.toast(`Managing device pairing profile`);
+      });
+    });
+
+    // Clear trusted devices
+    $("btn-clear-trusted")?.addEventListener("click", () => {
+      this.toast("Cleared trusted devices list");
+    });
+
     // Escape listener
     window.addEventListener("keydown", (e) => {
       if (e.key === "Escape") {
@@ -312,10 +376,11 @@ export const UI = {
     this.renderNearbyDevices(DEFAULT_DEVICES);
     this.renderRecentTransfers(RECENT_TRANSFERS);
     this.renderQueue();
+    this.renderHistoryTimeline();
     this.updateHeroRing(68);
     this._renderHeroBreakdown();
 
-    // URL view override for instant viewing / testing (?view=transfers, ?view=send, ?view=pair, ?view=incoming)
+    // URL view override for instant viewing / testing (?view=transfers, ?view=send, ?view=pair, ?view=incoming, ?view=history, ?view=settings)
     const viewParam = new URLSearchParams(location.search).get("view");
     if (viewParam) {
       if (viewParam === "pair") {
@@ -334,7 +399,7 @@ export const UI = {
       btn.classList.toggle("active", btn.dataset.view === viewName);
     });
 
-    const views = ["dashboard", "send", "transfers", "devices"];
+    const views = ["dashboard", "send", "transfers", "history", "devices", "settings"];
     views.forEach((v) => {
       const el = $("view-" + v);
       if (el) {
@@ -343,8 +408,54 @@ export const UI = {
       }
     });
 
-    if (viewName === "devices") {
-      this.renderFullDevicesGrid();
+    if (viewName === "history") {
+      this.renderHistoryTimeline();
+    }
+  },
+
+  renderHistoryTimeline(filter = "all", query = "") {
+    const container = $("history-timeline-container");
+    if (!container) return;
+    container.innerHTML = "";
+    const q = (query || "").trim().toLowerCase();
+
+    TIMELINE_HISTORY.forEach((grp) => {
+      const filteredItems = grp.items.filter((item) => {
+        const matchesFilter = filter === "all" || item.role === filter;
+        const matchesQuery = !q || item.name.toLowerCase().includes(q) || item.sub.toLowerCase().includes(q);
+        return matchesFilter && matchesQuery;
+      });
+
+      if (filteredItems.length === 0) return;
+
+      const dateHeader = document.createElement("div");
+      dateHeader.className = "history-date-header";
+      dateHeader.textContent = grp.group;
+      container.appendChild(dateHeader);
+
+      filteredItems.forEach((item) => {
+        const row = document.createElement("div");
+        row.className = "history-item-card";
+        row.innerHTML = `
+          <div class="hist-thumb-wrap">
+            <span>${item.icon || '📄'}</span>
+          </div>
+          <div class="hist-meta">
+            <span class="hist-title">${item.name}</span>
+            <span class="hist-sub">${item.sub}</span>
+          </div>
+          <div class="hist-stat-col">
+            <span class="hist-size">${item.size}</span>
+            <span class="hist-time">${item.time}</span>
+          </div>
+          <div class="hist-check-icon">✓</div>
+        `;
+        container.appendChild(row);
+      });
+    });
+
+    if (container.children.length === 0) {
+      container.innerHTML = `<div style="text-align:center; padding: 40px; color: var(--text-dim);">No transfers match search criteria</div>`;
     }
   },
 

@@ -310,43 +310,46 @@
             <p class="radar-action-hint">👆 Click any device on the radar to send the staged files immediately.</p>
           </div>
 
-          <!-- Nearby Devices Grid -->
-          <div class="dash-card dash-devices-card" id="send-nearby-devices-card">
-            <div class="card-head space-between">
-              <div>
-                <h2 class="card-title">Nearby devices</h2>
-                <p class="card-sub">Available peers on your local Wi-Fi / network</p>
+          <!-- Nearby Devices and Troubleshoot 2-Column Grid -->
+          <div class="dash-two-col-grid">
+            <!-- Nearby Devices Grid -->
+            <div class="dash-card dash-devices-card" id="send-nearby-devices-card">
+              <div class="card-head space-between">
+                <div>
+                  <h2 class="card-title">Nearby devices</h2>
+                  <p class="card-sub">Available peers on your local Wi-Fi / network</p>
+                </div>
+                <button class="btn-text-gold" id="btn-dash-refresh">
+                  <span>Refresh</span>
+                  <span class="refresh-symbol">↻</span>
+                </button>
               </div>
-              <button class="btn-text-gold" id="btn-dash-refresh">
-                <span>Refresh</span>
-                <span class="refresh-symbol">↻</span>
-              </button>
+
+              <div class="devices-row-grid" id="nearby-devices-grid">
+                <!-- Rendered via JavaScript: Device cards with cartoon avatars & direct send buttons -->
+              </div>
             </div>
 
-            <div class="devices-row-grid" id="nearby-devices-grid">
-              <!-- Rendered via JavaScript: Device cards with cartoon avatars & direct send buttons -->
-            </div>
-          </div>
-
-          <!-- Network Troubleshoot / Help Box -->
-          <div class="dash-card dash-assistant-card" id="dash-assistant-card">
-            <div class="assistant-content">
-              <div class="no-wifi-icon">
-                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                  <line x1="1" y1="1" x2="23" y2="23"/>
-                  <path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"/>
-                  <path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"/>
-                  <path d="M10.71 5.05A16 16 0 0 1 22.58 9"/>
-                  <path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"/>
-                  <path d="M8.53 16.11a6 6 0 0 1 6.95 0"/>
-                  <line x1="12" y1="20" x2="12.01" y2="20"/>
-                </svg>
-              </div>
-              <h3 class="assistant-title">Don't see your device?</h3>
-              <p class="assistant-sub">Ensure both devices are on the same Wi-Fi with Flux open, or pair instantly with code.</p>
-              <div class="assistant-actions">
-                <button class="btn-dark-pill" id="btn-troubleshoot">Troubleshoot</button>
-                <button class="btn-gold-outline" id="btn-quick-pair">Pair with Code</button>
+            <!-- Network Troubleshoot / Help Box -->
+            <div class="dash-card dash-assistant-card" id="dash-assistant-card">
+              <div class="assistant-content">
+                <div class="no-wifi-icon">
+                  <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="1" y1="1" x2="23" y2="23"/>
+                    <path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"/>
+                    <path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"/>
+                    <path d="M10.71 5.05A16 16 0 0 1 22.58 9"/>
+                    <path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"/>
+                    <path d="M8.53 16.11a6 6 0 0 1 6.95 0"/>
+                    <line x1="12" y1="20" x2="12.01" y2="20"/>
+                  </svg>
+                </div>
+                <h3 class="assistant-title">Don't see your device?</h3>
+                <p class="assistant-sub">Ensure both devices are on the same Wi-Fi with Flux open, or pair instantly with code.</p>
+                <div class="assistant-actions">
+                  <button class="btn-dark-pill" id="btn-troubleshoot">Troubleshoot</button>
+                  <button class="btn-gold-outline" id="btn-quick-pair">Pair with Code</button>
+                </div>
               </div>
             </div>
           </div>
@@ -463,8 +466,6 @@
               </table>
             </div>
           </div>
-
-        </div>
       </section>
 
       <!-- ==================== VIEW 2: TRANSFERS (HERO VIEW) ==================== -->
@@ -926,35 +927,41 @@
 
     <!-- ==================== PERSISTENT FOOTER STATUS BAR ==================== -->
     <footer class="flux-footer-bar">
-      <div class="footer-item">
-        <span class="footer-gold-text">↓ <span id="footer-dl-speed">2.1 MB/s</span></span>
+      <div class="footer-left">
+        <span class="footer-status-dot"></span>
+        <span class="footer-system-text">Mesh Active</span>
       </div>
-      <div class="footer-item">
-        <span class="footer-dim-text">↑ <span id="footer-ul-speed">0 B/s</span></span>
-      </div>
-      <div class="footer-item">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2">
-          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-        </svg>
-        <span id="footer-mode-label">Secure P2P</span>
-      </div>
-      <div class="footer-item">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-          <circle cx="9" cy="7" r="4"/>
-          <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-          <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-        </svg>
-        <span id="footer-peers-count">3 peers</span>
-      </div>
-      <div class="footer-item">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <rect x="2" y="2" width="20" height="8" rx="2" ry="2"/>
-          <rect x="2" y="14" width="20" height="8" rx="2" ry="2"/>
-          <line x1="6" y1="6" x2="6.01" y2="6"/>
-          <line x1="6" y1="18" x2="6.01" y2="18"/>
-        </svg>
-        <span>412 GB free</span>
+      <div class="footer-right">
+        <div class="footer-item">
+          <span class="footer-gold-text">↓ <span id="footer-dl-speed">2.1 MB/s</span></span>
+        </div>
+        <div class="footer-item">
+          <span class="footer-dim-text">↑ <span id="footer-ul-speed">0 B/s</span></span>
+        </div>
+        <div class="footer-item">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+          <span id="footer-mode-label">Secure P2P</span>
+        </div>
+        <div class="footer-item">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+          <span id="footer-peers-count">3 peers</span>
+        </div>
+        <div class="footer-item">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="2" y="2" width="20" height="8" rx="2" ry="2"/>
+            <rect x="2" y="14" width="20" height="8" rx="2" ry="2"/>
+            <line x1="6" y1="6" x2="6.01" y2="6"/>
+            <line x1="6" y1="18" x2="6.01" y2="18"/>
+          </svg>
+          <span>412 GB free</span>
+        </div>
       </div>
     </footer>
 

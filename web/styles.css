@@ -410,6 +410,9 @@ html, body {
   color: var(--gold-primary);
   font-weight: 500;
 }
+.offline-pill[hidden] {
+  display: none !important;
+}
 .btn-topbar-pair {
   display: flex;
   align-items: center;
@@ -468,6 +471,9 @@ html, body {
 .stage-view {
   display: none;
   animation: fadeIn 0.2s ease-out;
+  max-width: 1300px;
+  margin: 0 auto;
+  width: 100%;
 }
 .stage-view.active {
   display: block;
@@ -475,6 +481,66 @@ html, body {
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(4px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==================== PERSISTENT FOOTER STATUS BAR ==================== */
+.flux-footer-bar {
+  height: 38px;
+  min-height: 38px;
+  background-color: #0b0c10;
+  border-top: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  font-size: 12px;
+  color: var(--text-muted);
+  user-select: none;
+  z-index: 10;
+  flex-shrink: 0;
+}
+.footer-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--text-dim);
+}
+.footer-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: #22c55e;
+  box-shadow: 0 0 8px rgba(34, 197, 94, 0.6);
+}
+.footer-system-text {
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  color: var(--text-muted);
+}
+.footer-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.footer-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+}
+.footer-gold-text {
+  color: var(--gold-primary);
+  font-weight: 700;
+  font-feature-settings: "tnum";
+}
+.footer-dim-text {
+  color: var(--text-dim);
+  font-feature-settings: "tnum";
+}
+#footer-mode-label {
+  color: #22c55e;
+  font-weight: 600;
 }
 
 /* ==================== CARDS & LAYOUT ==================== */
@@ -1812,6 +1878,7 @@ input:checked + .slider:before {
   justify-content: space-between;
   padding: 10px 4px;
   font-size: 12px;
+}
 .modal-backdrop {
   position: fixed;
   top: 0; left: 0;
@@ -2497,6 +2564,11 @@ kbd {
   cursor: pointer;
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   text-align: left;
+  font-family: inherit;
+  color: inherit;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
 }
 .mode-tab-btn:hover {
   border-color: var(--gold-border);
@@ -2532,6 +2604,7 @@ kbd {
   gap: 3px;
 }
 .mode-tab-title {
+  font-family: var(--font-heading);
   font-size: 16px;
   font-weight: 700;
   color: var(--text-white);
@@ -2556,6 +2629,11 @@ kbd {
   padding: 4px 12px 4px 6px;
   cursor: pointer;
   transition: all 0.2s ease;
+  font-family: inherit;
+  color: inherit;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
 }
 .btn-profile-pill:hover {
   background: rgba(245, 190, 56, 0.16);
@@ -2597,10 +2675,22 @@ kbd {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  width: 100%;
   animation: sectionFade 0.25s ease-out;
 }
 .dash-mode-section[hidden] {
   display: none !important;
+}
+.dash-two-col-grid {
+  display: grid;
+  grid-template-columns: 1.25fr 0.75fr;
+  gap: 16px;
+  align-items: stretch;
+}
+.dash-two-col-grid .dash-devices-card,
+.dash-two-col-grid .dash-assistant-card {
+  grid-column: auto !important;
+  height: 100%;
 }
 @keyframes sectionFade {
   from { opacity: 0; transform: translateY(6px); }

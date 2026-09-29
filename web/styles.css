@@ -82,33 +82,14 @@ html, body {
   z-index: 20;
 }
 
-/* macOS Traffic Lights */
-.window-controls {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 22px;
-  padding-left: 4px;
-}
-.win-btn {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  display: inline-block;
-  cursor: pointer;
-  transition: opacity 0.15s ease;
-}
-.win-btn:hover { opacity: 0.8; }
-.win-close { background-color: #ff5f56; }
-.win-min { background-color: #ffbd2e; }
-.win-max { background-color: #27c93f; }
-
 /* Sidebar Brand */
 .sidebar-brand {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 26px;
-  padding-left: 4px;
+  margin-top: 2px;
+  margin-bottom: 24px;
+  padding: 4px 6px;
 }
 .brand-logo-icon {
   width: 36px;

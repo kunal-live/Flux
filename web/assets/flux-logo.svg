@@ -1,19 +1,22 @@
 <svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient id="fluxGrad" x1="6" y1="6" x2="38" y2="38" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#34d399"/>
-      <stop offset="45%" stop-color="#a7f3d0"/>
-      <stop offset="70%" stop-color="#fdba74"/>
-      <stop offset="100%" stop-color="#fb923c"/>
+    <linearGradient id="fluxGoldGrad" x1="4" y1="4" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFE885"/>
+      <stop offset="45%" stop-color="#F5BE38"/>
+      <stop offset="100%" stop-color="#D99818"/>
     </linearGradient>
-    <radialGradient id="fluxGlow" cx="22" cy="22" r="18" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#34d399" stop-opacity="0.6"/>
-      <stop offset="100%" stop-color="#34d399" stop-opacity="0"/>
-    </radialGradient>
+    <filter id="fluxGoldGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="2.5" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
   </defs>
-  <circle cx="22" cy="22" r="20" fill="url(#fluxGlow)"/>
-  <!-- Oblique stylized infinity / torus loop -->
-  <path d="M28 8C20 8 13 14 11 22C9 30 14 36 21 36C28 36 34 30 36 22C38 14 34 8 28 8ZM21 31C16 31 13 27 15 21C17 15 22 12 26 12C31 12 33 17 32 23C30 28 26 31 21 31Z" fill="url(#fluxGrad)"/>
-  <!-- Central inner core swirl -->
-  <circle cx="23.5" cy="21.5" r="4.5" fill="#0f172a" fill-opacity="0.9"/>
+  <!-- Outer glowing hexagon -->
+  <polygon points="22,3 39,12.5 39,31.5 22,41 5,31.5 5,12.5" stroke="url(#fluxGoldGrad)" stroke-width="3" stroke-linejoin="round" fill="rgba(245, 190, 56, 0.05)" filter="url(#fluxGoldGlow)"/>
+  <!-- Inner Isometric Cube geometry -->
+  <!-- Top Face -->
+  <polygon points="22,11 31,16.5 22,22 13,16.5" fill="rgba(255, 232, 133, 0.25)" stroke="url(#fluxGoldGrad)" stroke-width="1.8" stroke-linejoin="round"/>
+  <!-- Left Face -->
+  <polygon points="13,16.5 22,22 22,33 13,27.5" fill="rgba(217, 152, 24, 0.15)" stroke="url(#fluxGoldGrad)" stroke-width="1.8" stroke-linejoin="round"/>
+  <!-- Right Face -->
+  <polygon points="22,22 31,16.5 31,27.5 22,33" fill="rgba(245, 190, 56, 0.3)" stroke="url(#fluxGoldGrad)" stroke-width="1.8" stroke-linejoin="round"/>
 </svg>

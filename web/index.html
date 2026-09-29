@@ -4,628 +4,791 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Flux — Share Beyond Boundaries</title>
-  <meta name="description" content="Blazing fast, zero-install, device-to-device local file sharing — transfer unlimited files directly with zero cloud storage." />
+  <meta name="description" content="Blazing fast, zero-install, device-to-device local file sharing. Transfer unlimited files directly between phones, laptops, and desktops over your local network." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css" />
   <link rel="manifest" href="/manifest.webmanifest" />
-  <meta name="theme-color" content="#34d399" />
+  <meta name="theme-color" content="#0d0e12" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <link rel="apple-touch-icon" href="/icon.svg" />
   <link rel="icon" type="image/svg+xml" href="/assets/flux-logo.svg" />
 </head>
-<body>
-<div class="app-wallpaper"></div>
-<div class="app-ambient-aurora">
-  <div class="aurora-orb aurora-orb-1"></div>
-  <div class="aurora-orb aurora-orb-2"></div>
-  <div class="aurora-orb aurora-orb-3"></div>
-</div>
-<div class="app-overlay"></div>
+<body class="flux-body">
 
-<div class="app-layout">
-
+<div class="flux-window">
+  
   <!-- ==================== LEFT SIDEBAR ==================== -->
-  <aside class="sidebar">
-    <!-- Brand -->
-    <div class="brand">
-      <div class="brand-logo-wrap">
-        <img src="/assets/flux-logo.svg" alt="Flux Logo" class="brand-logo-img" />
+  <aside class="flux-sidebar" id="sidebar">
+    <!-- Window Traffic Lights (macOS style) -->
+    <div class="window-controls">
+      <span class="win-btn win-close" title="Close"></span>
+      <span class="win-btn win-min" title="Minimize"></span>
+      <span class="win-btn win-max" title="Maximize"></span>
+    </div>
+
+    <!-- Flux Brand Header -->
+    <div class="sidebar-brand">
+      <div class="brand-logo-icon">
+        <img src="/assets/flux-logo.svg" alt="Flux Logo" class="brand-svg" />
       </div>
-      <div class="brand-text">
-        <h2 class="brand-name">Flux</h2>
-        <p class="brand-tag">Devices closer.<br/>Worlds nearer.</p>
+      <div class="brand-meta">
+        <h1 class="brand-title">FLUX</h1>
+        <span class="brand-badge">PREMIUM</span>
       </div>
     </div>
 
-    <!-- Navigation -->
-    <nav class="nav">
-      <button class="nav-item active" data-view="discover" id="nav-discover">
-        <span class="ni-icon">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="2"/>
-            <path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"/>
+    <!-- Navigation Menu -->
+    <nav class="sidebar-nav">
+      <button class="nav-item active" data-view="dashboard" id="nav-dashboard">
+        <span class="nav-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+            <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+            <rect x="14" y="14" width="7" height="7" rx="1.5"/>
+            <rect x="3" y="14" width="7" height="7" rx="1.5"/>
           </svg>
         </span>
-        <span class="ni-label">Discover</span>
+        <span class="nav-label">Dashboard</span>
       </button>
 
       <button class="nav-item" data-view="send" id="nav-send">
-        <span class="ni-icon">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <span class="nav-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <line x1="22" y1="2" x2="11" y2="13"/>
             <polygon points="22 2 15 22 11 13 2 9 22 2"/>
           </svg>
         </span>
-        <span class="ni-label">Send Files</span>
+        <span class="nav-label">Send</span>
       </button>
 
-      <button class="nav-item" data-view="received" id="nav-received">
-        <span class="ni-icon">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-            <polyline points="7 10 12 15 17 10"/>
-            <line x1="12" y1="15" x2="12" y2="3"/>
+      <button class="nav-item" data-view="transfers" id="nav-transfers">
+        <span class="nav-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="7" y1="17" x2="17" y2="7"/>
+            <polyline points="7 7 17 7 17 17"/>
+            <line x1="17" y1="7" x2="7" y2="17" stroke="none"/>
+            <path d="M17 17l-10-10"/>
+            <path d="M7 11V7h4"/>
+            <path d="M17 13v4h-4"/>
           </svg>
         </span>
-        <span class="ni-label">Received</span>
+        <span class="nav-label">Transfers</span>
+        <span class="nav-badge" id="transfers-count-badge">2</span>
       </button>
 
-      <button class="nav-item" data-view="history" id="nav-history">
-        <span class="ni-icon">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="10"/>
-            <polyline points="12 6 12 12 16 14"/>
+      <button class="nav-item" data-view="devices" id="nav-devices">
+        <span class="nav-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="3" width="20" height="14" rx="2"/>
+            <line x1="8" y1="21" x2="16" y2="21"/>
+            <line x1="12" y1="17" x2="12" y2="21"/>
           </svg>
         </span>
-        <span class="ni-label">History</span>
+        <span class="nav-label">Devices</span>
       </button>
 
       <button class="nav-item" data-view="settings" id="nav-settings">
-        <span class="ni-icon">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <span class="nav-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="3"/>
             <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
           </svg>
         </span>
-        <span class="ni-label">Settings</span>
+        <span class="nav-label">Settings</span>
       </button>
     </nav>
 
-    <!-- Sidebar Alpine Promo Card -->
-    <div class="promo-card" id="sidebar-promo">
-      <div class="promo-card-bg"></div>
-      <div class="promo-card-content">
-        <h3 class="promo-title">No cables.<br/>No cloud.<br/>Just Flux.</h3>
-        <div class="promo-divider"></div>
-        <div class="promo-footer">
-          <span class="promo-tagline">Fast. Private. Everywhere.</span>
-          <button class="promo-arrow-btn" title="Discover Flux" id="btn-promo-discover">→</button>
+    <!-- Sidebar Bottom: Planetary Orbital Radar Widget -->
+    <div class="sidebar-footer">
+      <div class="orbital-radar-widget" id="orbital-radar-widget" title="Active P2P mesh antenna">
+        <div class="radar-orbit orbit-1"></div>
+        <div class="radar-orbit orbit-2"></div>
+        <div class="radar-orbit orbit-3"></div>
+        <div class="orbit-particle p1"></div>
+        <div class="orbit-particle p2"></div>
+        <div class="orbit-particle p3"></div>
+        <div class="radar-center-core">
+          <svg width="22" height="22" viewBox="0 0 40 40" fill="none">
+            <polygon points="20,4 36,13 36,27 20,36 4,27 4,13" stroke="#F5BE38" stroke-width="2.5" fill="rgba(245, 190, 56, 0.2)"/>
+            <text x="20" y="25" text-anchor="middle" font-size="14" font-weight="bold" fill="#FFE885" font-family="Outfit, sans-serif">F</text>
+          </svg>
         </div>
       </div>
-    </div>
 
-    <!-- User Profile -->
-    <div class="user-profile" id="user-profile" title="Click to edit profile name">
-      <div class="user-avatar-wrap">
-        <img src="/assets/avatar.svg" alt="User Avatar" class="user-avatar-img" id="me-avatar-img" />
-      </div>
-      <div class="user-meta">
-        <div class="user-name" id="me-name">Kunal Jha</div>
-        <div class="user-status">
-          <span class="status-dot on" id="me-presence-dot"></span>
-          <span class="status-text" id="me-presence">Online · Discoverable</span>
+      <div class="node-id-card" id="btn-node-info">
+        <div class="node-status-dot"></div>
+        <div class="node-meta">
+          <div class="node-title">Flux Node</div>
+          <div class="node-id" id="sidebar-node-id">ID: FLX-7G9K2</div>
         </div>
+        <span class="node-arrow">›</span>
+      </div>
+
+      <div class="sidebar-secure-pill">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+        <span>End-to-end encryption</span>
       </div>
     </div>
   </aside>
 
-  <!-- ==================== MAIN CONTENT AREA ==================== -->
-  <main class="main-content">
+  <!-- ==================== MAIN CONTENT ==================== -->
+  <div class="flux-main">
     
-    <!-- Topbar -->
-    <header class="topbar">
-      <!-- Search Input -->
-      <div class="search-box">
-        <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="11" cy="11" r="8"/>
-          <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-        </svg>
-        <input id="search" placeholder="Search devices, or enter a code…" autocomplete="off" spellcheck="false" />
-      </div>
-
-      <!-- Pair with Code Pill Button -->
-      <button class="btn-pair-code" id="btn-pair">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M3 7V5a2 2 0 0 1 2-2h2"/>
-          <path d="M17 3h2a2 2 0 0 1 2 2v2"/>
-          <path d="M21 17v2a2 2 0 0 1-2 2h-2"/>
-          <path d="M7 21H5a2 2 0 0 1-2-2v-2"/>
-          <rect x="7" y="7" width="10" height="10" rx="1"/>
-        </svg>
-        <span>Pair with Code</span>
-      </button>
-
-      <!-- Right Header Actions -->
-      <div class="topbar-actions">
-        <!-- Theme Toggle -->
-        <button class="icon-btn" id="btn-theme" title="Cycle Theme (Dark, Light, Cyber, Sunset, Midnight, Aurora)">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="5"/>
-            <line x1="12" y1="1" x2="12" y2="3"/>
-            <line x1="12" y1="21" x2="12" y2="23"/>
-            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
-            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-            <line x1="1" y1="12" x2="3" y2="12"/>
-            <line x1="21" y1="12" x2="23" y2="12"/>
-            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
-            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+    <!-- Top Bar -->
+    <header class="flux-topbar">
+      <div class="topbar-left">
+        <!-- Network Dropdown -->
+        <div class="network-select-pill" id="btn-network-scope">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="2" width="6" height="6" rx="1"/>
+            <rect x="16" y="2" width="6" height="6" rx="1"/>
+            <rect x="9" y="16" width="6" height="6" rx="1"/>
+            <path d="M5 8v3a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8"/>
+            <path d="M12 12v4"/>
           </svg>
-        </button>
-
-        <!-- Notification Bell with Popover -->
-        <div class="notif-wrapper">
-          <button class="icon-btn notif-btn" id="btn-notifications" title="Notifications & Transfer Activity">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-              <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
-            </svg>
-            <span class="notif-badge" id="notif-badge">0</span>
-          </button>
-          
-          <!-- Notifications Popover -->
-          <div class="notif-popover" id="notif-popover" hidden>
-            <div class="notif-popover-head">
-              <h4>Activity &amp; Notifications</h4>
-              <button class="btn-clear-notif" id="btn-clear-notifs">Clear</button>
-            </div>
-            <div class="notif-popover-list" id="notif-list">
-              <div class="notif-empty">No recent notifications.</div>
-            </div>
-          </div>
+          <span id="scope-label">Local Network</span>
+          <span class="chevron-down">⌄</span>
         </div>
 
-        <!-- More Options ⋯ -->
-        <button class="icon-btn" id="btn-more" title="More options">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="1"/>
-            <circle cx="19" cy="12" r="1"/>
-            <circle cx="5" cy="12" r="1"/>
+        <!-- Secure Connection Pill -->
+        <div class="secure-connection-pill" id="btn-conn-status">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+          <div class="sec-text">
+            <b>Secure connection</b>
+            <span id="topbar-ip">Connected to 192.168.1.27</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="topbar-right">
+        <!-- Offline Warning Banner Pill (hidden by default) -->
+        <div class="offline-pill" id="offline-alert" hidden>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="1" y1="1" x2="23" y2="23"/>
+            <path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"/>
+            <path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"/>
+            <path d="M10.71 5.05A16 16 0 0 1 22.58 9"/>
+            <path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"/>
+            <path d="M8.53 16.11a6 6 0 0 1 6.95 0"/>
+            <line x1="12" y1="20" x2="12.01" y2="20"/>
+          </svg>
+          <span>You're offline — transfers resume when connected</span>
+        </div>
+
+        <!-- Pair with Code Button -->
+        <button class="btn-topbar-pair" id="btn-open-pair">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>
+          </svg>
+          <span>Pair Device</span>
+        </button>
+
+        <!-- Help Button -->
+        <button class="topbar-icon-btn" id="btn-help" title="Flux Documentation &amp; Help">
+          <span>?</span>
+        </button>
+
+        <!-- Metrics / Diagnostics Button -->
+        <button class="topbar-icon-btn" id="btn-metrics" title="P2P Diagnostics &amp; Metrics">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="20" x2="18" y2="10"/>
+            <line x1="12" y1="20" x2="12" y2="4"/>
+            <line x1="6" y1="20" x2="6" y2="14"/>
           </svg>
         </button>
       </div>
     </header>
 
-    <!-- Stage Views Container -->
-    <div class="stage-container">
+    <!-- Stage Views -->
+    <div class="flux-stage">
 
-      <!-- ==================== VIEW: DISCOVER (MAIN HERO) ==================== -->
-      <section class="stage-view active" id="view-discover">
-        
-        <!-- Center Canvas Area -->
-        <div class="canvas-area">
+      <!-- ==================== VIEW 1: DASHBOARD ==================== -->
+      <section class="stage-view active" id="view-dashboard">
+        <div class="dashboard-grid">
           
-          <!-- Hero Header -->
-          <div class="hero-header">
-            <h1 class="hero-title">
-              <span class="word-share">Share</span>
-              <span class="word-beyond">Beyond</span>
-              <span class="word-boundaries">Boundaries</span>
-            </h1>
-            <p class="hero-subtitle">Blazing fast, zero-install, device-to-device local file sharing — transfer unlimited files directly with zero cloud storage.</p>
-          </div>
-
-          <!-- In-Range Receiver Banner (Dynamic Alert) -->
-          <div class="in-range-banner" id="in-range-banner" hidden>
-            <div class="beacon-pulse">
-              <span class="beacon-dot"></span>
-              <span class="beacon-ring"></span>
+          <!-- Top Row: Send Files (Left) & Receive (Right) -->
+          <div class="dash-card dash-send-card">
+            <div class="card-head">
+              <h2 class="card-title">Send files</h2>
+              <p class="card-sub">Drag and drop files or folders to send</p>
             </div>
-            <div class="in-range-ico" id="in-range-ico">📱</div>
-            <div class="in-range-info">
-              <div class="in-range-title">
-                <span id="in-range-name">iPhone 15</span> is in your range
-                <span class="in-range-tag">Ready to Receive</span>
+            
+            <div class="drop-zone-dashed" id="dash-dropzone">
+              <div class="upload-arrow-glow">
+                <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#F5BE38" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 19V5M5 12l7-7 7 7"/>
+                </svg>
               </div>
-              <div class="in-range-sub" id="in-range-sub">Device detected on local Wi-Fi · Ready for photos &amp; files</div>
+              <button class="btn-gold-solid" id="btn-choose-files">Choose files</button>
             </div>
-            <button class="btn-in-range-share" id="btn-share-to-range">
-              <span>⚡</span> <span id="btn-share-to-range-text">Share to Device Now</span>
-            </button>
           </div>
 
-          <!-- Radar Constellation Display -->
-          <div class="constellation-wrap" id="constellation-wrap">
-            <div class="constellation" id="constellation">
-              
-              <!-- Orbital Rings -->
-              <div class="orbit-ring orbit-ring-1"></div>
-              <div class="orbit-ring orbit-ring-2"></div>
-              <div class="orbit-ring orbit-ring-3"></div>
-              <div class="radar-scan"></div>
+          <div class="dash-card dash-receive-card">
+            <div class="card-head space-between">
+              <h2 class="card-title">Receive</h2>
+              <!-- Gold Toggle Switch -->
+              <label class="flux-switch">
+                <input type="checkbox" id="toggle-receive" checked />
+                <span class="slider round"></span>
+              </label>
+            </div>
 
-              <!-- SVG Animated Connecting Lines Layer -->
-              <svg class="constellation-svg" id="constellation-svg" viewBox="0 0 680 440">
-                <defs>
-                  <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stop-color="var(--mint)" stop-opacity="0.8"/>
-                    <stop offset="100%" stop-color="var(--teal)" stop-opacity="0.2"/>
-                  </linearGradient>
-                </defs>
-                <g id="svg-connectors"></g>
-              </svg>
+            <div class="receive-body">
+              <div class="recv-status-group">
+                <b class="recv-lead">Ready to receive files</b>
+                <p class="recv-desc">Other devices can send files to this device.</p>
+              </div>
 
-              <!-- Center Hub Orb -->
-              <div class="center-hub" id="center-hub" title="Your Flux Node — Broadcasting on LAN">
-                <div class="center-hub-glow"></div>
-                <div class="center-hub-inner">
-                  <div class="center-hub-icon">
-                    <img src="/assets/flux-center.svg" alt="Flux Core" />
+              <div class="recv-setting-row">
+                <div class="recv-label-col">
+                  <span class="setting-caption">Device name</span>
+                  <div class="device-name-row">
+                    <span class="device-name-val" id="display-device-name">Maya's MacBook Pro</span>
+                    <button class="btn-icon-subtle" id="btn-edit-alias" title="Edit device name">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>
+                      </svg>
+                    </button>
                   </div>
-                  <div class="center-hub-title">Flux</div>
-                  <div class="center-hub-status" id="core-sub">Ready to Share</div>
                 </div>
               </div>
 
-              <!-- Device Nodes Container (Rendered dynamically or initialized with demo peers) -->
-              <div id="device-nodes-layer"></div>
-
-              <!-- Handwritten Annotation Callout pointing to Linux Machine -->
-              <div class="script-annotation" id="script-annotation">
-                <div class="annotation-text">
-                  Different devices.<br/>
-                  Same network.<br/>
-                  No limits.
+              <div class="recv-setting-row">
+                <div class="recv-label-col">
+                  <span class="setting-caption">Receive folder</span>
+                  <div class="folder-name-row">
+                    <span class="folder-icon">📁</span>
+                    <span class="folder-val" id="display-save-folder">~/Downloads/Flux Received</span>
+                  </div>
                 </div>
-                <svg class="annotation-arrow" width="56" height="42" viewBox="0 0 56 42" fill="none">
-                  <path d="M4 8C18 6 42 12 48 34" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-dasharray="3 3"/>
-                  <path d="M41 28L48 34L44 38" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </div>
+            </div>
+          </div>
+
+          <!-- Middle Row: Nearby Devices (Left) & Network/Troubleshoot Box (Right) -->
+          <div class="dash-card dash-devices-card">
+            <div class="card-head space-between">
+              <h2 class="card-title">Nearby devices</h2>
+              <button class="btn-text-gold" id="btn-dash-refresh">
+                <span>Refresh</span>
+                <span class="refresh-symbol">↻</span>
+              </button>
+            </div>
+
+            <div class="devices-row-grid" id="nearby-devices-grid">
+              <!-- Rendered via JavaScript: Device cards with gold outline icons -->
+            </div>
+          </div>
+
+          <div class="dash-card dash-assistant-card">
+            <div class="assistant-content">
+              <div class="no-wifi-icon">
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="1" y1="1" x2="23" y2="23"/>
+                  <path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"/>
+                  <path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"/>
+                  <path d="M10.71 5.05A16 16 0 0 1 22.58 9"/>
+                  <path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"/>
+                  <path d="M8.53 16.11a6 6 0 0 1 6.95 0"/>
+                  <line x1="12" y1="20" x2="12.01" y2="20"/>
                 </svg>
               </div>
-
+              <h3 class="assistant-title">No nearby devices</h3>
+              <p class="assistant-sub">Make sure devices are on the same network and Flux is open.</p>
+              <div class="assistant-actions">
+                <button class="btn-dark-pill" id="btn-troubleshoot">Troubleshoot</button>
+                <button class="btn-gold-outline" id="btn-quick-pair">Pair with Code</button>
+              </div>
             </div>
           </div>
 
-          <!-- Bottom Dropzone -->
-          <div class="dropzone" id="dropzone">
-            <div class="dz-cloud-icon">
-              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/>
-                <polyline points="12 11 12 16"/>
-                <polyline points="9 13 12 10 15 13"/>
-              </svg>
-            </div>
-            <div class="dz-title">Drop files here</div>
-            <div class="dz-sub">or click to browse</div>
-
-            <!-- File Category Type Filter Pills -->
-            <div class="dz-categories">
-              <button class="cat-pill" id="cat-images" title="Share Images (PNG, JPG, WEBP, HEIC)">
-                <span class="cat-icon">🖼</span>
-              </button>
-              <button class="cat-pill" id="cat-videos" title="Share Videos (MP4, MOV, MKV)">
-                <span class="cat-icon">🎬</span>
-              </button>
-              <button class="cat-pill" id="cat-docs" title="Share Documents &amp; Archives (PDF, DOC, ZIP)">
-                <span class="cat-icon">📄</span>
-              </button>
-              <button class="cat-pill" id="cat-folders" title="Share Entire Folder Directory">
-                <span class="cat-icon">🗂</span>
-              </button>
-              <button class="cat-pill" id="cat-audio" title="Share Audio &amp; Music (MP3, WAV, FLAC)">
-                <span class="cat-icon">🎵</span>
-              </button>
-            </div>
-          </div>
-
-          <!-- Bottom Features Bar -->
-          <div class="features-bar">
-            <div class="feature-item">
-              <div class="feature-icon">⚡</div>
-              <div class="feature-meta">
-                <b class="feature-title">Blazing Fast</b>
-                <span class="feature-sub">P2P Transfer</span>
-              </div>
+          <!-- Bottom Row: Recent Transfers Table -->
+          <div class="dash-card dash-transfers-card">
+            <div class="card-head space-between">
+              <h2 class="card-title">Recent transfers</h2>
+              <button class="btn-text-gold" id="btn-view-all-transfers">View all</button>
             </div>
 
-            <div class="feature-item">
-              <div class="feature-icon">🔒</div>
-              <div class="feature-meta">
-                <b class="feature-title">End-to-End Local</b>
-                <span class="feature-sub">No Cloud</span>
-              </div>
-            </div>
-
-            <div class="feature-item">
-              <div class="feature-icon">🖥</div>
-              <div class="feature-meta">
-                <b class="feature-title">Works on</b>
-                <span class="feature-sub">All Devices</span>
-              </div>
-            </div>
-
-            <div class="feature-item">
-              <div class="feature-icon">🌐</div>
-              <div class="feature-meta">
-                <b class="feature-title">Open Source</b>
-                <span class="feature-sub">Community Driven</span>
-              </div>
+            <div class="transfers-table-wrap">
+              <table class="transfers-table">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Direction</th>
+                    <th>Device</th>
+                    <th>Size</th>
+                    <th>Status</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="recent-transfers-tbody">
+                  <!-- Rendered via JS -->
+                </tbody>
+              </table>
             </div>
           </div>
 
         </div>
+      </section>
 
-        <!-- ==================== RIGHT RAIL ==================== -->
-        <aside class="right-rail">
+      <!-- ==================== VIEW 2: TRANSFERS (HERO VIEW) ==================== -->
+      <section class="stage-view" id="view-transfers" hidden>
+        <div class="transfers-view-layout">
           
-          <!-- Card 1: Active Transfers -->
-          <div class="rail-card" id="card-active-transfers">
-            <div class="rail-card-head">
-              <div class="rail-head-left">
-                <h3>Active Transfer</h3>
-                <span class="badge-count" id="active-count">2</span>
-              </div>
-              <button class="btn-rail-collapse" id="btn-collapse-transfers" title="Collapse panel">⌄</button>
-            </div>
-
-            <div class="rail-card-body" id="transfers-body">
-              <div id="transfers" class="transfers-list"></div>
-              <div id="transfers-empty" class="rail-empty" hidden>No active transfers.</div>
-            </div>
-          </div>
-
-          <!-- Card 2: Nearby Devices -->
-          <div class="rail-card" id="card-nearby-devices">
-            <div class="rail-card-head">
-              <div class="rail-head-left">
-                <h3>Nearby Devices</h3>
-                <span class="badge-count" id="nearby-count">5</span>
-              </div>
-              <div class="rail-head-actions">
-                <button class="btn-refresh" id="btn-refresh" title="Scan &amp; Refresh Devices">↻</button>
-                <button class="btn-rail-collapse" id="btn-collapse-nearby" title="Collapse panel">⌄</button>
-              </div>
-            </div>
-
-            <div class="rail-card-body" id="nearby-body">
-              <div id="nearby" class="nearby-list"></div>
-              <div id="nearby-empty" class="rail-empty" hidden>
-                Waiting for another device…<br/>
-                <small>Open Flux on another device on this Wi-Fi, or use a code.</small>
-              </div>
-            </div>
-          </div>
-
-          <!-- Card 3: Connected World Promo -->
-          <div class="rail-card promo-globe-card" id="card-globe-promo">
-            <div class="globe-promo-content">
-              <div class="globe-promo-text">A more connected world starts nearby.</div>
-              <div class="globe-promo-line"></div>
-              <div class="globe-promo-bottom">
-                <div class="globe-graphic-wrap">
-                  <img src="/assets/globe.svg" alt="Connected Globe" class="globe-img" />
-                </div>
-                <button class="globe-arrow-btn" id="btn-globe-action" title="Learn about Flux mesh sharing">→</button>
-              </div>
-            </div>
-          </div>
-
-        </aside>
-
-      </section>
-
-      <!-- ==================== VIEW: SEND FILES ==================== -->
-      <section class="stage-view" id="view-send" hidden>
-        <div class="view-panel">
-          <div class="view-header">
+          <!-- View Header & Tabs -->
+          <div class="transfers-view-head">
             <div>
-              <h2 class="view-title">Send Files</h2>
-              <p class="view-sub">Select files or whole directories, then pick a nearby destination device.</p>
+              <h1 class="view-main-title">Transfers</h1>
+            </div>
+            
+            <!-- Filter Tabs -->
+            <div class="transfers-tabs">
+              <button class="xfer-tab active" data-tab="active">Active</button>
+              <button class="xfer-tab" data-tab="completed">Completed</button>
+              <button class="xfer-tab" data-tab="failed">Failed</button>
             </div>
           </div>
 
-          <div class="send-layout">
-            <div class="dropzone send-dropzone" id="send-dropzone">
-              <div class="dz-cloud-icon">
-                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                  <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/>
-                  <polyline points="12 11 12 16"/>
-                  <polyline points="9 13 12 10 15 13"/>
+          <!-- Hero Active Transfer Progress Card -->
+          <div class="hero-transfer-card" id="hero-transfer-card">
+            <div class="hero-top-info">
+              <div class="hero-peer-info">
+                <span class="hero-target-icon">💻</span>
+                <span class="hero-target-name" id="hero-target-name">Jordan's MacBook Air</span>
+                <span class="p2p-badge" id="hero-p2p-badge">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#F5BE38" stroke-width="2.5">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                  </svg>
+                  <span>Secure local connection</span>
+                </span>
+              </div>
+            </div>
+
+            <div class="hero-main-flex">
+              <!-- Left: Circular SVG Progress Ring -->
+              <div class="progress-ring-container">
+                <svg class="progress-ring-svg" width="130" height="130" viewBox="0 0 130 130">
+                  <circle class="ring-bg" cx="65" cy="65" r="54" stroke="rgba(255, 255, 255, 0.08)" stroke-width="10" fill="transparent"/>
+                  <circle class="ring-progress" id="hero-ring-circle" cx="65" cy="65" r="54" stroke="#F5BE38" stroke-width="10" stroke-linecap="round" fill="transparent" stroke-dasharray="339.29" stroke-dashoffset="108.57"/>
                 </svg>
+                <div class="ring-label-overlay">
+                  <span class="ring-pct-number" id="hero-pct-display">68%</span>
+                </div>
               </div>
-              <div class="dz-title">Choose files to share</div>
-              <div class="dz-sub">Drag &amp; drop files here or click browse below</div>
-              <div style="display: flex; gap: 10px; margin-top: 14px;">
-                <button class="btn-primary btn-sm" id="btn-browse-send">Browse Files</button>
-                <button class="btn-secondary btn-sm" id="btn-browse-folder">Browse Folder</button>
+
+              <!-- Right: Transfer Stats -->
+              <div class="hero-stats-col">
+                <div class="hero-transferred-lead" id="hero-bytes-display">1.74 GB of 2.57 GB</div>
+                <div class="hero-speed-lead" id="hero-speed-display">18.6 MB/s</div>
+                <div class="hero-eta-lead" id="hero-eta-display">About 46 sec left</div>
               </div>
             </div>
 
-            <div class="send-staging" id="send-staging">
-              <div class="staging-head">
-                <h4>Selected Files <span class="badge-count" id="selected-files-count">0</span></h4>
-                <button class="btn-ghost btn-sm" id="btn-clear-staging" hidden>Clear All</button>
+            <!-- Three Stat Columns -->
+            <div class="hero-stats-grid">
+              <div class="stat-box">
+                <span class="stat-cap">Data transferred</span>
+                <b class="stat-val" id="stat-data-val">1.74 GB / 2.57 GB</b>
               </div>
-              <div class="staging-list" id="staging-list">
-                <div class="rail-empty">No files selected yet. Drop files above or click browse.</div>
+              <div class="stat-box">
+                <span class="stat-cap">Transfer speed</span>
+                <b class="stat-val stat-gold" id="stat-speed-val">18.6 MB/s</b>
+              </div>
+              <div class="stat-box">
+                <span class="stat-cap">ETA</span>
+                <b class="stat-val" id="stat-eta-val">About 46 sec</b>
+              </div>
+            </div>
+
+            <!-- Full Width Progress Bar -->
+            <div class="hero-progress-bar-wrap">
+              <div class="hero-progress-bar-fill" id="hero-bar-fill" style="width: 68%;"></div>
+            </div>
+
+            <!-- Bottom Actions -->
+            <div class="hero-footer-bar">
+              <div class="e2e-lock-caption">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                </svg>
+                <span>Encrypted end-to-end</span>
+              </div>
+
+              <div class="hero-btn-group">
+                <button class="btn-gold-pill" id="btn-hero-pause">
+                  <span id="hero-pause-icon">⏸</span>
+                  <span id="hero-pause-text">Pause</span>
+                </button>
+                <button class="btn-ghost-cancel" id="btn-hero-cancel">Cancel</button>
               </div>
             </div>
           </div>
 
-          <div class="send-targets-wrap">
-            <h3 class="section-title">Select Destination Device</h3>
-            <div class="device-grid" id="send-device-grid"></div>
-            <div class="rail-empty" id="send-devices-empty">No nearby devices detected. Pair with code or open Flux on another device.</div>
+          <!-- File Breakdown List -->
+          <div class="transfer-files-section">
+            <h3 class="section-title">Files in transfer</h3>
+            <div class="files-breakdown-list" id="files-breakdown-list">
+              <!-- Rendered via JS -->
+            </div>
           </div>
+
+          <!-- Failed Transfer Item (when applicable) -->
+          <div class="failed-transfer-alert" id="failed-transfer-card">
+            <div class="failed-icon-wrap">!</div>
+            <div class="failed-info">
+              <div class="failed-title">Product_demo.mov failed</div>
+              <div class="failed-sub">Connection lost</div>
+            </div>
+            <div class="failed-size">1.6 GB</div>
+            <button class="btn-retry-gold" id="btn-retry-failed">Retry</button>
+          </div>
+
         </div>
       </section>
 
-      <!-- ==================== VIEW: RECEIVED ==================== -->
-      <section class="stage-view" id="view-received" hidden>
-        <div class="view-panel">
-          <div class="view-header">
-            <div>
-              <h2 class="view-title">Received Files</h2>
-              <p class="view-sub">All incoming transfers completed on this device.</p>
+      <!-- ==================== VIEW 3: SEND FILES ==================== -->
+      <section class="stage-view" id="view-send" hidden>
+        <div class="send-view-layout">
+          
+          <!-- View Title -->
+          <h1 class="view-main-title">Send files</h1>
+
+          <!-- Target Device Selector Bar -->
+          <div class="target-device-selector" id="target-device-picker">
+            <div class="target-left">
+              <span class="target-icon">💻</span>
+              <div class="target-text">
+                <b id="send-target-name">Maya's MacBook Pro</b>
+                <span class="target-badge">Nearby • Secure</span>
+              </div>
             </div>
+            <span class="chevron-down">⌄</span>
           </div>
-          <div class="received-list" id="received-list">
-            <div class="rail-empty" id="received-empty">
-              No files received yet.<br/>
-              <small>Files sent to you from other devices will show up here.</small>
+
+          <!-- Two Column Content Grid -->
+          <div class="send-grid-columns">
+            
+            <!-- Left Column: Queue -->
+            <div class="send-queue-column">
+              <div class="queue-head space-between">
+                <h3 class="queue-title">Queue</h3>
+                <span class="queue-summary" id="queue-summary-label">4 files • 2.57 GB</span>
+              </div>
+
+              <div class="queue-files-list" id="queue-files-list">
+                <!-- Rendered via JS -->
+              </div>
+
+              <!-- Queue Actions -->
+              <div class="queue-actions-row">
+                <button class="btn-dark-pill" id="btn-add-more-files">
+                  <span>+</span>
+                  <span>Add more files</span>
+                </button>
+                <button class="btn-gold-solid btn-send-now" id="btn-execute-send">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="22" y1="2" x2="11" y2="13"/>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                  </svg>
+                  <span>Send</span>
+                </button>
+              </div>
             </div>
+
+            <!-- Right Column: Settings & P2P Illustration -->
+            <div class="send-settings-column">
+              <h3 class="section-title">Transfer settings</h3>
+
+              <div class="transfer-setting-toggle-row">
+                <div class="setting-text-col">
+                  <b>Keep original files</b>
+                  <p>Files will remain on this device after transfer.</p>
+                </div>
+                <label class="flux-switch">
+                  <input type="checkbox" id="toggle-keep-originals" checked />
+                  <span class="slider round"></span>
+                </label>
+              </div>
+
+              <div class="transfer-setting-toggle-row">
+                <div class="setting-text-col">
+                  <b>Encrypt on transfer</b>
+                  <p>End-to-end encryption for maximum privacy.</p>
+                </div>
+                <label class="flux-switch">
+                  <input type="checkbox" id="toggle-encrypt" checked />
+                  <span class="slider round"></span>
+                </label>
+              </div>
+
+              <!-- Graphic Illustration -->
+              <div class="p2p-illustration-wrap">
+                <img src="/assets/p2p-illustration.svg" alt="P2P Transfer Illustration" class="p2p-graphic-img" />
+              </div>
+
+            </div>
+
           </div>
+
         </div>
       </section>
 
-      <!-- ==================== VIEW: HISTORY ==================== -->
-      <section class="stage-view" id="view-history" hidden>
-        <div class="view-panel">
-          <div class="view-header">
+      <!-- ==================== VIEW 4: DEVICES ==================== -->
+      <section class="stage-view" id="view-devices" hidden>
+        <div class="devices-view-layout">
+          <div class="view-header-flex">
             <div>
-              <h2 class="view-title">Transfer History</h2>
-              <p class="view-sub">Log of all completed incoming and outgoing transfers.</p>
+              <h1 class="view-main-title">Devices</h1>
+              <p class="card-sub">All nearby and paired nodes on this network</p>
             </div>
-            <button class="btn-ghost btn-sm" id="btn-clear-history">Clear History</button>
+            <button class="btn-gold-outline" id="btn-pair-from-devices">+ Pair New Device</button>
           </div>
-          <div class="history-list" id="history-list">
-            <div class="rail-empty" id="history-empty">
-              Transfer history is empty.<br/>
-              <small>Your completed file transfers will be tracked here.</small>
-            </div>
+
+          <div class="devices-full-grid" id="devices-full-grid">
+            <!-- Rendered via JS -->
           </div>
         </div>
       </section>
 
     </div>
-  </main>
+
+    <!-- ==================== PERSISTENT FOOTER STATUS BAR ==================== -->
+    <footer class="flux-footer-bar">
+      <div class="footer-item">
+        <span class="footer-gold-text">↓ <span id="footer-dl-speed">2.1 MB/s</span></span>
+      </div>
+      <div class="footer-item">
+        <span class="footer-dim-text">↑ <span id="footer-ul-speed">0 B/s</span></span>
+      </div>
+      <div class="footer-item">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+        <span id="footer-mode-label">Secure P2P</span>
+      </div>
+      <div class="footer-item">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+        </svg>
+        <span id="footer-peers-count">3 peers</span>
+      </div>
+      <div class="footer-item">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="2" y="2" width="20" height="8" rx="2" ry="2"/>
+          <rect x="2" y="14" width="20" height="8" rx="2" ry="2"/>
+          <line x1="6" y1="6" x2="6.01" y2="6"/>
+          <line x1="6" y1="18" x2="6.01" y2="18"/>
+        </svg>
+        <span>412 GB free</span>
+      </div>
+    </footer>
+
+  </div>
+
 </div>
 
-<!-- ==================== MODALS ==================== -->
+<!-- ==================== MODAL: INCOMING TRANSFER REQUEST ==================== -->
+<div class="modal-backdrop" id="incoming-modal" hidden>
+  <div class="modal-box modal-incoming">
+    <h2 class="modal-title">Incoming transfer request</h2>
 
-<!-- Pair with Code Modal -->
-<div class="modal-wrap" id="pair-modal" hidden>
-  <div class="modal modal-glass">
-    <button class="modal-x" data-close title="Close">✕</button>
-    <h3>Pair with a Code</h3>
-    <p class="modal-sub">Use a code when devices aren't on the same network or subnet.</p>
-    <div class="pair-grid">
-      <div class="pair-create">
-        <button class="btn-primary" id="btn-create-code">Create a Code</button>
-        <div id="code-box" class="code-box" hidden>
-          <div id="qr" class="qr"></div>
-          <div class="code-big" id="code-value">------</div>
-          <button class="btn-secondary btn-sm" id="btn-copy">Copy Link</button>
-          <div class="code-url" id="code-url"></div>
+    <!-- Sender info -->
+    <div class="modal-sender-card">
+      <div class="sender-gold-icon">💻</div>
+      <div class="sender-info-text">
+        <b class="sender-name" id="incoming-sender-title">Jordan's MacBook Air wants to send files</b>
+        <span class="sender-badge">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#F5BE38" stroke-width="2.5">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+          <span>Secure local connection</span>
+        </span>
+      </div>
+    </div>
+
+    <!-- File List Inside Modal -->
+    <div class="incoming-files-card">
+      <div class="incoming-files-scroll" id="incoming-files-container">
+        <div class="incoming-file-row">
+          <div class="f-left">
+            <span class="f-type-icon">▶</span>
+            <span class="f-name">Launch_video.mp4</span>
+          </div>
+          <span class="f-size">684 MB</span>
+        </div>
+        <div class="incoming-file-row">
+          <div class="f-left">
+            <span class="f-type-icon">📄</span>
+            <span class="f-name">Brand guidelines.pdf</span>
+          </div>
+          <span class="f-size">12.4 MB</span>
+        </div>
+        <div class="incoming-file-row">
+          <div class="f-left">
+            <span class="f-type-icon">🗜</span>
+            <span class="f-name">Logo_exports.zip</span>
+          </div>
+          <span class="f-size">48.1 MB</span>
         </div>
       </div>
-      <div class="pair-join">
-        <label class="modal-label">Enter a Code</label>
-        <input id="join-input" class="code-input" maxlength="6" placeholder="ABC123" autocomplete="off" spellcheck="false" />
-        <button class="btn-secondary" id="btn-join">Join</button>
+      <div class="incoming-summary-row">
+        <span id="incoming-count-label">3 files</span>
+        <span id="incoming-total-size-label">744.5 MB</span>
       </div>
+    </div>
+
+    <!-- Save Destination Dropdown -->
+    <div class="destination-picker-row">
+      <span class="folder-ico">📁</span>
+      <select class="dest-select" id="dest-folder-select">
+        <option value="downloads">Save to Downloads</option>
+        <option value="documents">Save to Documents</option>
+        <option value="desktop">Save to Desktop</option>
+        <option value="custom">Choose custom location…</option>
+      </select>
+    </div>
+
+    <!-- Remember Device Checkbox -->
+    <label class="remember-checkbox-row">
+      <input type="checkbox" id="check-remember-device" />
+      <span>Remember this device</span>
+    </label>
+
+    <!-- Modal Actions -->
+    <div class="modal-buttons-row">
+      <button class="btn-gold-solid btn-modal-primary" id="btn-accept">Accept</button>
+      <button class="btn-dark-pill btn-modal-secondary" id="btn-decline">Decline</button>
     </div>
   </div>
 </div>
 
-<!-- Settings Modal -->
-<div class="modal-wrap" id="settings-modal" hidden>
-  <div class="modal modal-glass modal-settings">
-    <button class="modal-x" data-close title="Close">✕</button>
-    <h3>Settings</h3>
+<!-- ==================== MODAL: PAIR A NEW DEVICE ==================== -->
+<div class="modal-backdrop" id="pair-modal" hidden>
+  <div class="modal-box modal-pair">
+    <button class="modal-close-btn" id="btn-close-pair" title="Close">✕</button>
+
+    <!-- Shield Header -->
+    <div class="shield-header-wrap">
+      <img src="/assets/shield-lock.svg" alt="Secure Shield" class="shield-svg" />
+    </div>
+
+    <h2 class="modal-title text-center">Pair a new device</h2>
+
+    <div class="pair-two-col-grid">
+      
+      <!-- Left: QR Code & Code Display -->
+      <div class="pair-qr-col">
+        <div class="qr-code-gold-box" id="qr-display-box">
+          <div id="qr" class="qr-canvas-holder"></div>
+        </div>
+        <p class="qr-caption">Or enter this code on the other device</p>
+        <div class="pin-code-large" id="code-value">482 916</div>
+        <div class="code-copy-row">
+          <button class="btn-dark-pill btn-xs" id="btn-copy-pair-link">Copy Pair Link</button>
+          <span class="code-url-hint" id="code-url" hidden></span>
+        </div>
+      </div>
+
+      <!-- Right: Settings & Device Target -->
+      <div class="pair-details-col">
+        <div class="pair-form-group">
+          <label class="form-label">Your device name</label>
+          <input type="text" class="pair-input" id="pair-input-alias" value="Maya's MacBook Pro" spellcheck="false" />
+        </div>
+
+        <label class="remember-checkbox-row">
+          <input type="checkbox" id="check-trust-device" checked />
+          <div class="check-text">
+            <b>Trust this device</b>
+            <span>Skip pairing confirmation from this device in the future</span>
+          </div>
+        </label>
+
+        <div class="pairing-target-card">
+          <div class="form-label">Device you're pairing with</div>
+          <div class="target-peer-box">
+            <span class="target-laptop-icon">💻</span>
+            <div class="target-info">
+              <b id="pair-target-alias">Studio iMac</b>
+              <span class="ready-connect-tag">Ready to connect</span>
+            </div>
+            <span class="trusted-shield-tag">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#F5BE38" stroke-width="2.5">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              </svg>
+              <span>Trusted</span>
+            </span>
+          </div>
+        </div>
+
+        <div class="pair-encryption-hint">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+          <span>End-to-end encrypted on your local network</span>
+        </div>
+
+        <button class="btn-gold-solid btn-full" id="btn-confirm-pairing">Confirm pairing</button>
+        <button class="btn-ghost-cancel btn-full text-center" id="btn-cancel-pairing">Cancel</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ==================== MODAL: SETTINGS ==================== -->
+<div class="modal-backdrop" id="settings-modal" hidden>
+  <div class="modal-box modal-settings">
+    <button class="modal-close-btn" id="btn-close-settings" title="Close">✕</button>
+    <h2 class="modal-title">Settings</h2>
     <p class="modal-sub">Configure your Flux device preferences and connection.</p>
 
-    <div class="settings-group">
-      <label class="settings-label">Device Name / Alias</label>
-      <div class="settings-row">
-        <input id="setting-alias" class="settings-input" placeholder="Device Name" maxlength="32" spellcheck="false" />
-        <button class="btn-secondary btn-sm" id="btn-random-alias" title="Randomize Name">🎲 Random</button>
-        <button class="btn-primary btn-sm" id="btn-save-alias">Save</button>
+    <div class="settings-form">
+      <div class="settings-group">
+        <label class="form-label">Device Name / Alias</label>
+        <div class="input-with-button">
+          <input type="text" class="pair-input" id="setting-alias" value="Maya's MacBook Pro" maxlength="32" spellcheck="false" />
+          <button class="btn-dark-pill" id="btn-random-alias">🎲 Random</button>
+          <button class="btn-gold-solid" id="btn-save-alias">Save</button>
+        </div>
       </div>
-      <span class="settings-hint">This name is visible to other devices on your local network.</span>
-    </div>
 
-    <div class="settings-group">
-      <label class="settings-label">Appearance &amp; Themes</label>
-      <div class="theme-picker">
-        <button class="btn-theme-swatch active" data-theme-set="dark" id="btn-theme-dark" title="Obsidian Glass with Mint Glow">
-          <span class="swatch-preview theme-swatch-dark"></span>
-          <span class="swatch-label">Dark Glass</span>
-        </button>
-        <button class="btn-theme-swatch" data-theme-set="light" id="btn-theme-light" title="Alpine Frost with Emerald">
-          <span class="swatch-preview theme-swatch-light"></span>
-          <span class="swatch-label">Light Frost</span>
-        </button>
-        <button class="btn-theme-swatch" data-theme-set="cyber" id="btn-theme-cyber" title="Cyber Neon Matrix with Electric Cyan">
-          <span class="swatch-preview theme-swatch-cyber"></span>
-          <span class="swatch-label">Cyber Neon</span>
-        </button>
-        <button class="btn-theme-swatch" data-theme-set="sunset" id="btn-theme-sunset" title="Sunset Ember with Solar Orange">
-          <span class="swatch-preview theme-swatch-sunset"></span>
-          <span class="swatch-label">Sunset Ember</span>
-        </button>
-        <button class="btn-theme-swatch" data-theme-set="midnight" id="btn-theme-midnight" title="Midnight Violet with Amethyst">
-          <span class="swatch-preview theme-swatch-midnight"></span>
-          <span class="swatch-label">Midnight Violet</span>
-        </button>
-        <button class="btn-theme-swatch" data-theme-set="aurora" id="btn-theme-aurora" title="Nordic Aurora with Borealis Green">
-          <span class="swatch-preview theme-swatch-aurora"></span>
-          <span class="swatch-label">Nordic Aurora</span>
-        </button>
+      <div class="settings-group">
+        <label class="form-label">Receive Directory</label>
+        <input type="text" class="pair-input" id="setting-folder" value="~/Downloads/Flux Received" spellcheck="false" />
       </div>
-    </div>
 
-    <div class="settings-group">
-      <label class="settings-label">Device &amp; Capabilities</label>
-      <div class="settings-card" id="settings-caps-info">
-        <div class="cap-row"><span>Platform:</span> <b id="cap-platform">-</b></div>
-        <div class="cap-row"><span>Browser:</span> <b id="cap-browser">-</b></div>
-        <div class="cap-row"><span>WebRTC Direct:</span> <b id="cap-webrtc" class="ok">Supported</b></div>
-        <div class="cap-row"><span>Direct Disk Streaming:</span> <b id="cap-streaming">-</b></div>
-      </div>
-    </div>
-
-    <div class="settings-group">
-      <label class="settings-label">STUN / Relay Servers</label>
-      <div class="settings-card code-font" id="settings-stun-list">
-        stun:stun.l.google.com:19302
+      <div class="settings-group">
+        <label class="form-label">Network &amp; STUN Relay</label>
+        <div class="settings-read-card" id="settings-stun-info">
+          <div><b>STUN:</b> stun:stun.l.google.com:19302</div>
+          <div><b>Protocol:</b> WebRTC DataChannel + Chunked SHA-256</div>
+          <div><b>Fallback:</b> In-memory Go Relay Bridge</div>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Incoming Transfer Approval Modal -->
-<div class="modal-wrap" id="incoming-modal" hidden>
-  <div class="modal modal-glass">
-    <h3>Incoming File Transfer</h3>
-    <p class="modal-sub" id="incoming-desc">Someone wants to send you a file.</p>
-    <div class="modal-actions">
-      <button class="btn-ghost" id="btn-decline">Decline</button>
-      <button class="btn-primary" id="btn-accept">Accept &amp; Save</button>
-    </div>
-    <p class="modal-note" id="incoming-note"></p>
-  </div>
-</div>
-
-<!-- Hidden File Pickers -->
+<!-- Hidden File Inputs -->
 <input id="file-input" type="file" multiple hidden />
-<input id="file-input-image" type="file" accept="image/*" multiple hidden />
-<input id="file-input-video" type="file" accept="video/*" multiple hidden />
-<input id="file-input-doc" type="file" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv,.zip,.rar,.7z,.tar,.gz" multiple hidden />
 <input id="file-input-folder" type="file" webkitdirectory directory multiple hidden />
-<input id="file-input-audio" type="file" accept="audio/*" multiple hidden />
 
 <!-- Toast Notifications Container -->
-<div id="toasts" class="toasts"></div>
+<div id="toasts" class="toasts-container"></div>
 
 <script type="module" src="/src/app.js"></script>
-<script>
-  if ("serviceWorker" in navigator) {
-    window.addEventListener("load", () => navigator.serviceWorker.register("/sw.js").catch(() => {}));
-  }
-</script>
 </body>
 </html>

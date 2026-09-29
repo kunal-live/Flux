@@ -8,17 +8,11 @@ import { TransferManager } from "./transfer.js";
 import { UI, DEFAULT_DEVICES } from "./ui.js";
 import { renderQR } from "./qr.js";
 
-const DEFAULT_USER_NAME = "Kunal Jha";
+const DEFAULT_USER_NAME = "Maya's MacBook Pro";
 
 function getAlias() {
   try {
     const s = localStorage.getItem("flux-alias");
-    // If user explicitly saved a custom non-animal name, keep it; otherwise default to Kunal Jha
-    if (s && s === DEFAULT_USER_NAME) return s;
-    if (!localStorage.getItem("flux-custom-alias-set")) {
-      localStorage.setItem("flux-alias", DEFAULT_USER_NAME);
-      return DEFAULT_USER_NAME;
-    }
     if (s) return s;
   } catch {}
   try {
@@ -222,7 +216,7 @@ async function main() {
         handleSendToTarget(peerId, pendingFiles);
         pendingFiles = null;
         UI.setStagedFiles([]);
-        UI.switchView("discover");
+        UI.switchView("transfers");
       } else {
         pendingTarget = peerId;
         if (fileInput) { fileInput.value = ""; fileInput.click(); }
@@ -236,7 +230,7 @@ async function main() {
         handleSendToTarget(peerId, pendingFiles);
         pendingFiles = null;
         UI.setStagedFiles([]);
-        UI.switchView("discover");
+        UI.switchView("transfers");
       } else {
         pendingTarget = peerId;
         if (fileInput) { fileInput.value = ""; fileInput.click(); }

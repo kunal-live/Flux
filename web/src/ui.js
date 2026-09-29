@@ -828,9 +828,20 @@ export const UI = {
   },
 
   switchView(viewName) {
+    if (viewName === "receive") {
+      this.switchDashboardMode("receive");
+      viewName = "dashboard";
+      this._activeNavView = "receive";
+    } else if (viewName === "dashboard") {
+      this.switchDashboardMode("send");
+      this._activeNavView = "dashboard";
+    } else {
+      this._activeNavView = viewName;
+    }
+
     this._activeView = viewName;
     document.querySelectorAll(".nav-item").forEach((btn) => {
-      btn.classList.toggle("active", btn.dataset.view === viewName);
+      btn.classList.toggle("active", btn.dataset.view === (this._activeNavView || viewName));
     });
 
     const views = ["dashboard", "send", "transfers", "history", "devices", "settings"];
@@ -1165,6 +1176,8 @@ export const UI = {
     const tabRecv = $("tab-mode-receive");
     const secSend = $("section-send");
     const secRecv = $("section-receive");
+    const navRecv = $("nav-receive");
+    const navDash = $("nav-dashboard");
 
     if (mode === "send") {
       if (tabSend) tabSend.classList.add("active");
@@ -1172,12 +1185,20 @@ export const UI = {
       if (secSend) secSend.hidden = false;
       if (secRecv) secRecv.hidden = true;
       this._updateSendStagingView();
+      if (this._activeView === "dashboard") {
+        if (navDash) navDash.classList.add("active");
+        if (navRecv) navRecv.classList.remove("active");
+      }
     } else {
       if (tabRecv) tabRecv.classList.add("active");
       if (tabSend) tabSend.classList.remove("active");
       if (secRecv) secRecv.hidden = false;
       if (secSend) secSend.hidden = true;
       this.checkReceiveConnectivity();
+      if (this._activeView === "dashboard") {
+        if (navRecv) navRecv.classList.add("active");
+        if (navDash) navDash.classList.remove("active");
+      }
     }
   },
 

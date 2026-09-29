@@ -212,6 +212,16 @@
           <span>Pair Device</span>
         </button>
 
+        <!-- Sound FX Toggle Button -->
+        <button class="topbar-icon-btn" id="btn-toggle-sound" title="Audio Soundscape (Mute / Unmute)">
+          <span id="sound-icon-indicator">🔊</span>
+        </button>
+
+        <!-- Shortcuts HUD Button -->
+        <button class="topbar-icon-btn" id="btn-open-shortcuts" title="Keyboard Shortcuts (? or ⌨)">
+          <span>⌨️</span>
+        </button>
+
         <!-- Help Button -->
         <button class="topbar-icon-btn" id="btn-help" title="Flux Documentation &amp; Help">
           <span>?</span>
@@ -273,6 +283,7 @@
                 <button class="btn-gold-solid" id="btn-choose-files">Choose Files</button>
                 <button class="btn-dark-pill" id="btn-choose-folder">Choose Folder</button>
                 <button class="btn-dark-pill" id="btn-paste-clipboard" title="Paste files copied in your clipboard">📋 Paste from Clipboard (Ctrl+V)</button>
+                <button class="btn-dark-pill btn-beam-clip" id="btn-open-beam" title="Beam text, links, or notes directly">⚡ Beam Text / Link</button>
               </div>
               <p class="dropzone-tip-caption">💡 Drag &amp; drop any files or folders here, or press <b>Ctrl+V</b> to paste copied screenshots/files.</p>
             </div>
@@ -841,8 +852,16 @@
               <label class="flux-switch"><input type="checkbox" /><span class="slider round"></span></label>
             </div>
             <div class="settings-switch-row">
-              <div class="sw-label">Dark mode</div>
-              <label class="flux-switch"><input type="checkbox" checked /><span class="slider round"></span></label>
+              <div class="sw-label">Color Theme</div>
+              <select class="settings-mini-select" id="full-setting-theme-select">
+                <option value="dark">Obsidian Dark</option>
+                <option value="oled">OLED Pure Black</option>
+                <option value="light">Light Frost</option>
+                <option value="cyber">Cyber Neon</option>
+                <option value="sunset">Sunset Ember</option>
+                <option value="midnight">Midnight Violet</option>
+                <option value="aurora">Nordic Aurora</option>
+              </select>
             </div>
           </div>
 
@@ -879,20 +898,19 @@
           <div class="settings-box-section">
             <h3 class="settings-sec-title">Notifications</h3>
             <div class="settings-switch-row">
-              <div class="sw-label">Transfer complete</div>
-              <label class="flux-switch"><input type="checkbox" checked /><span class="slider round"></span></label>
+              <div class="sw-label">Desktop notifications</div>
+              <button class="btn-xs btn-gold-outline" id="btn-full-request-notif">Enable Notifications</button>
             </div>
             <div class="settings-switch-row">
-              <div class="sw-label">Transfer failed</div>
-              <label class="flux-switch"><input type="checkbox" checked /><span class="slider round"></span></label>
+              <div class="sw-label">Procedural sound effects</div>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <button class="btn-xs btn-dark-pill" id="btn-full-test-sound">🔊 Test</button>
+                <label class="flux-switch"><input type="checkbox" id="full-setting-sound-toggle" checked /><span class="slider round"></span></label>
+              </div>
             </div>
             <div class="settings-switch-row">
               <div class="sw-label">New device discovered</div>
               <label class="flux-switch"><input type="checkbox" checked /><span class="slider round"></span></label>
-            </div>
-            <div class="settings-switch-row">
-              <div class="sw-label">Sound alerts</div>
-              <label class="flux-switch"><input type="checkbox" /><span class="slider round"></span></label>
             </div>
           </div>
 
@@ -1061,8 +1079,14 @@
 
     <h2 class="modal-title text-center">Pair a new device</h2>
 
-    <div class="pair-two-col-grid">
-      
+    <!-- Pairing Navigation Tabs -->
+    <div class="modal-tab-row">
+      <button class="modal-tab-pill active" id="tab-pair-code">Show Code &amp; QR</button>
+      <button class="modal-tab-pill" id="tab-pair-camera">📷 Scan QR with Camera</button>
+    </div>
+
+    <!-- Tab 1: Code & QR Broadcast View -->
+    <div id="pair-tab-code-view" class="pair-two-col-grid">
       <!-- Left: QR Code & Code Display -->
       <div class="pair-qr-col">
         <div class="qr-code-gold-box" id="qr-display-box">
@@ -1080,7 +1104,7 @@
       <div class="pair-details-col">
         <div class="pair-form-group">
           <label class="form-label">Your device name</label>
-          <input type="text" class="pair-input" id="pair-input-alias" value="Maya's MacBook Pro" spellcheck="false" />
+          <input type="text" class="pair-input" id="pair-input-alias" value="Kunal" spellcheck="false" />
         </div>
 
         <label class="remember-checkbox-row">
@@ -1096,7 +1120,7 @@
           <div class="target-peer-box">
             <span class="target-laptop-icon">💻</span>
             <div class="target-info">
-              <b id="pair-target-alias">Studio iMac</b>
+              <b id="pair-target-alias">Nearby Device</b>
               <span class="ready-connect-tag">Ready to connect</span>
             </div>
             <span class="trusted-shield-tag">
@@ -1119,7 +1143,147 @@
         <button class="btn-gold-solid btn-full" id="btn-confirm-pairing">Confirm pairing</button>
         <button class="btn-ghost-cancel btn-full text-center" id="btn-cancel-pairing">Cancel</button>
       </div>
+    </div>
 
+    <!-- Tab 2: Camera Scanner View -->
+    <div id="pair-tab-camera-view" class="pair-camera-view" hidden>
+      <div class="camera-scanner-stage">
+        <video id="qr-camera-video" playsinline muted class="camera-scanner-video"></video>
+        <canvas id="qr-camera-canvas" hidden></canvas>
+        <div class="scanner-laser-sweep"></div>
+        <div class="scanner-frame-reticle">
+          <span class="reticle-corner tl"></span>
+          <span class="reticle-corner tr"></span>
+          <span class="reticle-corner bl"></span>
+          <span class="reticle-corner br"></span>
+        </div>
+      </div>
+      <p class="camera-tip-text" id="camera-status-msg">Align peer QR code within the golden frame</p>
+      
+      <div class="camera-manual-join-row">
+        <input type="text" class="pair-input" id="camera-pin-input" placeholder="Or enter 6-digit PIN" maxlength="6" autocomplete="off" />
+        <button class="btn-gold-solid" id="btn-camera-pin-join">Connect</button>
+      </div>
+      
+      <div class="camera-controls-row">
+        <button class="btn-dark-pill btn-xs" id="btn-camera-flip">Flip Camera</button>
+        <button class="btn-dark-pill btn-xs" id="btn-camera-toggle">Restart Camera</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ==================== MODAL: QUICK BEAM (TEXT / LINK) ==================== -->
+<div class="modal-backdrop" id="quick-beam-modal" hidden>
+  <div class="modal-box modal-quick-beam">
+    <button class="modal-close-btn" id="btn-close-quick-beam" title="Close">✕</button>
+    <div class="beam-header">
+      <span class="beam-bolt-icon">⚡</span>
+      <div>
+        <h2 class="modal-title">Quick Beam</h2>
+        <p class="modal-sub">Share text, links, notes, or code instantly across devices.</p>
+      </div>
+    </div>
+
+    <div class="beam-form">
+      <div class="beam-target-row">
+        <label class="form-label" for="beam-target-select">Recipient Device:</label>
+        <select class="pair-input beam-select" id="beam-target-select">
+          <!-- Populated dynamically via JS -->
+        </select>
+      </div>
+
+      <div class="beam-input-wrap">
+        <textarea class="beam-textarea" id="beam-text-content" placeholder="Paste link, note, or type message here (Ctrl+Enter to beam)..." rows="6" spellcheck="false"></textarea>
+        <div class="beam-meta-bar">
+          <span class="beam-char-counter" id="beam-char-counter">0 characters</span>
+          <button class="btn-xs btn-dark-pill" id="btn-beam-paste-clip">📋 Paste Clipboard</button>
+        </div>
+      </div>
+
+      <!-- Optional Password Encryption Toggle -->
+      <div class="beam-encrypt-row">
+        <label class="beam-encrypt-check">
+          <input type="checkbox" id="check-beam-encrypt" />
+          <span>🔒 Password Protect (WebCrypto AES-256)</span>
+        </label>
+        <div class="beam-password-field" id="beam-password-field" hidden>
+          <input type="password" class="pair-input" id="beam-password-input" placeholder="Enter transfer passphrase" autocomplete="off" />
+        </div>
+      </div>
+
+      <div class="beam-actions-row">
+        <button class="btn-dark-pill" id="btn-beam-cancel">Cancel</button>
+        <button class="btn-gold-solid" id="btn-beam-send">
+          <span>⚡ Beam Now</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== MODAL: CLIP RECEIVED ==================== -->
+<div class="modal-backdrop" id="quick-clip-modal" hidden>
+  <div class="modal-box modal-quick-clip">
+    <button class="modal-close-btn" id="btn-close-quick-clip" title="Close">✕</button>
+    <div class="clip-received-header">
+      <span class="clip-incoming-icon">⚡</span>
+      <div class="clip-sender-meta">
+        <h2 class="modal-title">Text / Link Received</h2>
+        <p class="modal-sub">From <b id="clip-sender-name">Peer Device</b></p>
+      </div>
+    </div>
+
+    <!-- Password prompt if encrypted -->
+    <div class="clip-decrypt-box" id="clip-decrypt-box" hidden>
+      <p class="decrypt-prompt">🔒 This beam is protected with AES-256 encryption. Enter passphrase to decrypt:</p>
+      <div class="decrypt-input-row">
+        <input type="password" class="pair-input" id="clip-decrypt-pass" placeholder="Passphrase" />
+        <button class="btn-gold-solid btn-sm" id="btn-clip-decrypt">Unlock</button>
+      </div>
+    </div>
+
+    <div class="clip-content-box" id="clip-content-box">
+      <textarea class="clip-result-textarea" id="clip-result-text" readonly rows="7"></textarea>
+    </div>
+
+    <div class="clip-actions-row">
+      <button class="btn-gold-solid" id="btn-clip-copy">
+        <span id="clip-copy-icon">📋</span> <span id="clip-copy-text">Copy to Clipboard</span>
+      </button>
+      <button class="btn-dark-pill" id="btn-clip-open-url" hidden>
+        🔗 Open Link
+      </button>
+      <button class="btn-dark-pill" id="btn-clip-save-file">
+        💾 Save as .txt
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== MODAL: KEYBOARD SHORTCUTS HUD ==================== -->
+<div class="modal-backdrop" id="shortcuts-modal" hidden>
+  <div class="modal-box modal-shortcuts">
+    <button class="modal-close-btn" id="btn-close-shortcuts" title="Close">✕</button>
+    <h2 class="modal-title">Keyboard Shortcuts</h2>
+    <p class="modal-sub">Power-user key combinations for instant control.</p>
+
+    <div class="hud-shortcuts-grid">
+      <div class="hud-item"><kbd>S</kbd> <span>Send Mode / Dashboard</span></div>
+      <div class="hud-item"><kbd>R</kbd> <span>Receive Radar Mode</span></div>
+      <div class="hud-item"><kbd>B</kbd> <span>⚡ Quick Beam Text / Note</span></div>
+      <div class="hud-item"><kbd>P</kbd> <span>🔗 Pair Device &amp; Camera Scan</span></div>
+      <div class="hud-item"><kbd>T</kbd> <span>Transfers Progress View</span></div>
+      <div class="hud-item"><kbd>H</kbd> <span>Transfer History</span></div>
+      <div class="hud-item"><kbd>D</kbd> <span>Manage Devices</span></div>
+      <div class="hud-item"><kbd>Ctrl+V</kbd> <span>Paste Files or Screenshots</span></div>
+      <div class="hud-item"><kbd>?</kbd> <span>Toggle Shortcuts HUD</span></div>
+      <div class="hud-item"><kbd>Esc</kbd> <span>Dismiss Any Active Modal</span></div>
+    </div>
+
+    <div class="modal-footer-action">
+      <button class="btn-gold-solid btn-full" id="btn-shortcuts-close">Close HUD</button>
     </div>
   </div>
 </div>
@@ -1129,15 +1293,56 @@
   <div class="modal-box modal-settings">
     <button class="modal-close-btn" id="btn-close-settings" title="Close">✕</button>
     <h2 class="modal-title">Settings</h2>
-    <p class="modal-sub">Configure your Flux device preferences and connection.</p>
+    <p class="modal-sub">Configure your Flux device preferences, audio, and themes.</p>
 
     <div class="settings-form">
       <div class="settings-group">
         <label class="form-label">Device Name / Alias</label>
         <div class="input-with-button">
-          <input type="text" class="pair-input" id="setting-alias" value="Maya's MacBook Pro" maxlength="32" spellcheck="false" />
+          <input type="text" class="pair-input" id="setting-alias" value="Kunal" maxlength="32" spellcheck="false" />
           <button class="btn-dark-pill" id="btn-random-alias">🎲 Random</button>
           <button class="btn-gold-solid" id="btn-save-alias">Save</button>
+        </div>
+      </div>
+
+      <div class="settings-group">
+        <label class="form-label">Theme / Color Mode</label>
+        <select class="pair-input" id="setting-theme-select">
+          <option value="dark">Obsidian Dark (Luxury Canva Gold)</option>
+          <option value="oled">OLED Pure Black (High Contrast)</option>
+          <option value="light">Light Frost (Clean Glass)</option>
+          <option value="cyber">Cyber Neon (Emerald &amp; Cyan)</option>
+          <option value="sunset">Sunset Ember (Warm Gold)</option>
+          <option value="midnight">Midnight Violet (Deep Indigo)</option>
+          <option value="aurora">Nordic Aurora (Polar Teal)</option>
+        </select>
+      </div>
+
+      <div class="settings-group">
+        <label class="form-label">Procedural Web Audio</label>
+        <div class="settings-toggle-row">
+          <div class="setting-toggle-info">
+            <b>Sound Effects &amp; Sonar Radar</b>
+            <span>Subtle procedural audio synthesized via Web Audio API</span>
+          </div>
+          <div class="setting-toggle-actions">
+            <button class="btn-xs btn-dark-pill" id="btn-test-sound">🔊 Test Ping</button>
+            <label class="flux-switch">
+              <input type="checkbox" id="setting-sound-toggle" checked />
+              <span class="slider round"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-group">
+        <label class="form-label">Desktop Notifications</label>
+        <div class="settings-toggle-row">
+          <div class="setting-toggle-info">
+            <b>Background Transfer Alerts</b>
+            <span id="setting-notif-status">Notify when transfers complete or peers connect</span>
+          </div>
+          <button class="btn-xs btn-gold-outline" id="btn-request-notif">Enable Notifications</button>
         </div>
       </div>
 
@@ -1147,11 +1352,12 @@
       </div>
 
       <div class="settings-group">
-        <label class="form-label">Network &amp; STUN Relay</label>
+        <label class="form-label">Network &amp; Transport Engine</label>
         <div class="settings-read-card" id="settings-stun-info">
           <div><b>STUN:</b> stun:stun.l.google.com:19302</div>
-          <div><b>Protocol:</b> WebRTC DataChannel + Chunked SHA-256</div>
-          <div><b>Fallback:</b> In-memory Go Relay Bridge</div>
+          <div><b>Protocol:</b> WebRTC DataChannel (256 KiB Adaptive Chunks)</div>
+          <div><b>Integrity:</b> Streaming WebCrypto SHA-256 Checksum</div>
+          <div><b>Security:</b> DTLS 1.2 End-to-End Encryption</div>
         </div>
       </div>
     </div>

@@ -33,7 +33,8 @@ function getAvatar() {
 }
 
 const THEMES = [
-  { id: "dark", label: "Dark Glass" },
+  { id: "dark", label: "Obsidian Dark" },
+  { id: "oled", label: "OLED Pure Black" },
   { id: "light", label: "Light Frost" },
   { id: "cyber", label: "Cyber Neon" },
   { id: "sunset", label: "Sunset Ember" },
@@ -49,6 +50,14 @@ function applyTheme(themeId, notify = false) {
   } catch {}
   if (window.UI && window.UI._updateThemeButtons) {
     window.UI._updateThemeButtons(match.id);
+  }
+  const themeSelect = document.getElementById("setting-theme-select");
+  if (themeSelect) {
+    themeSelect.value = match.id;
+  }
+  const fullThemeSelect = document.getElementById("full-setting-theme-select");
+  if (fullThemeSelect) {
+    fullThemeSelect.value = match.id;
   }
   const btn = document.getElementById("btn-theme");
   if (btn) {
@@ -344,7 +353,29 @@ async function main() {
         break;
       case "incoming":
         UI.startTransfer(ev.transferId, ev.name, ev.size, "recv", ev.mode, nameOf(ev.peerId));
-        UI.showIncoming(ev.transferId, ev.name, ev.size, nameOf(ev.peerId), "showSaveFilePicker" in window);
+        if (!ev.isClip) {
+          UI.showIncoming(ev.transferId, ev.name, ev.size, nameOf(ev.peerId), "showSaveFilePicker" in window);
+        }
+        break;
+      case "clip_received":
+        UI.showQuickClip({
+          transferId: ev.transferId,
+          name: ev.name,
+          text: ev.text,
+          peerId: ev.peerId,
+          peerName: nameOf(ev.peerId),
+          verified: ev.verified,
+        });
+        saveHistoryItem({
+          transferId: ev.transferId,
+          name: ev.name,
+          size: ev.size,
+          role: "recv",
+          mode: "direct",
+          peerName: nameOf(ev.peerId),
+          verified: ev.verified,
+          isClip: true,
+        });
         break;
       case "hashing":
         UI.hashing(ev.transferId, ev.done, ev.total);

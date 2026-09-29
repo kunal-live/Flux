@@ -5,6 +5,10 @@
 // ==========================================================================
 
 import { AVATARS, getAvatarById, getAvatarSvg } from "./avatars.js";
+import { Sound } from "./audio.js";
+import { Notifier } from "./notifications.js";
+import { QRScanner } from "./scanner.js";
+import { encryptString, decryptString, isEncryptedPayload } from "./crypto.js";
 
 const $ = (id) => document.getElementById(id);
 
@@ -762,7 +766,149 @@ export const UI = {
       this.toast("Transfer declined");
     });
 
-    // 12. Global Keyboard Shortcuts
+    // 12. Quick Beam Events
+    $("btn-open-beam")?.addEventListener("click", () => this.openQuickBeam());
+    $("btn-close-quick-beam")?.addEventListener("click", () => this.closeQuickBeam());
+    $("btn-beam-cancel")?.addEventListener("click", () => this.closeQuickBeam());
+    $("btn-beam-send")?.addEventListener("click", () => this.sendQuickBeam());
+    $("quick-beam-modal")?.addEventListener("click", (e) => {
+      if (e.target.id === "quick-beam-modal") this.closeQuickBeam();
+    });
+    $("btn-beam-paste-clip")?.addEventListener("click", async () => {
+      try {
+        const text = await navigator.clipboard.readText();
+        if (text) {
+          const ta = $("beam-text-content");
+          if (ta) {
+            ta.value = text;
+            this._updateBeamCharCounter();
+            this.toast("Pasted clipboard into Quick Beam 📋");
+          }
+        }
+      } catch {
+        this.toast("Clipboard access denied — press Ctrl+V in the box", "error");
+      }
+    });
+    $("check-beam-encrypt")?.addEventListener("change", (e) => {
+      const field = $("beam-password-field");
+      if (field) field.hidden = !e.target.checked;
+      if (e.target.checked) $("beam-password-input")?.focus();
+    });
+    $("beam-text-content")?.addEventListener("input", () => this._updateBeamCharCounter());
+    $("beam-text-content")?.addEventListener("keydown", (e) => {
+      if (e.ctrlKey && e.key === "Enter") this.sendQuickBeam();
+    });
+
+    // 13. Quick Clip Received Events
+    $("btn-close-quick-clip")?.addEventListener("click", () => this.closeQuickClip());
+    $("btn-clip-copy")?.addEventListener("click", () => this.copyClipText());
+    $("btn-clip-save-file")?.addEventListener("click", () => this.saveClipToFile());
+    $("btn-clip-decrypt")?.addEventListener("click", () => this.decryptIncomingClip());
+    $("clip-decrypt-pass")?.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") this.decryptIncomingClip();
+    });
+    $("quick-clip-modal")?.addEventListener("click", (e) => {
+      if (e.target.id === "quick-clip-modal") this.closeQuickClip();
+    });
+
+    // 14. Shortcuts HUD Events
+    $("btn-open-shortcuts")?.addEventListener("click", () => this.openShortcuts());
+    $("btn-close-shortcuts")?.addEventListener("click", () => this.closeShortcuts());
+    $("btn-shortcuts-close")?.addEventListener("click", () => this.closeShortcuts());
+    $("shortcuts-modal")?.addEventListener("click", (e) => {
+      if (e.target.id === "shortcuts-modal") this.closeShortcuts();
+    });
+
+    // 15. Audio Soundscape Controls
+    const soundEnabled = Sound.isEnabled();
+    const setSoundUI = (en) => {
+      if ($("sound-icon-indicator")) $("sound-icon-indicator").textContent = en ? "🔊" : "🔇";
+      if ($("setting-sound-toggle")) $("setting-sound-toggle").checked = en;
+      if ($("full-setting-sound-toggle")) $("full-setting-sound-toggle").checked = en;
+    };
+    setSoundUI(soundEnabled);
+
+    $("btn-toggle-sound")?.addEventListener("click", () => {
+      const en = Sound.toggle();
+      setSoundUI(en);
+      this.toast(en ? "Sound effects enabled 🔊" : "Sound effects muted 🔇");
+    });
+    $("setting-sound-toggle")?.addEventListener("change", (e) => {
+      Sound.setEnabled(e.target.checked);
+      setSoundUI(e.target.checked);
+    });
+    $("full-setting-sound-toggle")?.addEventListener("change", (e) => {
+      Sound.setEnabled(e.target.checked);
+      setSoundUI(e.target.checked);
+    });
+    $("btn-test-sound")?.addEventListener("click", () => {
+      Sound.play("sonar");
+      this.toast("Synthesized audio radar ping 🔊");
+    });
+    $("btn-full-test-sound")?.addEventListener("click", () => {
+      Sound.play("sonar");
+      this.toast("Synthesized audio radar ping 🔊");
+    });
+
+    // 16. Desktop Notifications
+    const updateNotifUI = (granted) => {
+      if ($("setting-notif-status")) $("setting-notif-status").textContent = granted ? "Desktop notifications enabled (Active)" : "Notifications blocked by browser";
+      if ($("btn-request-notif")) $("btn-request-notif").textContent = granted ? "✓ Alerts Active" : "Blocked";
+      if ($("btn-full-request-notif")) $("btn-full-request-notif").textContent = granted ? "✓ Alerts Active" : "Enable Notifications";
+    };
+    if (Notifier.isSupported() && Notification.permission === "granted") {
+      updateNotifUI(true);
+    }
+    const handleNotifRequest = async () => {
+      const granted = await Notifier.requestPermission();
+      updateNotifUI(granted);
+      this.toast(granted ? "Desktop notifications enabled!" : "Notifications permission denied");
+    };
+    $("btn-request-notif")?.addEventListener("click", handleNotifRequest);
+    $("btn-full-request-notif")?.addEventListener("click", handleNotifRequest);
+
+    // 17. Theme Selector in Settings
+    const curTheme = localStorage.getItem("flux-theme") || "dark";
+    if ($("setting-theme-select")) {
+      $("setting-theme-select").value = curTheme;
+      $("setting-theme-select").addEventListener("change", (e) => {
+        if (this.h.onThemeSelect) this.h.onThemeSelect(e.target.value);
+      });
+    }
+    if ($("full-setting-theme-select")) {
+      $("full-setting-theme-select").value = curTheme;
+      $("full-setting-theme-select").addEventListener("change", (e) => {
+        if (this.h.onThemeSelect) this.h.onThemeSelect(e.target.value);
+      });
+    }
+
+    // 18. Pair Tabs & Camera Scanning
+    $("tab-pair-code")?.addEventListener("click", () => this.switchPairTab("code"));
+    $("tab-pair-camera")?.addEventListener("click", () => this.switchPairTab("camera"));
+    $("btn-camera-pin-join")?.addEventListener("click", () => {
+      const code = $("camera-pin-input")?.value.trim().toUpperCase();
+      if (code) {
+        this.closePair();
+        if (this.h.onJoinCode) this.h.onJoinCode(code);
+      } else {
+        this.toast("Please enter a 6-digit PIN code", "error");
+      }
+    });
+    $("camera-pin-input")?.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") $("btn-camera-pin-join")?.click();
+    });
+    $("btn-camera-flip")?.addEventListener("click", () => {
+      if (this._qrScanner) this._qrScanner.flipCamera();
+    });
+    $("btn-camera-toggle")?.addEventListener("click", () => {
+      if (this._qrScanner) {
+        this._qrScanner.stop();
+        this._qrScanner.start();
+        this.toast("Camera restarted 📷");
+      }
+    });
+
+    // 19. Global Keyboard Shortcuts
     window.addEventListener("keydown", (e) => {
       // Don't intercept typing in inputs
       if (e.target.tagName === "INPUT" || e.target.tagName === "SELECT" || e.target.tagName === "TEXTAREA") {
@@ -772,22 +918,27 @@ export const UI = {
         }
         return;
       }
+      const k = e.key.toLowerCase();
       if (e.key === "Escape") {
         this.closeAllModals();
-      } else if (e.key === "1") {
+      } else if (k === "s" || e.key === "1") {
+        this.switchDashboardMode("send");
         this.switchView("dashboard");
-      } else if (e.key === "2") {
-        this.switchView("send");
-      } else if (e.key === "3") {
+      } else if (k === "r") {
+        this.switchDashboardMode("receive");
+        this.switchView("dashboard");
+      } else if (k === "t" || e.key === "3") {
         this.switchView("transfers");
-      } else if (e.key === "4") {
+      } else if (k === "h" || e.key === "4") {
         this.switchView("history");
-      } else if (e.key === "5") {
+      } else if (k === "d" || e.key === "5") {
         this.switchView("devices");
-      } else if (e.key === "6") {
-        this.switchView("settings");
+      } else if (k === "p") {
+        this.openPair();
+      } else if (k === "b") {
+        this.openQuickBeam();
       } else if (e.key === "?" || (e.shiftKey && e.key === "/")) {
-        this.openHelp();
+        this.toggleShortcuts();
       }
     });
 
@@ -824,6 +975,11 @@ export const UI = {
     this.closeDiagnostics();
     this.closeTroubleshoot();
     this.closeDevManage();
+    this.closeProfileModal();
+    this.closeQuickBeam();
+    this.closeQuickClip();
+    this.closeShortcuts();
+    if (this._qrScanner) this._qrScanner.stop();
     document.querySelector(".target-picker-dropdown")?.remove();
   },
 
@@ -1098,8 +1254,12 @@ export const UI = {
       totalBytes += file.size || 0;
       const row = document.createElement("div");
       row.className = "queue-file-item";
+      const iconHtml = file.previewUrl 
+        ? `<img src="${file.previewUrl}" class="q-thumb-preview" alt="preview" />` 
+        : `<span class="q-icon">${file.icon || '📄'}</span>`;
+
       row.innerHTML = `
-        <span class="q-icon">${file.icon || '📄'}</span>
+        ${iconHtml}
         <div class="q-meta">
           <div class="q-name">${file.name}</div>
           <div class="q-sub">${file.type || 'File'}</div>
@@ -1109,6 +1269,9 @@ export const UI = {
       `;
 
       row.querySelector(".btn-remove-q").addEventListener("click", () => {
+        if (file.previewUrl) {
+          try { URL.revokeObjectURL(file.previewUrl); } catch {}
+        }
         this._stagedFiles.splice(idx, 1);
         this.renderQueue();
         this._updateSendStagingView();
@@ -1127,14 +1290,24 @@ export const UI = {
     const newItems = Array.from(fileList).map((f) => {
       let icon = "📄";
       let type = "File";
-      if (f.type.startsWith("image/")) { icon = "🖼"; type = "Image"; }
-      else if (f.type.startsWith("video/")) { icon = "🎬"; type = "Video"; }
-      else if (f.name.endsWith(".zip") || f.name.endsWith(".rar") || f.name.endsWith(".tar")) { icon = "🗜"; type = "Archive"; }
+      let previewUrl = null;
+      if (f.type && f.type.startsWith("image/")) {
+        icon = "🖼";
+        type = "Image";
+        try { previewUrl = URL.createObjectURL(f); } catch {}
+      } else if (f.type && f.type.startsWith("video/")) {
+        icon = "🎬";
+        type = "Video";
+      } else if (f.name && (f.name.endsWith(".zip") || f.name.endsWith(".rar") || f.name.endsWith(".tar"))) {
+        icon = "🗜";
+        type = "Archive";
+      }
       return {
         name: f.name,
         size: f.size,
         type: type,
         icon: icon,
+        previewUrl: previewUrl,
         rawFile: f,
       };
     });
@@ -1145,6 +1318,11 @@ export const UI = {
   },
 
   clearStagedFiles() {
+    this._stagedFiles.forEach(f => {
+      if (f.previewUrl) {
+        try { URL.revokeObjectURL(f.previewUrl); } catch {}
+      }
+    });
     this._stagedFiles = [];
     this.renderQueue();
     this._updateSendStagingView();
@@ -1387,8 +1565,68 @@ export const UI = {
   openPair() {
     const modal = $("pair-modal");
     if (modal) modal.hidden = false;
+    this.switchPairTab("code");
     this._renderDefaultQR();
     if (this.h.onCreateCode) this.h.onCreateCode();
+  },
+
+  switchPairTab(tab) {
+    const tabCode = $("tab-pair-code");
+    const tabCam = $("tab-pair-camera");
+    const viewCode = $("pair-tab-code-view");
+    const viewCam = $("pair-tab-camera-view");
+
+    if (tab === "camera") {
+      if (tabCam) tabCam.classList.add("active");
+      if (tabCode) tabCode.classList.remove("active");
+      if (viewCam) {
+        viewCam.hidden = false;
+        viewCam.style.display = "flex";
+      }
+      if (viewCode) {
+        viewCode.hidden = true;
+        viewCode.style.display = "none";
+      }
+
+      const video = $("qr-camera-video");
+      if (video) {
+        if (!this._qrScanner) {
+          this._qrScanner = new QRScanner(video, (raw) => this._onQrCodeScanned(raw));
+        }
+        this._qrScanner.start();
+        if ($("camera-status-msg")) $("camera-status-msg").textContent = "Align peer QR code within the golden frame";
+      }
+    } else {
+      if (tabCode) tabCode.classList.add("active");
+      if (tabCam) tabCam.classList.remove("active");
+      if (viewCode) {
+        viewCode.hidden = false;
+        viewCode.style.display = "grid";
+      }
+      if (viewCam) {
+        viewCam.hidden = true;
+        viewCam.style.display = "none";
+      }
+      if (this._qrScanner) this._qrScanner.stop();
+    }
+  },
+
+  _onQrCodeScanned(raw) {
+    if (!raw) return;
+    let code = raw;
+    try {
+      if (raw.includes("code=")) {
+        const u = new URL(raw, location.origin);
+        if (u.searchParams.has("code")) {
+          code = u.searchParams.get("code");
+        }
+      }
+    } catch {}
+    code = code.trim().toUpperCase();
+    Sound.play("sonar");
+    this.closePair();
+    if (this.h.onJoinCode) this.h.onJoinCode(code);
+    this.toast(`Pairing code recognized: ${code} 📷`, "success");
   },
 
   _renderDefaultQR() {
@@ -1436,6 +1674,239 @@ export const UI = {
   closePair() {
     const modal = $("pair-modal");
     if (modal) modal.hidden = true;
+    if (this._qrScanner) this._qrScanner.stop();
+  },
+
+  // Quick Beam Modal Methods
+  openQuickBeam(targetPeer = null) {
+    const modal = $("quick-beam-modal");
+    if (!modal) return;
+    modal.hidden = false;
+    Sound.play("click");
+
+    const select = $("beam-target-select");
+    if (select) {
+      select.innerHTML = "";
+      const devs = (this._devices && this._devices.length) ? this._devices.filter(d => !d.isSelf) : DEFAULT_DEVICES.filter(d => !d.isSelf);
+      if (devs.length > 0) {
+        select.innerHTML = devs.map(d => `<option value="${d.id}">${d.alias} (${d.platform || 'Nearby'})</option>`).join("");
+        select.innerHTML += `<option value="all">⚡ Broadcast to All Nearby Devices</option>`;
+      } else {
+        select.innerHTML = `<option value="broadcast">⚡ Broadcast to Subnet</option>`;
+      }
+      if (targetPeer && select.querySelector(`option[value="${targetPeer.id}"]`)) {
+        select.value = targetPeer.id;
+      }
+    }
+    const ta = $("beam-text-content");
+    if (ta) {
+      setTimeout(() => ta.focus(), 100);
+      this._updateBeamCharCounter();
+    }
+  },
+
+  closeQuickBeam() {
+    const modal = $("quick-beam-modal");
+    if (modal) modal.hidden = true;
+  },
+
+  _updateBeamCharCounter() {
+    const ta = $("beam-text-content");
+    const counter = $("beam-char-counter");
+    if (ta && counter) {
+      const len = ta.value.length;
+      counter.textContent = `${len} character${len === 1 ? '' : 's'}`;
+    }
+  },
+
+  async sendQuickBeam() {
+    const ta = $("beam-text-content");
+    const text = ta ? ta.value.trim() : "";
+    if (!text) {
+      this.toast("Please type or paste text to beam", "error");
+      return;
+    }
+
+    const encryptCheck = $("check-beam-encrypt");
+    const isEncrypted = encryptCheck && encryptCheck.checked;
+    const passInput = $("beam-password-input");
+    const pass = passInput ? passInput.value : "";
+
+    if (isEncrypted && !pass) {
+      this.toast("Please enter a passphrase for encryption", "error");
+      return;
+    }
+
+    let payload = text;
+    let noteName = (text.startsWith("http://") || text.startsWith("https://")) ? "Shared Link.url" : "Quick Note.txt";
+
+    if (isEncrypted) {
+      try {
+        payload = await encryptString(text, pass);
+        noteName = "Encrypted Note.flux";
+      } catch (e) {
+        this.toast("Encryption failed: " + e.message, "error");
+        return;
+      }
+    }
+
+    const blob = new Blob([payload], { type: "text/plain;flux-clip=true" });
+    blob.name = noteName;
+    blob.isClip = true;
+    blob.relativePath = noteName;
+
+    const select = $("beam-target-select");
+    const targetId = select ? select.value : "all";
+
+    Sound.play("start");
+    this.closeQuickBeam();
+
+    if (targetId === "all" || targetId === "broadcast") {
+      const devs = (this._devices && this._devices.length) ? this._devices.filter(d => !d.isSelf) : DEFAULT_DEVICES.filter(d => !d.isSelf);
+      devs.forEach(d => {
+        if (this.h.onSendToPeer) this.h.onSendToPeer(d.id, [blob]);
+      });
+      this.toast(`Beamed to ${devs.length} nearby device(s) ⚡`, "success");
+    } else {
+      if (this.h.onSendToPeer) this.h.onSendToPeer(targetId, [blob]);
+      this.toast(`Beaming text snippet to recipient ⚡`, "success");
+    }
+    if (ta) ta.value = "";
+    if (passInput) passInput.value = "";
+    if (encryptCheck) encryptCheck.checked = false;
+    if ($("beam-password-field")) $("beam-password-field").hidden = true;
+  },
+
+  // Quick Clip Received Modal Methods
+  showQuickClip(ev) {
+    const modal = $("quick-clip-modal");
+    if (!modal) return;
+    modal.hidden = false;
+    Sound.play("incoming");
+
+    const senderEl = $("clip-sender-name");
+    if (senderEl) senderEl.textContent = ev.peerName || "Nearby Device";
+
+    const decryptBox = $("clip-decrypt-box");
+    const contentBox = $("clip-content-box");
+    const ta = $("clip-result-text");
+    const btnOpenUrl = $("btn-clip-open-url");
+
+    this._currentClipData = ev;
+
+    const isEnc = isEncryptedPayload(ev.text);
+    if (isEnc) {
+      if (decryptBox) decryptBox.hidden = false;
+      if (contentBox) contentBox.hidden = true;
+      if (btnOpenUrl) btnOpenUrl.hidden = true;
+      setTimeout(() => $("clip-decrypt-pass")?.focus(), 100);
+    } else {
+      if (decryptBox) decryptBox.hidden = true;
+      if (contentBox) contentBox.hidden = false;
+      if (ta) ta.value = ev.text || "";
+      this._updateClipUrlButton(ev.text);
+    }
+
+    Notifier.notify("⚡ Text / Link Received", {
+      body: `From ${ev.peerName || 'Peer'}: ${(ev.text || '').slice(0, 60)}`,
+    });
+  },
+
+  _updateClipUrlButton(text) {
+    const btnOpenUrl = $("btn-clip-open-url");
+    if (!btnOpenUrl) return;
+    const trimmed = (text || "").trim();
+    if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
+      btnOpenUrl.hidden = false;
+      btnOpenUrl.onclick = () => {
+        window.open(trimmed, "_blank", "noopener,noreferrer");
+      };
+    } else {
+      btnOpenUrl.hidden = true;
+    }
+  },
+
+  async decryptIncomingClip() {
+    const pass = $("clip-decrypt-pass")?.value || "";
+    if (!pass) {
+      this.toast("Enter passphrase to decrypt", "error");
+      return;
+    }
+    try {
+      const plain = await decryptString(this._currentClipData.text, pass);
+      const decryptBox = $("clip-decrypt-box");
+      const contentBox = $("clip-content-box");
+      const ta = $("clip-result-text");
+      if (decryptBox) decryptBox.hidden = true;
+      if (contentBox) contentBox.hidden = false;
+      if (ta) ta.value = plain;
+      this._currentClipData.decryptedText = plain;
+      this._updateClipUrlButton(plain);
+      Sound.play("sonar");
+      this.toast("Decrypted successfully 🔓", "success");
+    } catch (err) {
+      Sound.play("error");
+      this.toast("Decryption failed: Incorrect passphrase", "error");
+    }
+  },
+
+  copyClipText() {
+    const ta = $("clip-result-text");
+    const text = ta ? ta.value : "";
+    if (!text) return;
+    navigator.clipboard.writeText(text).then(() => {
+      Sound.play("click");
+      const copyText = $("clip-copy-text");
+      if (copyText) copyText.textContent = "✓ Copied to Clipboard!";
+      setTimeout(() => {
+        if (copyText) copyText.textContent = "Copy to Clipboard";
+      }, 2000);
+      this.toast("Copied to clipboard 📋", "success");
+    }).catch(() => {
+      this.toast("Failed to copy to clipboard", "error");
+    });
+  },
+
+  saveClipToFile() {
+    const ta = $("clip-result-text");
+    const text = ta ? ta.value : "";
+    if (!text) return;
+    const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = (this._currentClipData?.name || "flux-note.txt").replace(".flux", ".txt");
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    Sound.play("click");
+    this.toast("Saved as text note 💾", "success");
+  },
+
+  closeQuickClip() {
+    const modal = $("quick-clip-modal");
+    if (modal) modal.hidden = true;
+  },
+
+  // Shortcuts HUD Methods
+  openShortcuts() {
+    const modal = $("shortcuts-modal");
+    if (modal) modal.hidden = false;
+    Sound.play("click");
+  },
+
+  closeShortcuts() {
+    const modal = $("shortcuts-modal");
+    if (modal) modal.hidden = true;
+  },
+
+  toggleShortcuts() {
+    const modal = $("shortcuts-modal");
+    if (!modal) return;
+    if (modal.hidden) {
+      this.openShortcuts();
+    } else {
+      this.closeShortcuts();
+    }
   },
 
   showCode(code, url, renderQR) {
@@ -1513,6 +1984,10 @@ export const UI = {
     if ($("incoming-total-size-label")) $("incoming-total-size-label").textContent = "744.5 MB";
 
     modal.hidden = false;
+    Sound.play("incoming");
+    Notifier.notify("Incoming Transfer Request", {
+      body: `${peerName || "Nearby Device"} wants to send "${name}" (${formatBytes(size)})`,
+    });
   },
 
   closeIncoming() {
@@ -1523,6 +1998,7 @@ export const UI = {
 
   // Real Transfer Callbacks from app.js / transfer engine
   startTransfer(id, name, size, role, mode, peerName, fileType) {
+    Sound.play("start");
     this._heroTransfer.peerName = peerName || "Jordan's MacBook Air";
     this._heroTransfer.bytesTotal = size;
     this._heroTransfer.bytesSent = 0;
@@ -1579,6 +2055,7 @@ export const UI = {
   finishSend(id, verified, name) {
     if (!verified) {
       this.updateHeroRing(100, true);
+      Sound.play("error");
       if ($("hero-speed-display")) $("hero-speed-display").textContent = "Integrity check failed!";
       if ($("hero-eta-display")) $("hero-eta-display").innerHTML = `<span style="color:#EF4444;font-weight:600;">SHA-256 Mismatch • Transfer Corrupted</span>`;
       this.toast(`⚠️ Transfer failed integrity check for ${name || "file"} (SHA-256 mismatch)`, "error");
@@ -1586,6 +2063,10 @@ export const UI = {
       return;
     }
     this.updateHeroRing(100, false);
+    Sound.play("complete");
+    Notifier.notify("Transfer Complete", {
+      body: `"${name || 'File'}" was sent and verified with SHA-256.`,
+    });
     if ($("hero-speed-display")) $("hero-speed-display").textContent = "Verified with SHA-256";
     if ($("hero-eta-display")) $("hero-eta-display").textContent = "Transfer complete";
     this.toast("✓ Transfer complete • All files verified with SHA-256", "success");
@@ -1595,6 +2076,7 @@ export const UI = {
   finishReceive(id, name, blob, streaming, verified) {
     if (!verified) {
       this.updateHeroRing(100, true);
+      Sound.play("error");
       if ($("hero-speed-display")) $("hero-speed-display").textContent = "Integrity check failed!";
       if ($("hero-eta-display")) $("hero-eta-display").innerHTML = `<span style="color:#EF4444;font-weight:600;">SHA-256 Mismatch • File Corrupted</span>`;
       this.toast(`⚠️ Received ${name || "file"} failed integrity verification (SHA-256 mismatch)`, "error");
@@ -1602,6 +2084,10 @@ export const UI = {
       return;
     }
     this.updateHeroRing(100, false);
+    Sound.play("complete");
+    Notifier.notify("File Received", {
+      body: `"${name}" received and verified with SHA-256.`,
+    });
     if ($("hero-speed-display")) $("hero-speed-display").textContent = "Verified integrity";
     if ($("hero-eta-display")) $("hero-eta-display").textContent = streaming ? "Saved to disk" : "Downloaded";
     this.toast(`✓ Received ${name || "file"} • Verified integrity`, "success");
@@ -1816,6 +2302,10 @@ export const UI = {
     this.closeSettings();
     this.closeIncoming();
     this.closeProfileModal();
+    this.closeQuickBeam();
+    this.closeQuickClip();
+    this.closeShortcuts();
+    if (this._qrScanner) this._qrScanner.stop();
     const pickerDropdown = document.querySelector(".target-picker-dropdown");
     if (pickerDropdown) pickerDropdown.remove();
   },

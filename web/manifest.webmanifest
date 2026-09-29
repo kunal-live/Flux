@@ -1,18 +1,23 @@
 {
-  "name": "Flux — Nearby File Share",
+  "name": "Flux — Share Beyond Boundaries",
   "short_name": "Flux",
-  "description": "Blazing fast, zero-install, device-to-device local file sharing — transfer unlimited files directly with zero cloud storage.",
+  "description": "Blazing fast, zero-install, device-to-device local file sharing. Transfer unlimited files directly between phones, laptops, and desktops.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "background_color": "#080d11",
-  "theme_color": "#34d399",
+  "orientation": "any",
+  "background_color": "#0d0e12",
+  "theme_color": "#F5BE38",
   "icons": [
-    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+    { "src": "/assets/flux-logo.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
   ],
   "share_target": {
-    "action": "/",
+    "action": "/?shared=1",
     "method": "GET",
-    "params": { "title": "title", "text": "text", "url": "url" }
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
   }
 }

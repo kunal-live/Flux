@@ -142,8 +142,10 @@ export class TransferManager extends EventTarget {
       const accepted = new Promise((res, rej) => { state.acceptResolve = res; state.acceptReject = rej; });
       this.signaling.send(MSG.TRANSFER_INIT, {
         transferId, wireId, fileId: transferId, fileName: file.name,
+        relativePath: file.relativePath || file.webkitRelativePath || file.name,
         size: file.size, chunkSize: state.chunkSize, totalChunks: state.totalChunks,
         fileType: file.type || "application/octet-stream", sha256: state.digest,
+        isClip: !!file.isClip,
       }, peerId);
       await accepted; // rejects if the receiver declines
 
@@ -232,9 +234,12 @@ export class TransferManager extends EventTarget {
   _handleInit(peerId, p) {
     const size = Number(p.size) || 0;
     const chunkSize = Number(p.chunkSize) || CHUNK_SIZE;
+    const isClip = !!p.isClip || (p.fileType && p.fileType.includes("flux-clip"));
     const state = {
       peerId, transferId: p.transferId, wireId: p.wireId >>> 0,
-      name: p.fileName || "file", size,
+      name: p.fileName || "file",
+      relativePath: p.relativePath || p.fileName || "file",
+      size, isClip,
       chunkSize, fileType: p.fileType || "application/octet-stream",
       totalChunks: Number(p.totalChunks) || Math.max(1, Math.ceil(size / chunkSize)),
       expectedSha: p.sha256 || "",
@@ -248,7 +253,11 @@ export class TransferManager extends EventTarget {
     this.incoming.set(state.wireId, state);
     this.incomingById.set(state.transferId, state);
     const t = this._ensureTransport(peerId, false); // may already exist from the offer
-    this._emit({ kind: "incoming", role: "recv", peerId, transferId: state.transferId, name: state.name, size: state.size, mode: t.mode });
+    this._emit({ kind: "incoming", role: "recv", peerId, transferId: state.transferId, name: state.name, size: state.size, isClip: state.isClip, mode: t.mode });
+    if (state.isClip) {
+      // Auto-accept clip beams instantly since ClipWriter requires no file picker gesture
+      this.acceptIncoming(state.transferId);
+    }
   }
 
   /** UI calls this from a click (user gesture) so the streaming writer can open. */
@@ -256,11 +265,11 @@ export class TransferManager extends EventTarget {
     const s = this.incomingById.get(transferId);
     if (!s) return;
     try {
-      s.writer = await createWriter(s.name, s.fileType, s.size);
+      s.writer = await createWriter(s.name, s.fileType, s.size, s.isClip);
       s.accepted = true;
       this.signaling.setPresence("receiving");
       this.signaling.send(MSG.TRANSFER_ACCEPT, { transferId }, s.peerId);
-      this._emit({ kind: "accepted", role: "recv", transferId, streaming: s.writer.streaming });
+      this._emit({ kind: "accepted", role: "recv", transferId, streaming: s.writer.streaming, isClip: s.isClip });
       if (s.size === 0) this._finalizeIncoming(s); // empty file
     } catch (e) {
       this.rejectIncoming(transferId);
@@ -327,7 +336,11 @@ export class TransferManager extends EventTarget {
     // Return our hash so the SENDER can confirm too (its own progress bar).
     this.signaling.send(MSG.TRANSFER_COMPLETE, { transferId: s.transferId, wireId: s.wireId, ok: verified, sha256: receiverSha }, s.peerId);
     this.signaling.setPresence("discoverable");
-    this._emit({ kind: "received", role: "recv", transferId: s.transferId, name: s.name, blob, streaming: s.writer.streaming, verified, size: s.size });
+    if (blob && blob.isClip) {
+      this._emit({ kind: "clip_received", role: "recv", transferId: s.transferId, name: s.name, text: blob.text, blob: blob.blob, verified, size: s.size, peerId: s.peerId });
+    } else {
+      this._emit({ kind: "received", role: "recv", transferId: s.transferId, name: s.name, blob, streaming: s.writer.streaming, verified, size: s.size });
+    }
     this._drop(s);
   }
 

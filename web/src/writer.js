@@ -17,7 +17,10 @@ export function streamingSupported() {
  * streaming is used (browsers require it for showSaveFilePicker).
  * Falls back to a Blob writer if streaming is unavailable or the user cancels.
  */
-export async function createWriter(fileName, fileType, size) {
+export async function createWriter(fileName, fileType, size, isClip = false) {
+  if (isClip || (fileType && fileType.includes("flux-clip"))) {
+    return new ClipWriter(fileName);
+  }
   if (typeof window !== "undefined" && window.__BENCHMARK__) {
     return new BenchmarkWriter(fileName, fileType);
   }
@@ -36,6 +39,29 @@ export async function createWriter(fileName, fileType, size) {
     }
   }
   return new BlobWriter(fileName, fileType);
+}
+
+export class ClipWriter {
+  constructor(fileName) {
+    this.fileName = fileName || "beam.txt";
+    this.chunks = new Map();
+    this.streaming = false;
+    this.isClip = true;
+  }
+  async write(offset, bytes) {
+    this.chunks.set(offset, bytes.slice ? bytes.slice() : new Uint8Array(bytes));
+  }
+  async close() {
+    const offsets = [...this.chunks.keys()].sort((a, b) => a - b);
+    const parts = offsets.map((o) => this.chunks.get(o));
+    const blob = new Blob(parts, { type: "text/plain;charset=utf-8" });
+    const text = await blob.text();
+    this.chunks.clear();
+    return { isClip: true, text, blob, fileName: this.fileName };
+  }
+  async abort() {
+    this.chunks.clear();
+  }
 }
 
 class BenchmarkWriter {

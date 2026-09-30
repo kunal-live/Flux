@@ -1,22 +1,22 @@
 <svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient id="fluxGoldGrad" x1="4" y1="4" x2="40" y2="40" gradientUnits="userSpaceOnUse">
-      <stop offset="0%" stop-color="#FFE885"/>
-      <stop offset="45%" stop-color="#F5BE38"/>
-      <stop offset="100%" stop-color="#D99818"/>
+    <linearGradient id="fluxCyanGrad" x1="4" y1="4" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#38BDF8"/>
+      <stop offset="50%" stop-color="#00A3FF"/>
+      <stop offset="100%" stop-color="#2563EB"/>
     </linearGradient>
-    <filter id="fluxGoldGlow" x="-30%" y="-30%" width="160%" height="160%">
+    <filter id="fluxCyanGlow" x="-30%" y="-30%" width="160%" height="160%">
       <feGaussianBlur stdDeviation="2.5" result="blur"/>
       <feComposite in="SourceGraphic" in2="blur" operator="over"/>
     </filter>
   </defs>
   <!-- Outer glowing hexagon -->
-  <polygon points="22,3 39,12.5 39,31.5 22,41 5,31.5 5,12.5" stroke="url(#fluxGoldGrad)" stroke-width="3" stroke-linejoin="round" fill="rgba(245, 190, 56, 0.05)" filter="url(#fluxGoldGlow)"/>
+  <polygon points="22,3 39,12.5 39,31.5 22,41 5,31.5 5,12.5" stroke="url(#fluxCyanGrad)" stroke-width="3" stroke-linejoin="round" fill="rgba(0, 163, 255, 0.08)" filter="url(#fluxCyanGlow)"/>
   <!-- Inner Isometric Cube geometry -->
   <!-- Top Face -->
-  <polygon points="22,11 31,16.5 22,22 13,16.5" fill="rgba(255, 232, 133, 0.25)" stroke="url(#fluxGoldGrad)" stroke-width="1.8" stroke-linejoin="round"/>
+  <polygon points="22,11 31,16.5 22,22 13,16.5" fill="rgba(56, 189, 248, 0.28)" stroke="url(#fluxCyanGrad)" stroke-width="1.8" stroke-linejoin="round"/>
   <!-- Left Face -->
-  <polygon points="13,16.5 22,22 22,33 13,27.5" fill="rgba(217, 152, 24, 0.15)" stroke="url(#fluxGoldGrad)" stroke-width="1.8" stroke-linejoin="round"/>
+  <polygon points="13,16.5 22,22 22,33 13,27.5" fill="rgba(37, 99, 235, 0.2)" stroke="url(#fluxCyanGrad)" stroke-width="1.8" stroke-linejoin="round"/>
   <!-- Right Face -->
-  <polygon points="22,22 31,16.5 31,27.5 22,33" fill="rgba(245, 190, 56, 0.3)" stroke="url(#fluxGoldGrad)" stroke-width="1.8" stroke-linejoin="round"/>
+  <polygon points="22,22 31,16.5 31,27.5 22,33" fill="rgba(0, 163, 255, 0.35)" stroke="url(#fluxCyanGrad)" stroke-width="1.8" stroke-linejoin="round"/>
 </svg>

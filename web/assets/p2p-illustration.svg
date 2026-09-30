@@ -1,14 +1,14 @@
 <svg width="340" height="420" viewBox="0 0 340 420" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient id="goldGlowGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#FFE885"/>
-      <stop offset="50%" stop-color="#F5BE38"/>
-      <stop offset="100%" stop-color="#D99818"/>
+    <linearGradient id="cyanGlowGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7DD3FC"/>
+      <stop offset="50%" stop-color="#00A3FF"/>
+      <stop offset="100%" stop-color="#2563EB"/>
     </linearGradient>
     <radialGradient id="ringGlow" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#F5BE38" stop-opacity="0.3"/>
-      <stop offset="60%" stop-color="#F5BE38" stop-opacity="0.08"/>
-      <stop offset="100%" stop-color="#F5BE38" stop-opacity="0"/>
+      <stop offset="0%" stop-color="#00A3FF" stop-opacity="0.3"/>
+      <stop offset="60%" stop-color="#00A3FF" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="#00A3FF" stop-opacity="0"/>
     </radialGradient>
     <filter id="p2pGlow" x="-20%" y="-20%" width="140%" height="140%">
       <feGaussianBlur stdDeviation="3" result="blur"/>
@@ -17,58 +17,58 @@
   </defs>
 
   <!-- Ambient background energy rings -->
-  <circle cx="210" cy="210" r="140" stroke="rgba(245, 190, 56, 0.06)" stroke-width="1.5" stroke-dasharray="6 6"/>
-  <circle cx="210" cy="210" r="95" stroke="rgba(245, 190, 56, 0.12)" stroke-width="1.5"/>
+  <circle cx="210" cy="210" r="140" stroke="rgba(0, 163, 255, 0.08)" stroke-width="1.5" stroke-dasharray="6 6"/>
+  <circle cx="210" cy="210" r="95" stroke="rgba(0, 163, 255, 0.16)" stroke-width="1.5"/>
   <circle cx="210" cy="210" r="60" fill="url(#ringGlow)"/>
 
   <!-- Top Laptop (Isometric) -->
   <g transform="translate(195, 70)">
     <!-- Base -->
-    <polygon points="0,55 60,30 115,58 55,83" fill="#18191E" stroke="rgba(245, 190, 56, 0.4)" stroke-width="1.5"/>
-    <polygon points="0,55 55,83 55,88 0,60" fill="#101114" stroke="rgba(245, 190, 56, 0.25)" stroke-width="1"/>
-    <polygon points="55,83 115,58 115,63 55,88" fill="#141518" stroke="rgba(245, 190, 56, 0.25)" stroke-width="1"/>
+    <polygon points="0,55 60,30 115,58 55,83" fill="#0E1626" stroke="rgba(0, 163, 255, 0.4)" stroke-width="1.5"/>
+    <polygon points="0,55 55,83 55,88 0,60" fill="#070C15" stroke="rgba(0, 163, 255, 0.25)" stroke-width="1"/>
+    <polygon points="55,83 115,58 115,63 55,88" fill="#0B1220" stroke="rgba(0, 163, 255, 0.25)" stroke-width="1"/>
     <!-- Screen -->
-    <polygon points="60,30 115,58 115,0 60,-28" fill="#141519" stroke="url(#goldGlowGrad)" stroke-width="1.8"/>
+    <polygon points="60,30 115,58 115,0 60,-28" fill="#0B1324" stroke="url(#cyanGlowGrad)" stroke-width="1.8"/>
     <!-- Screen Inner Display -->
-    <polygon points="64,26 111,50 111,4 64,-20" fill="#0C0D10"/>
-    <polygon points="67,23 108,44 108,8 67,-13" fill="rgba(245, 190, 56, 0.08)"/>
+    <polygon points="64,26 111,50 111,4 64,-20" fill="#050811"/>
+    <polygon points="67,23 108,44 108,8 67,-13" fill="rgba(0, 163, 255, 0.12)"/>
   </g>
 
   <!-- Bottom Laptop (Isometric) -->
   <g transform="translate(45, 275)">
     <!-- Base -->
-    <polygon points="0,55 60,30 115,58 55,83" fill="#18191E" stroke="rgba(245, 190, 56, 0.4)" stroke-width="1.5"/>
-    <polygon points="0,55 55,83 55,88 0,60" fill="#101114" stroke="rgba(245, 190, 56, 0.25)" stroke-width="1"/>
-    <polygon points="55,83 115,58 115,63 55,88" fill="#141518" stroke="rgba(245, 190, 56, 0.25)" stroke-width="1"/>
+    <polygon points="0,55 60,30 115,58 55,83" fill="#0E1626" stroke="rgba(0, 163, 255, 0.4)" stroke-width="1.5"/>
+    <polygon points="0,55 55,83 55,88 0,60" fill="#070C15" stroke="rgba(0, 163, 255, 0.25)" stroke-width="1"/>
+    <polygon points="55,83 115,58 115,63 55,88" fill="#0B1220" stroke="rgba(0, 163, 255, 0.25)" stroke-width="1"/>
     <!-- Screen -->
-    <polygon points="60,30 115,58 115,0 60,-28" fill="#141519" stroke="url(#goldGlowGrad)" stroke-width="1.8"/>
+    <polygon points="60,30 115,58 115,0 60,-28" fill="#0B1324" stroke="url(#cyanGlowGrad)" stroke-width="1.8"/>
     <!-- Screen Inner Display -->
-    <polygon points="64,26 111,50 111,4 64,-20" fill="#0C0D10"/>
-    <polygon points="67,23 108,44 108,8 67,-13" fill="rgba(245, 190, 56, 0.08)"/>
+    <polygon points="64,26 111,50 111,4 64,-20" fill="#050811"/>
+    <polygon points="67,23 108,44 108,8 67,-13" fill="rgba(0, 163, 255, 0.12)"/>
   </g>
 
-  <!-- Golden Arched Data Stream with Particles -->
-  <path d="M125 295 C145 220, 200 190, 240 145" stroke="url(#goldGlowGrad)" stroke-width="2.5" stroke-dasharray="4 4" filter="url(#p2pGlow)"/>
-  <path d="M130 290 C150 215, 205 185, 245 140" stroke="rgba(255, 232, 133, 0.4)" stroke-width="1.2" stroke-dasharray="2 6"/>
-  <path d="M120 300 C140 225, 195 195, 235 150" stroke="rgba(217, 152, 24, 0.3)" stroke-width="1.2" stroke-dasharray="3 5"/>
+  <!-- Cyan Arched Data Stream with Particles -->
+  <path d="M125 295 C145 220, 200 190, 240 145" stroke="url(#cyanGlowGrad)" stroke-width="2.5" stroke-dasharray="4 4" filter="url(#p2pGlow)"/>
+  <path d="M130 290 C150 215, 205 185, 245 140" stroke="rgba(125, 211, 252, 0.4)" stroke-width="1.2" stroke-dasharray="2 6"/>
+  <path d="M120 300 C140 225, 195 195, 235 150" stroke="rgba(37, 99, 235, 0.3)" stroke-width="1.2" stroke-dasharray="3 5"/>
 
   <!-- Particles along stream -->
-  <circle cx="140" cy="265" r="2" fill="#FFE885"/>
-  <circle cx="155" cy="240" r="1.5" fill="#F5BE38"/>
-  <circle cx="170" cy="225" r="2.5" fill="#FFE885" filter="url(#p2pGlow)"/>
-  <circle cx="218" cy="180" r="1.8" fill="#FFE885"/>
-  <circle cx="230" cy="162" r="2.2" fill="#F5BE38"/>
+  <circle cx="140" cy="265" r="2" fill="#7DD3FC"/>
+  <circle cx="155" cy="240" r="1.5" fill="#00A3FF"/>
+  <circle cx="170" cy="225" r="2.5" fill="#7DD3FC" filter="url(#p2pGlow)"/>
+  <circle cx="218" cy="180" r="1.8" fill="#7DD3FC"/>
+  <circle cx="230" cy="162" r="2.2" fill="#00A3FF"/>
 
-  <!-- Central Glowing Golden Lock Badge -->
+  <!-- Central Glowing Cyan Lock Badge -->
   <g transform="translate(182, 182)">
-    <circle cx="28" cy="28" r="26" fill="#121316" stroke="url(#goldGlowGrad)" stroke-width="2" filter="url(#p2pGlow)"/>
-    <circle cx="28" cy="28" r="20" fill="rgba(245, 190, 56, 0.15)"/>
+    <circle cx="28" cy="28" r="26" fill="#0A101D" stroke="url(#cyanGlowGrad)" stroke-width="2" filter="url(#p2pGlow)"/>
+    <circle cx="28" cy="28" r="20" fill="rgba(0, 163, 255, 0.18)"/>
     <!-- Lock Shackle -->
-    <path d="M22 25 V19 C22 15.68 24.68 13 28 13 C31.32 13 34 15.68 34 19 V25" stroke="#FFE885" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+    <path d="M22 25 V19 C22 15.68 24.68 13 28 13 C31.32 13 34 15.68 34 19 V25" stroke="#7DD3FC" stroke-width="2.2" stroke-linecap="round" fill="none"/>
     <!-- Lock Body -->
-    <rect x="18" y="24" width="20" height="15" rx="3.5" fill="#F5BE38"/>
+    <rect x="18" y="24" width="20" height="15" rx="3.5" fill="#00A3FF"/>
     <!-- Keyhole -->
-    <circle cx="28" cy="30" r="2" fill="#121316"/>
-    <path d="M28 31 V34" stroke="#121316" stroke-width="1.8" stroke-linecap="round"/>
+    <circle cx="28" cy="30" r="2" fill="#0A101D"/>
+    <path d="M28 31 V34" stroke="#0A101D" stroke-width="1.8" stroke-linecap="round"/>
   </g>
 </svg>

@@ -33,7 +33,7 @@ function getAvatar() {
 }
 
 const THEMES = [
-  { id: "dark", label: "Obsidian Dark" },
+  { id: "dark", label: "Midnight Slate (AirDrop)" },
   { id: "oled", label: "OLED Pure Black" },
   { id: "light", label: "Light Frost" },
   { id: "cyber", label: "Cyber Neon" },
@@ -440,8 +440,12 @@ async function main() {
     console.error(e);
   }
 
-  // URL Code Auto-Join (?code=ABC123)
+  // URL Code Auto-Join (?code=ABC123) & View selection (?view=send)
   const urlParams = new URLSearchParams(location.search);
+  const viewParam = urlParams.get("view");
+  if (viewParam) {
+    UI.switchView(viewParam);
+  }
   const code = urlParams.get("code");
   if (code) {
     const c = code.toUpperCase();

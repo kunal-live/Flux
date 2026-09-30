@@ -40,7 +40,7 @@ type Config struct {
 func Load() Config {
 	c := Config{
 		Addr:         env("FLUX_ADDR", ":8080"),
-		WebDir:       env("FLUX_WEB_DIR", "../web"),
+		WebDir:       env("FLUX_WEB_DIR", defaultWebDir()),
 		CertFile:     os.Getenv("FLUX_CERT_FILE"),
 		KeyFile:      os.Getenv("FLUX_KEY_FILE"),
 		AllowOrigins: os.Getenv("FLUX_ALLOW_ORIGIN"), // "" = same-origin only; "*" = allow all; else comma list
@@ -86,3 +86,11 @@ func atoi(s string, d int) int {
 	}
 	return n
 }
+
+func defaultWebDir() string {
+	if fi, err := os.Stat("web"); err == nil && fi.IsDir() {
+		return "web"
+	}
+	return "../web"
+}
+

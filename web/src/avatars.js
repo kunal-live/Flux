@@ -8,7 +8,7 @@ export const AVATARS = [
     id: "dog",
     name: "Astro Dog",
     tagline: "Space explorer pup",
-    primaryColor: "#F5BE38",
+    primaryColor: "#00A3FF",
     svg: `<svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <radialGradient id="dog-helmet" cx="50%" cy="40%" r="50%">
@@ -17,8 +17,8 @@ export const AVATARS = [
           <stop offset="100%" stop-color="#080C14" />
         </radialGradient>
         <linearGradient id="dog-gold" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stop-color="#FFE885" />
-          <stop offset="100%" stop-color="#F5BE38" />
+          <stop offset="0%" stop-color="#38BDF8" />
+          <stop offset="100%" stop-color="#00A3FF" />
         </linearGradient>
         <linearGradient id="dog-visor" x1="0%" y1="0%" x2="0%" y2="100%">
           <stop offset="0%" stop-color="#38BDF8" stop-opacity="0.9" />
@@ -27,7 +27,7 @@ export const AVATARS = [
       </defs>
       <!-- Helmet Outer Ring -->
       <circle cx="50" cy="50" r="46" fill="url(#dog-helmet)" stroke="url(#dog-gold)" stroke-width="2.5"/>
-      <circle cx="50" cy="50" r="40" stroke="rgba(245, 190, 56, 0.25)" stroke-width="1.5" stroke-dasharray="4 3"/>
+      <circle cx="50" cy="50" r="40" stroke="rgba(0, 163, 255, 0.25)" stroke-width="1.5" stroke-dasharray="4 3"/>
       <!-- Dog Ears (Outside Helmet) -->
       <path d="M18 28 C12 12, 28 8, 34 20" fill="#E29547" stroke="url(#dog-gold)" stroke-width="2" stroke-linecap="round"/>
       <path d="M82 28 C88 12, 72 8, 66 20" fill="#E29547" stroke="url(#dog-gold)" stroke-width="2" stroke-linecap="round"/>
@@ -37,8 +37,8 @@ export const AVATARS = [
       <circle cx="50" cy="52" r="26" fill="#FDBA74"/>
       <ellipse cx="50" cy="58" rx="17" ry="13" fill="#FFFBEB"/>
       <!-- Golden Astronaut Patches on Cheeks -->
-      <circle cx="35" cy="58" r="4" fill="#F5BE38" fill-opacity="0.3"/>
-      <circle cx="65" cy="58" r="4" fill="#F5BE38" fill-opacity="0.3"/>
+      <circle cx="35" cy="58" r="4" fill="#00A3FF" fill-opacity="0.3"/>
+      <circle cx="65" cy="58" r="4" fill="#00A3FF" fill-opacity="0.3"/>
       <!-- Friendly Dog Eyes -->
       <circle cx="41" cy="46" r="4.5" fill="#0F172A"/>
       <circle cx="59" cy="46" r="4.5" fill="#0F172A"/>
@@ -73,8 +73,8 @@ export const AVATARS = [
           <stop offset="100%" stop-color="#818CF8" />
         </linearGradient>
         <linearGradient id="cat-gold" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stop-color="#FFE885" />
-          <stop offset="100%" stop-color="#F5BE38" />
+          <stop offset="0%" stop-color="#38BDF8" />
+          <stop offset="100%" stop-color="#00A3FF" />
         </linearGradient>
       </defs>
       <circle cx="50" cy="50" r="46" fill="url(#cat-bg)" stroke="url(#cat-neon)" stroke-width="2.5"/>
@@ -117,8 +117,8 @@ export const AVATARS = [
           <stop offset="100%" stop-color="#EA580C" />
         </linearGradient>
         <linearGradient id="fox-gold" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stop-color="#FFE885" />
-          <stop offset="100%" stop-color="#F5BE38" />
+          <stop offset="0%" stop-color="#38BDF8" />
+          <stop offset="100%" stop-color="#00A3FF" />
         </linearGradient>
       </defs>
       <circle cx="50" cy="50" r="46" fill="url(#fox-bg)" stroke="url(#fox-gold)" stroke-width="2.5"/>
@@ -137,8 +137,8 @@ export const AVATARS = [
       <circle cx="41" cy="46" r="1.5" fill="#FFFFFF"/>
       <circle cx="61" cy="46" r="1.5" fill="#FFFFFF"/>
       <!-- Cyber Brow Lines -->
-      <path d="M35 41 L45 43" stroke="#F5BE38" stroke-width="1.8" stroke-linecap="round"/>
-      <path d="M65 41 L55 43" stroke="#F5BE38" stroke-width="1.8" stroke-linecap="round"/>
+      <path d="M35 41 L45 43" stroke="#00A3FF" stroke-width="1.8" stroke-linecap="round"/>
+      <path d="M65 41 L55 43" stroke="#00A3FF" stroke-width="1.8" stroke-linecap="round"/>
       <!-- Dark Nose -->
       <polygon points="50,75 46,70 54,70" fill="#18181B"/>
       <!-- Forehead Cyber Diamond -->
@@ -157,8 +157,8 @@ export const AVATARS = [
           <stop offset="100%" stop-color="#0F051D" />
         </radialGradient>
         <linearGradient id="owl-gold" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stop-color="#FFE885" />
-          <stop offset="100%" stop-color="#F5BE38" />
+          <stop offset="0%" stop-color="#38BDF8" />
+          <stop offset="100%" stop-color="#00A3FF" />
         </linearGradient>
       </defs>
       <circle cx="50" cy="50" r="46" fill="url(#owl-bg)" stroke="url(#owl-gold)" stroke-width="2.5"/>
@@ -195,8 +195,8 @@ export const AVATARS = [
           <stop offset="100%" stop-color="#021E17" />
         </radialGradient>
         <linearGradient id="panda-gold" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stop-color="#FFE885" />
-          <stop offset="100%" stop-color="#F5BE38" />
+          <stop offset="0%" stop-color="#38BDF8" />
+          <stop offset="100%" stop-color="#00A3FF" />
         </linearGradient>
       </defs>
       <circle cx="50" cy="50" r="46" fill="url(#panda-bg)" stroke="#10B981" stroke-width="2.5"/>
@@ -277,7 +277,7 @@ export const AVATARS = [
         </radialGradient>
         <linearGradient id="drag-gold" x1="0%" y1="0%" x2="100%" y2="100%">
           <stop offset="0%" stop-color="#FEF08A" />
-          <stop offset="50%" stop-color="#F5BE38" />
+          <stop offset="50%" stop-color="#00A3FF" />
           <stop offset="100%" stop-color="#B45309" />
         </linearGradient>
       </defs>

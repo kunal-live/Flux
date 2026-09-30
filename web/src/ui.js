@@ -134,20 +134,20 @@ function formatBytes(bytes) {
 
 function getDeviceVectorSVG(type) {
   if (type === "desktop") {
-    return `<svg width="42" height="34" viewBox="0 0 24 24" fill="none" stroke="#F5BE38" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    return `<svg width="42" height="34" viewBox="0 0 24 24" fill="none" stroke="#00A3FF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
       <rect x="2" y="3" width="20" height="14" rx="2"/>
       <line x1="8" y1="21" x2="16" y2="21"/>
       <line x1="12" y1="17" x2="12" y2="21"/>
     </svg>`;
   }
   if (type === "phone") {
-    return `<svg width="24" height="36" viewBox="0 0 24 24" fill="none" stroke="#F5BE38" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    return `<svg width="24" height="36" viewBox="0 0 24 24" fill="none" stroke="#00A3FF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
       <rect x="5" y="2" width="14" height="20" rx="3"/>
       <line x1="12" y1="18" x2="12.01" y2="18"/>
     </svg>`;
   }
   // Laptop default
-  return `<svg width="46" height="34" viewBox="0 0 24 24" fill="none" stroke="#F5BE38" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+  return `<svg width="46" height="34" viewBox="0 0 24 24" fill="none" stroke="#00A3FF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
     <rect x="3" y="4" width="18" height="12" rx="2"/>
     <path d="M2 18h20"/>
   </svg>`;
@@ -1398,7 +1398,7 @@ export const UI = {
 
     const alertCard = $("receive-connectivity-alert");
     if (alertCard) {
-      alertCard.style.borderColor = isOnline ? "rgba(245, 190, 56, 0.35)" : "#EF4444";
+      alertCard.style.borderColor = isOnline ? "rgba(0, 163, 255, 0.35)" : "#EF4444";
     }
   },
 
@@ -1635,37 +1635,37 @@ export const UI = {
     if (qrHolder.children.length === 0) {
       qrHolder.innerHTML = `
         <svg width="140" height="140" viewBox="0 0 100 100" fill="none">
-          <rect width="100" height="100" fill="#101114"/>
+          <rect width="100" height="100" fill="#0B1120"/>
           <!-- Top Left Finder -->
-          <rect x="8" y="8" width="28" height="28" stroke="#F5BE38" stroke-width="4" rx="2" fill="none"/>
-          <rect x="16" y="16" width="12" height="12" fill="#F5BE38" rx="1"/>
+          <rect x="8" y="8" width="28" height="28" stroke="#00A3FF" stroke-width="4" rx="2" fill="none"/>
+          <rect x="16" y="16" width="12" height="12" fill="#00A3FF" rx="1"/>
           <!-- Top Right Finder -->
-          <rect x="64" y="8" width="28" height="28" stroke="#F5BE38" stroke-width="4" rx="2" fill="none"/>
-          <rect x="72" y="16" width="12" height="12" fill="#F5BE38" rx="1"/>
+          <rect x="64" y="8" width="28" height="28" stroke="#00A3FF" stroke-width="4" rx="2" fill="none"/>
+          <rect x="72" y="16" width="12" height="12" fill="#00A3FF" rx="1"/>
           <!-- Bottom Left Finder -->
-          <rect x="8" y="64" width="28" height="28" stroke="#F5BE38" stroke-width="4" rx="2" fill="none"/>
-          <rect x="16" y="72" width="12" height="12" fill="#F5BE38" rx="1"/>
+          <rect x="8" y="64" width="28" height="28" stroke="#00A3FF" stroke-width="4" rx="2" fill="none"/>
+          <rect x="16" y="72" width="12" height="12" fill="#00A3FF" rx="1"/>
           <!-- QR Data Dots Pattern in Gold -->
-          <rect x="42" y="12" width="6" height="6" fill="#F5BE38"/>
-          <rect x="52" y="12" width="6" height="6" fill="#FFE885"/>
-          <rect x="42" y="24" width="6" height="12" fill="#F5BE38"/>
-          <rect x="52" y="30" width="6" height="6" fill="#FFE885"/>
-          <rect x="12" y="44" width="12" height="6" fill="#F5BE38"/>
-          <rect x="30" y="44" width="6" height="6" fill="#FFE885"/>
-          <rect x="42" y="44" width="16" height="6" fill="#F5BE38"/>
-          <rect x="64" y="44" width="6" height="12" fill="#F5BE38"/>
-          <rect x="76" y="44" width="12" height="6" fill="#FFE885"/>
-          <rect x="12" y="54" width="6" height="6" fill="#FFE885"/>
-          <rect x="24" y="54" width="12" height="6" fill="#F5BE38"/>
-          <rect x="44" y="56" width="6" height="12" fill="#FFE885"/>
-          <rect x="56" y="56" width="12" height="6" fill="#F5BE38"/>
-          <rect x="74" y="56" width="14" height="6" fill="#F5BE38"/>
-          <rect x="42" y="74" width="8" height="6" fill="#F5BE38"/>
-          <rect x="56" y="70" width="6" height="14" fill="#FFE885"/>
-          <rect x="68" y="70" width="6" height="6" fill="#F5BE38"/>
-          <rect x="80" y="70" width="8" height="16" fill="#F5BE38"/>
-          <rect x="44" y="86" width="16" height="6" fill="#FFE885"/>
-          <rect x="66" y="86" width="8" height="6" fill="#F5BE38"/>
+          <rect x="42" y="12" width="6" height="6" fill="#00A3FF"/>
+          <rect x="52" y="12" width="6" height="6" fill="#38BDF8"/>
+          <rect x="42" y="24" width="6" height="12" fill="#00A3FF"/>
+          <rect x="52" y="30" width="6" height="6" fill="#38BDF8"/>
+          <rect x="12" y="44" width="12" height="6" fill="#00A3FF"/>
+          <rect x="30" y="44" width="6" height="6" fill="#38BDF8"/>
+          <rect x="42" y="44" width="16" height="6" fill="#00A3FF"/>
+          <rect x="64" y="44" width="6" height="12" fill="#00A3FF"/>
+          <rect x="76" y="44" width="12" height="6" fill="#38BDF8"/>
+          <rect x="12" y="54" width="6" height="6" fill="#38BDF8"/>
+          <rect x="24" y="54" width="12" height="6" fill="#00A3FF"/>
+          <rect x="44" y="56" width="6" height="12" fill="#38BDF8"/>
+          <rect x="56" y="56" width="12" height="6" fill="#00A3FF"/>
+          <rect x="74" y="56" width="14" height="6" fill="#00A3FF"/>
+          <rect x="42" y="74" width="8" height="6" fill="#00A3FF"/>
+          <rect x="56" y="70" width="6" height="14" fill="#38BDF8"/>
+          <rect x="68" y="70" width="6" height="6" fill="#00A3FF"/>
+          <rect x="80" y="70" width="8" height="16" fill="#00A3FF"/>
+          <rect x="44" y="86" width="16" height="6" fill="#38BDF8"/>
+          <rect x="66" y="86" width="8" height="6" fill="#00A3FF"/>
         </svg>
       `;
     }
@@ -2035,12 +2035,12 @@ export const UI = {
     if (circle) {
       circle.style.strokeDasharray = `${circumference}`;
       circle.style.strokeDashoffset = `${offset}`;
-      circle.style.stroke = isError ? "#EF4444" : "#F5BE38";
+      circle.style.stroke = isError ? "#EF4444" : "#00A3FF";
     }
     const pctDisp = $("hero-pct-display");
     if (pctDisp) {
       pctDisp.textContent = isError ? "⚠️" : `${pct}%`;
-      pctDisp.style.color = isError ? "#EF4444" : "#F5BE38";
+      pctDisp.style.color = isError ? "#EF4444" : "#00A3FF";
     }
   },
 

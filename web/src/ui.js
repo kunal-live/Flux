@@ -12,110 +12,9 @@ import { encryptString, decryptString, isEncryptedPayload } from "./crypto.js";
 
 const $ = (id) => document.getElementById(id);
 
-export const DEFAULT_DEVICES = [
-  {
-    id: "dev-macbook",
-    alias: "Kunal",
-    platform: "windows",
-    deviceType: "laptop",
-    isSelf: true,
-    statusText: "This device",
-    statusType: "gold",
-    avatar: "dog",
-  },
-  {
-    id: "dev-imac",
-    alias: "Studio iMac",
-    platform: "macos",
-    deviceType: "desktop",
-    isSelf: false,
-    statusText: "Available",
-    statusType: "green",
-    avatar: "cat",
-  },
-  {
-    id: "dev-pixel",
-    alias: "Pixel 9",
-    platform: "android",
-    deviceType: "phone",
-    isSelf: false,
-    statusText: "Available",
-    statusType: "green",
-    avatar: "fox",
-  },
-  {
-    id: "dev-ipad",
-    alias: "Jordan's iPad",
-    platform: "ios",
-    deviceType: "tablet",
-    isSelf: false,
-    statusText: "Available",
-    statusType: "green",
-    avatar: "bunny",
-  },
-];
-
-export const RECENT_TRANSFERS = [
-  {
-    id: "hist-1",
-    name: "Brand assets.zip",
-    date: "May 21, 2025 - 2:48 PM",
-    direction: "out",
-    device: "Studio iMac",
-    deviceType: "desktop",
-    size: "1.24 GB",
-    status: "Completed",
-    icon: "🗜",
-  },
-  {
-    id: "hist-2",
-    name: "Q3 footage.mov",
-    date: "May 21, 2025 - 1:15 PM",
-    direction: "in",
-    device: "Pixel 9",
-    deviceType: "phone",
-    size: "4.86 GB",
-    status: "Completed",
-    icon: "🎬",
-  },
-  {
-    id: "hist-3",
-    name: "Invoices.pdf",
-    date: "May 21, 2025 - 11:02 AM",
-    direction: "out",
-    device: "Studio iMac",
-    deviceType: "desktop",
-    size: "2.13 MB",
-    status: "Completed",
-    icon: "📄",
-  },
-];
-
-export const TIMELINE_HISTORY = [
-  {
-    group: "Today",
-    items: [
-      { id: "th-1", name: "Drone_4K_001.mp4", sub: "Studio iMac", size: "2.48 GB", time: "10:42 AM", icon: "🎬", role: "sent" },
-      { id: "th-2", name: "Project_FLux_Assets", sub: "to Maya's MacBook Pro", size: "1.12 GB", time: "9:17 AM", icon: "📁", role: "sent" },
-      { id: "th-3", name: "site_report.pdf", sub: "to Pixel 9", size: "3.2 MB", time: "8:03 AM", icon: "📄", role: "sent" },
-    ]
-  },
-  {
-    group: "Yesterday",
-    items: [
-      { id: "th-4", name: "IMG_7721.jpg", sub: "from Pixel 9", size: "5.6 MB", time: "9:48 PM", icon: "🖼", role: "received" },
-      { id: "th-5", name: "Design_Reference", sub: "from Studio iMac", size: "712 MB", time: "6:21 PM", icon: "📁", role: "received" },
-    ]
-  },
-  {
-    group: "May 19",
-    items: [
-      { id: "th-6", name: "Timelapse_Final.mov", sub: "to Studio iMac", size: "1.94 GB", time: "11:15 PM", icon: "🎬", role: "sent" },
-      { id: "th-7", name: "Ambient_Mix_v2.wav", sub: "from Maya's MacBook Pro", size: "83.7 MB", time: "4:07 PM", icon: "🎵", role: "received" },
-      { id: "th-8", name: "Archive_2025_05_09.zip", sub: "to Pixel 9", size: "420 MB", time: "10:32 AM", icon: "🗜", role: "sent" },
-    ]
-  },
-];
+export const DEFAULT_DEVICES = [];
+export const RECENT_TRANSFERS = [];
+export const TIMELINE_HISTORY = [];
 
 export const DEFAULT_QUEUE_FILES = [
   { name: "Brand_assets.zip", size: 842 * 1024 * 1024, type: "ZIP archive", icon: "🗜" },
@@ -166,19 +65,14 @@ export const UI = {
   _stagedFiles: [],
   _selectedTargetPeer: null,
   _heroTransfer: {
-    peerName: "Kunal",
-    pct: 68,
-    bytesSent: 1.74 * 1024 * 1024 * 1024,
-    bytesTotal: 2.57 * 1024 * 1024 * 1024,
-    speed: 18.6 * 1024 * 1024,
-    eta: 46,
+    peerName: "Ready for transfer",
+    pct: 0,
+    bytesSent: 0,
+    bytesTotal: 0,
+    speed: 0,
+    eta: 0,
     isPaused: false,
-    files: [
-      { name: "Brand_assets.zip", progress: 100, status: "Complete", icon: "🗜" },
-      { name: "Product_demo.mov", progress: 54, status: "Sending...", icon: "🎬" },
-      { name: "Press_photos", progress: 0, status: "Queued", icon: "📁" },
-      { name: "Readme.pdf", progress: 0, status: "Queued", icon: "📄" },
-    ],
+    files: [],
   },
 
   init(handlers) {
@@ -187,7 +81,7 @@ export const UI = {
     // Load persisted device name and cartoon avatar
     try {
       const savedAlias = localStorage.getItem("flux-alias");
-      if (savedAlias && savedAlias !== "Maya's MacBook Pro") {
+      if (savedAlias) {
         this._currentAlias = savedAlias;
       } else {
         this._currentAlias = "Kunal";
@@ -554,8 +448,8 @@ export const UI = {
     document.querySelectorAll(".btn-manage-dev").forEach((btn) => {
       btn.addEventListener("click", (e) => {
         const card = e.target.closest(".paired-dev-card");
-        const title = card ? card.querySelector(".dev-title")?.textContent : "Maya's MacBook Pro";
-        const sub = card ? card.querySelector(".dev-ip-sub")?.textContent : "192.168.1.12";
+        const title = card ? card.querySelector(".dev-title")?.textContent : "Paired Device";
+        const sub = card ? card.querySelector(".dev-ip-sub")?.textContent : "Local node";
         this.openDevManage({ alias: title, ip: sub });
       });
     });
@@ -563,8 +457,8 @@ export const UI = {
     document.querySelectorAll(".btn-more-dots").forEach((btn) => {
       btn.addEventListener("click", (e) => {
         const card = e.target.closest(".paired-dev-card");
-        const title = card ? card.querySelector(".dev-title")?.textContent : "Studio iMac";
-        const sub = card ? card.querySelector(".dev-ip-sub")?.textContent : "192.168.1.27";
+        const title = card ? card.querySelector(".dev-title")?.textContent : "Paired Device";
+        const sub = card ? card.querySelector(".dev-ip-sub")?.textContent : "Local node";
         this.openDevManage({ alias: title, ip: sub });
       });
     });
@@ -943,11 +837,17 @@ export const UI = {
     });
 
     // Initial render passes
-    this.renderNearbyDevices(DEFAULT_DEVICES);
-    this.renderRecentTransfers(RECENT_TRANSFERS);
+    this.renderNearbyDevices(this._currentPeers || []);
+    let realHistory = [];
+    try {
+      const saved = localStorage.getItem("flux-transfer-history");
+      if (saved) realHistory = JSON.parse(saved);
+    } catch {}
+    this.renderRecentTransfers(realHistory);
     this.renderQueue();
     this.renderHistoryTimeline();
-    this.updateHeroRing(68);
+    this.renderPairedDevicesList();
+    this.updateHeroRing(0);
     this._renderHeroBreakdown();
 
     // URL view override for instant viewing / testing
@@ -956,7 +856,7 @@ export const UI = {
       if (viewParam === "pair") {
         this.openPair();
       } else if (viewParam === "incoming") {
-        this.showIncoming("demo-1", "Launch_video.mp4", 684 * 1024 * 1024, "Jordan's MacBook Air");
+        this.showIncoming("demo-1", "Document.pdf", 4 * 1024 * 1024, "Nearby Device");
       } else if (viewParam === "help") {
         this.openHelp();
       } else if (viewParam === "diagnostics") {
@@ -1018,52 +918,128 @@ export const UI = {
     const container = $("history-timeline-container");
     if (!container) return;
     container.innerHTML = "";
+
+    let items = [];
+    try {
+      const saved = localStorage.getItem("flux-transfer-history");
+      if (saved) items = JSON.parse(saved);
+    } catch {}
+
     const q = (query || "").trim().toLowerCase();
-
-    TIMELINE_HISTORY.forEach((grp) => {
-      const filteredItems = grp.items.filter((item) => {
-        const matchesFilter = filter === "all" || item.role === filter;
-        const matchesQuery = !q || item.name.toLowerCase().includes(q) || item.sub.toLowerCase().includes(q);
-        return matchesFilter && matchesQuery;
-      });
-
-      if (filteredItems.length === 0) return;
-
-      const dateHeader = document.createElement("div");
-      dateHeader.className = "history-date-header";
-      dateHeader.textContent = grp.group;
-      container.appendChild(dateHeader);
-
-      filteredItems.forEach((item) => {
-        const isCorrupt = item.verified === false;
-        const row = document.createElement("div");
-        row.className = "history-item-card" + (isCorrupt ? " history-item-corrupt" : "");
-        row.innerHTML = `
-          <div class="hist-thumb-wrap">
-            <span>${item.icon || '📄'}</span>
-          </div>
-          <div class="hist-meta">
-            <span class="hist-title">${item.name}</span>
-            <div style="display:flex; align-items:center; gap:8px;">
-              <span class="hist-sub">${item.sub}</span>
-              ${isCorrupt ? '<span class="badge-corrupt">⚠️ Corrupted (Hash Mismatch)</span>' : ''}
-            </div>
-          </div>
-          <div class="hist-stat-col">
-            <span class="hist-size">${item.size}</span>
-            <span class="hist-time">${item.time}</span>
-          </div>
-          <div class="hist-check-icon" style="${isCorrupt ? 'color:#EF4444; border-color:#EF4444;' : ''}">
-            ${isCorrupt ? '✕' : '✓'}
-          </div>
-        `;
-        container.appendChild(row);
-      });
+    const filtered = items.filter((item) => {
+      const matchesFilter = filter === "all" || item.role === filter;
+      const matchesQuery = !q || (item.name && item.name.toLowerCase().includes(q)) || (item.peerName && item.peerName.toLowerCase().includes(q));
+      return matchesFilter && matchesQuery;
     });
 
-    if (container.children.length === 0) {
-      container.innerHTML = `<div style="text-align:center; padding: 40px; color: var(--text-dim);">No transfers match search criteria</div>`;
+    if (filtered.length === 0) {
+      container.innerHTML = `
+        <div style="text-align: center; padding: 48px 20px; color: var(--text-dim);">
+          <div style="font-size: 32px; margin-bottom: 8px;">📁</div>
+          <b style="color: var(--text-white); font-size: 15px; display: block; margin-bottom: 4px;">No transfer history</b>
+          <p style="font-size: 13px; color: var(--text-muted);">Transferred files will be recorded here with SHA-256 integrity verification.</p>
+        </div>
+      `;
+      return;
     }
+
+    filtered.forEach((item) => {
+      const isCorrupt = item.verified === false;
+      const row = document.createElement("div");
+      row.className = "history-item-card" + (isCorrupt ? " history-item-corrupt" : "");
+      row.innerHTML = `
+        <div class="hist-thumb-wrap">
+          <span>${item.icon || (item.role === 'recv' ? '📥' : '📤')}</span>
+        </div>
+        <div class="hist-meta">
+          <span class="hist-title">${item.name}</span>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span class="hist-sub">${item.role === 'recv' ? 'From ' : 'To '}${item.peerName || 'Peer'}</span>
+            ${isCorrupt ? '<span class="badge-corrupt">⚠️ Corrupted (Hash Mismatch)</span>' : ''}
+          </div>
+        </div>
+        <div class="hist-stat-col">
+          <span class="hist-size">${typeof item.size === 'number' ? formatBytes(item.size) : item.size}</span>
+          <span class="hist-time">${item.time || item.date || ''}</span>
+        </div>
+        <div class="hist-check-icon" style="${isCorrupt ? 'color:#EF4444; border-color:#EF4444;' : ''}">
+          ${isCorrupt ? '✕' : '✓'}
+        </div>
+      `;
+      container.appendChild(row);
+    });
+  },
+
+  renderPairedDevicesList() {
+    const listEl = $("paired-devices-col-list");
+    if (!listEl) return;
+    listEl.innerHTML = "";
+
+    const paired = this.getPairedDevices();
+    if (paired.length === 0) {
+      listEl.innerHTML = `
+        <div class="paired-empty-placeholder" style="text-align: center; padding: 40px 20px; color: var(--text-dim); border: 1px dashed var(--border-subtle); border-radius: var(--radius-lg); background: rgba(15, 23, 42, 0.4);">
+          <div style="font-size: 32px; margin-bottom: 8px;">🔗</div>
+          <b style="color: var(--text-white); font-size: 15px; display: block; margin-bottom: 4px;">No paired devices yet</b>
+          <p style="font-size: 13px; max-width: 360px; margin: 0 auto 16px auto; color: var(--text-muted);">Pair other phones, tablets, or computers via 6-digit PIN or QR code to save them for instant 1-click sharing.</p>
+          <button class="btn-gold-solid btn-sm" id="btn-paired-empty-add" style="margin: 0 auto;">Pair a Device</button>
+        </div>
+      `;
+      $("btn-paired-empty-add")?.addEventListener("click", () => this.openPair());
+      return;
+    }
+
+    paired.forEach((dev) => {
+      const card = document.createElement("div");
+      card.className = "paired-dev-card";
+      card.innerHTML = `
+        <div class="dev-screen-thumb">
+          <div class="fractal-screen fractal-gold"></div>
+        </div>
+        <div class="dev-info-col">
+          <b class="dev-title">${dev.alias}</b>
+          <span class="dev-ip-sub">${dev.ip || 'Paired peer'} • ${dev.platform || 'Local node'}</span>
+          <span class="dev-trusted-tag">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#00A3FF" stroke-width="2.5">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+            <span>Trusted</span>
+          </span>
+        </div>
+        <div class="dev-actions-col">
+          <button class="btn-dark-pill btn-manage-dev" data-id="${dev.id}">Manage</button>
+          <button class="btn-more-dots" data-id="${dev.id}">⋯</button>
+        </div>
+      `;
+      card.querySelector(".btn-manage-dev").addEventListener("click", () => this.openDevManage(dev));
+      card.querySelector(".btn-more-dots").addEventListener("click", () => this.openDevManage(dev));
+      listEl.appendChild(card);
+    });
+  },
+
+  getPairedDevices() {
+    try {
+      const s = localStorage.getItem("flux-paired-devices");
+      if (s) return JSON.parse(s);
+    } catch {}
+    return [];
+  },
+
+  savePairedDevice(dev) {
+    try {
+      const list = this.getPairedDevices().filter(d => d.id !== dev.id);
+      list.unshift(dev);
+      localStorage.setItem("flux-paired-devices", JSON.stringify(list));
+      this.renderPairedDevicesList();
+    } catch {}
+  },
+
+  removePairedDevice(devId) {
+    try {
+      const list = this.getPairedDevices().filter(d => d.id !== devId);
+      localStorage.setItem("flux-paired-devices", JSON.stringify(list));
+      this.renderPairedDevicesList();
+    } catch {}
   },
 
   setSelf(alias, avatarId) {
@@ -1119,36 +1095,48 @@ export const UI = {
     if (!container) return;
 
     container.innerHTML = "";
-    devices.forEach((dev) => {
+    const list = (devices || []).filter(d => !d.isSelf);
+    if (list.length === 0) {
+      container.innerHTML = `
+        <div class="nearby-empty-state" style="grid-column: 1 / -1; text-align: center; padding: 40px 16px; color: var(--text-dim); border: 1px dashed var(--border-subtle); border-radius: var(--radius-lg); background: rgba(15, 23, 42, 0.4);">
+          <div style="font-size: 28px; margin-bottom: 8px;">📡</div>
+          <b style="color: var(--text-white); font-size: 14px; display: block; margin-bottom: 4px;">Scanning for nearby devices…</b>
+          <p style="font-size: 12px; color: var(--text-muted); max-width: 340px; margin: 0 auto 14px auto;">Ensure other devices have Flux open on your network, or pair using a code.</p>
+          <button class="btn-gold-solid btn-sm" id="btn-nearby-empty-pair" style="margin: 0 auto;">Pair with Code</button>
+        </div>
+      `;
+      $("btn-nearby-empty-pair")?.addEventListener("click", () => this.openPair());
+      this.renderSendRadar();
+      return;
+    }
+
+    list.forEach((dev) => {
       const card = document.createElement("div");
       card.className = "device-item-card";
       card.dataset.id = dev.id;
 
-      const avatarId = dev.avatar || (dev.isSelf ? this._currentAvatar : (dev.id.includes("imac") ? "cat" : dev.id.includes("pixel") ? "fox" : "bunny"));
+      const avatarId = dev.avatar || "fox";
 
       card.innerHTML = `
-        <div class="device-vector-icon" style="border-radius: 50%; overflow: hidden; width: 44px; height: 44px; border: 1.5px solid var(--gold-primary); display: flex; align-items: center; justify-content: center;">
+        <div class="device-vector-icon" style="border-radius: 50%; overflow: hidden; width: 44px; height: 44px; border: 1.5px solid var(--accent-primary); display: flex; align-items: center; justify-content: center;">
           ${getAvatarSvg(avatarId, 44)}
         </div>
-        <div class="device-item-name" title="${dev.alias}">${dev.alias}${dev.isSelf ? ' (You)' : ''}</div>
+        <div class="device-item-name" title="${dev.alias}">${dev.alias}</div>
         <div class="device-status-badge">
-          <span class="badge-dot ${dev.statusType}"></span>
-          <span class="badge-text-${dev.statusType}">${dev.statusText}</span>
+          <span class="badge-dot green"></span>
+          <span class="badge-text-green">${dev.statusText || 'Available'}</span>
         </div>
       `;
 
       card.addEventListener("click", () => {
-        if (dev.isSelf) {
-          this.openProfileModal();
+        this._selectedTargetPeer = dev;
+        if ($("send-target-name")) $("send-target-name").textContent = dev.alias;
+        if ($("send-target-badge")) $("send-target-badge").textContent = `${dev.platform || 'Nearby'} • Secure`;
+        if (this._stagedFiles && this._stagedFiles.length > 0) {
+          this._executeSendQueue();
         } else {
-          this._selectedTargetPeer = dev;
-          if ($("send-target-name")) $("send-target-name").textContent = dev.alias;
-          if (this._stagedFiles && this._stagedFiles.length > 0) {
-            this._executeSendQueue();
-          } else {
-            this.toast(`Selected target: ${dev.alias} — choose or drop files to send`);
-            $("file-input")?.click();
-          }
+          this.toast(`Selected target: ${dev.alias} — choose or drop files to send`);
+          $("file-input")?.click();
         }
       });
 
@@ -1163,7 +1151,20 @@ export const UI = {
     if (!grid) return;
     grid.innerHTML = "";
 
-    const all = [...DEFAULT_DEVICES, ...this._currentPeers];
+    const all = (this._currentPeers || []).filter(d => !d.isSelf);
+    if (all.length === 0) {
+      grid.innerHTML = `
+        <div style="grid-column: 1 / -1; text-align: center; padding: 48px 20px; color: var(--text-dim);">
+          <div style="font-size: 32px; margin-bottom: 8px;">📡</div>
+          <b style="color: var(--text-white); font-size: 15px; display: block; margin-bottom: 4px;">No devices discovered</b>
+          <p style="font-size: 13px; max-width: 380px; margin: 0 auto 16px auto; color: var(--text-muted);">Ensure other devices are connected to your local network with Flux open, or pair directly using a PIN code.</p>
+          <button class="btn-topbar-pair" id="btn-devices-grid-pair" style="margin: 0 auto;">Pair with Code</button>
+        </div>
+      `;
+      $("btn-devices-grid-pair")?.addEventListener("click", () => this.openPair());
+      return;
+    }
+
     all.forEach((dev) => {
       const card = document.createElement("div");
       card.className = "device-item-card";
@@ -1173,8 +1174,8 @@ export const UI = {
         </div>
         <div class="device-item-name">${dev.alias}</div>
         <div class="device-status-badge">
-          <span class="badge-dot ${dev.isSelf ? 'gold' : 'green'}"></span>
-          <span class="badge-text-${dev.isSelf ? 'gold' : 'green'}">${dev.isSelf ? 'This device' : 'Available'}</span>
+          <span class="badge-dot green"></span>
+          <span class="badge-text-green">Available</span>
         </div>
         <button class="btn-gold-solid btn-sm" style="margin-top: 6px; padding: 6px 14px; font-size: 11px;">Send Files</button>
       `;
@@ -1182,6 +1183,7 @@ export const UI = {
         e.stopPropagation();
         this._selectedTargetPeer = dev;
         if ($("send-target-name")) $("send-target-name").textContent = dev.alias;
+        if ($("send-target-badge")) $("send-target-badge").textContent = `${dev.platform || 'Nearby'} • Secure`;
         this.switchView("send");
       });
       grid.appendChild(card);
@@ -1189,7 +1191,7 @@ export const UI = {
   },
 
   renderPeers(realPeers) {
-    this._currentPeers = realPeers.map((p) => ({
+    this._currentPeers = (realPeers || []).map((p) => ({
       id: p.id,
       alias: p.alias || "Flux Peer",
       platform: p.platform || "linux",
@@ -1199,10 +1201,11 @@ export const UI = {
       statusType: "green",
     }));
 
-    const merged = [...DEFAULT_DEVICES, ...this._currentPeers];
-    this.renderNearbyDevices(merged);
+    this.renderNearbyDevices(this._currentPeers);
+    this.renderFullDevicesGrid();
     if ($("footer-peers-count")) {
-      $("footer-peers-count").textContent = `${merged.length} peers`;
+      const count = this._currentPeers.length;
+      $("footer-peers-count").textContent = `${count} ${count === 1 ? 'peer' : 'peers'}`;
     }
   },
 
@@ -1211,7 +1214,19 @@ export const UI = {
     if (!tbody) return;
     tbody.innerHTML = "";
 
-    transfers.forEach((item) => {
+    const list = transfers || [];
+    if (list.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="6" style="text-align: center; padding: 36px 0; color: var(--text-dim); font-size: 13px;">
+            No recent transfers yet
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    list.forEach((item) => {
       const tr = document.createElement("tr");
       tr.innerHTML = `
         <td>
@@ -1409,7 +1424,7 @@ export const UI = {
 
     const devs = (this._currentPeers && this._currentPeers.length > 0)
       ? this._currentPeers
-      : DEFAULT_DEVICES.filter((d) => !d.isSelf);
+      : [];
 
     const count = devs.length;
     if (!count) return;
@@ -1448,11 +1463,16 @@ export const UI = {
 
   _executeSendQueue() {
     if (!this._stagedFiles.length) {
-      this.toast("Add files to the queue first");
+      this.toast("Add files to the queue first", "error");
       return;
     }
-    const target = this._selectedTargetPeer ? this._selectedTargetPeer.alias : "Jordan's MacBook Air";
-    this.toast(`Sending ${this._stagedFiles.length} files to ${target}…`);
+    if (!this._selectedTargetPeer) {
+      this.toast("Select a target device first", "error");
+      this.switchView("dashboard");
+      return;
+    }
+    const target = this._selectedTargetPeer.alias;
+    this.toast(`Sending ${this._stagedFiles.length} file(s) to ${target}…`);
 
     // Switch to transfers view and update hero card
     this._heroTransfer.peerName = target;
@@ -1520,6 +1540,11 @@ export const UI = {
     const container = $("files-breakdown-list");
     if (!container) return;
     container.innerHTML = "";
+
+    if (!this._heroTransfer || !this._heroTransfer.files || this._heroTransfer.files.length === 0) {
+      container.innerHTML = `<div style="text-align: center; padding: 32px 16px; color: var(--text-dim); font-size: 13px;">No active transfer files</div>`;
+      return;
+    }
 
     this._heroTransfer.files.forEach((file) => {
       const row = document.createElement("div");
@@ -1687,7 +1712,7 @@ export const UI = {
     const select = $("beam-target-select");
     if (select) {
       select.innerHTML = "";
-      const devs = (this._devices && this._devices.length) ? this._devices.filter(d => !d.isSelf) : DEFAULT_DEVICES.filter(d => !d.isSelf);
+      const devs = (this._currentPeers && this._currentPeers.length) ? this._currentPeers : [];
       if (devs.length > 0) {
         select.innerHTML = devs.map(d => `<option value="${d.id}">${d.alias} (${d.platform || 'Nearby'})</option>`).join("");
         select.innerHTML += `<option value="all">⚡ Broadcast to All Nearby Devices</option>`;
@@ -1762,7 +1787,7 @@ export const UI = {
     this.closeQuickBeam();
 
     if (targetId === "all" || targetId === "broadcast") {
-      const devs = (this._devices && this._devices.length) ? this._devices.filter(d => !d.isSelf) : DEFAULT_DEVICES.filter(d => !d.isSelf);
+      const devs = (this._currentPeers && this._currentPeers.length) ? this._currentPeers : [];
       devs.forEach(d => {
         if (this.h.onSendToPeer) this.h.onSendToPeer(d.id, [blob]);
       });
@@ -1952,36 +1977,22 @@ export const UI = {
     if (!modal) return;
 
     if ($("incoming-sender-title")) {
-      $("incoming-sender-title").textContent = `${peerName || "Jordan's MacBook Air"} wants to send files`;
+      $("incoming-sender-title").textContent = `${peerName || "Nearby Device"} wants to send a file`;
     }
     const container = $("incoming-files-container");
     if (container) {
       container.innerHTML = `
         <div class="incoming-file-row">
           <div class="f-left">
-            <span class="f-type-icon">▶</span>
-            <span class="f-name">Launch_video.mp4</span>
-          </div>
-          <span class="f-size">684 MB</span>
-        </div>
-        <div class="incoming-file-row">
-          <div class="f-left">
             <span class="f-type-icon">📄</span>
-            <span class="f-name">Brand guidelines.pdf</span>
+            <span class="f-name">${name || 'Incoming file'}</span>
           </div>
-          <span class="f-size">12.4 MB</span>
-        </div>
-        <div class="incoming-file-row">
-          <div class="f-left">
-            <span class="f-type-icon">🗜</span>
-            <span class="f-name">Logo_exports.zip</span>
-          </div>
-          <span class="f-size">48.1 MB</span>
+          <span class="f-size">${formatBytes(size || 0)}</span>
         </div>
       `;
     }
-    if ($("incoming-count-label")) $("incoming-count-label").textContent = "3 files";
-    if ($("incoming-total-size-label")) $("incoming-total-size-label").textContent = "744.5 MB";
+    if ($("incoming-count-label")) $("incoming-count-label").textContent = "1 file";
+    if ($("incoming-total-size-label")) $("incoming-total-size-label").textContent = formatBytes(size || 0);
 
     modal.hidden = false;
     Sound.play("incoming");
@@ -1999,7 +2010,7 @@ export const UI = {
   // Real Transfer Callbacks from app.js / transfer engine
   startTransfer(id, name, size, role, mode, peerName, fileType) {
     Sound.play("start");
-    this._heroTransfer.peerName = peerName || "Jordan's MacBook Air";
+    this._heroTransfer.peerName = peerName || "Nearby Device";
     this._heroTransfer.bytesTotal = size;
     this._heroTransfer.bytesSent = 0;
     this._heroTransfer.files = [{ name, progress: 0, status: role === 'send' ? 'Sending...' : 'Receiving...', icon: '📄' }];
@@ -2321,7 +2332,7 @@ export const UI = {
 
     const dd = document.createElement("div");
     dd.className = "target-picker-dropdown";
-    const devs = (this._devices && this._devices.length) ? this._devices : DEFAULT_DEVICES;
+    const devs = (this._currentPeers && this._currentPeers.length) ? this._currentPeers : [];
 
     dd.innerHTML = devs.map(d => `
       <div class="picker-item" data-dev-id="${d.id}">

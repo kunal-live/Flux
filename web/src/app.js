@@ -5,7 +5,7 @@ import { Signaling } from "./signaling.js";
 import { Discovery, buildRegistration } from "./discovery.js";
 import { SessionController } from "./session.js";
 import { TransferManager } from "./transfer.js";
-import { UI, DEFAULT_DEVICES } from "./ui.js";
+import { UI } from "./ui.js";
 import { renderQR } from "./qr.js";
 
 const DEFAULT_USER_NAME = "Kunal";
@@ -13,7 +13,7 @@ const DEFAULT_USER_NAME = "Kunal";
 function getAlias() {
   try {
     const s = localStorage.getItem("flux-alias");
-    if (s && s !== "Maya's MacBook Pro") return s;
+    if (s) return s;
   } catch {}
   try {
     localStorage.setItem("flux-alias", DEFAULT_USER_NAME);
@@ -136,8 +136,7 @@ async function main() {
   const nameOf = (id) => {
     const p = realPeers.find((x) => x.id === id);
     if (p) return p.alias;
-    const d = DEFAULT_DEVICES.find((x) => x.id === id);
-    return d ? d.alias : "Device";
+    return "Device";
   };
 
   let pendingFiles = null;
@@ -292,7 +291,7 @@ async function main() {
     onRefresh: () => {
       signaling.send(MSG.PEER_LIST, {}, "");
       UI.renderPeers(realPeers);
-      UI.toast(`Discovered ${realPeers.length + DEFAULT_DEVICES.length} devices on local subnet`);
+      UI.toast(realPeers.length > 0 ? `Discovered ${realPeers.length} ${realPeers.length === 1 ? "device" : "devices"} on local subnet` : `Scanning… No other devices detected on subnet`);
     },
     onSendToPeer: (peerId, files) => {
       handleSendToTarget(peerId, files);

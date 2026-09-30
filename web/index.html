@@ -507,7 +507,7 @@
             <div class="hero-top-info">
               <div class="hero-peer-info">
                 <span class="hero-target-icon">💻</span>
-                <span class="hero-target-name" id="hero-target-name">Jordan's MacBook Air</span>
+                <span class="hero-target-name" id="hero-target-name">Ready for transfer</span>
                 <span class="p2p-badge" id="hero-p2p-badge">
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#00A3FF" stroke-width="2.5">
                     <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
@@ -522,18 +522,18 @@
               <div class="progress-ring-container">
                 <svg class="progress-ring-svg" width="130" height="130" viewBox="0 0 130 130">
                   <circle class="ring-bg" cx="65" cy="65" r="54" stroke="rgba(255, 255, 255, 0.08)" stroke-width="10" fill="transparent"/>
-                  <circle class="ring-progress" id="hero-ring-circle" cx="65" cy="65" r="54" stroke="#00A3FF" stroke-width="10" stroke-linecap="round" fill="transparent" stroke-dasharray="339.29" stroke-dashoffset="108.57"/>
+                  <circle class="ring-progress" id="hero-ring-circle" cx="65" cy="65" r="54" stroke="#00A3FF" stroke-width="10" stroke-linecap="round" fill="transparent" stroke-dasharray="339.29" stroke-dashoffset="339.29"/>
                 </svg>
                 <div class="ring-label-overlay">
-                  <span class="ring-pct-number" id="hero-pct-display">68%</span>
+                  <span class="ring-pct-number" id="hero-pct-display">0%</span>
                 </div>
               </div>
 
               <!-- Right: Transfer Stats -->
               <div class="hero-stats-col">
-                <div class="hero-transferred-lead" id="hero-bytes-display">1.74 GB of 2.57 GB</div>
-                <div class="hero-speed-lead" id="hero-speed-display">18.6 MB/s</div>
-                <div class="hero-eta-lead" id="hero-eta-display">About 46 sec left</div>
+                <div class="hero-transferred-lead" id="hero-bytes-display">0 B transferred</div>
+                <div class="hero-speed-lead" id="hero-speed-display">0 KB/s</div>
+                <div class="hero-eta-lead" id="hero-eta-display">Idle</div>
               </div>
             </div>
 
@@ -541,21 +541,21 @@
             <div class="hero-stats-grid">
               <div class="stat-box">
                 <span class="stat-cap">Data transferred</span>
-                <b class="stat-val" id="stat-data-val">1.74 GB / 2.57 GB</b>
+                <b class="stat-val" id="stat-data-val">0 B / 0 B</b>
               </div>
               <div class="stat-box">
                 <span class="stat-cap">Transfer speed</span>
-                <b class="stat-val stat-gold" id="stat-speed-val">18.6 MB/s</b>
+                <b class="stat-val stat-gold" id="stat-speed-val">0 KB/s</b>
               </div>
               <div class="stat-box">
                 <span class="stat-cap">ETA</span>
-                <b class="stat-val" id="stat-eta-val">About 46 sec</b>
+                <b class="stat-val" id="stat-eta-val">Idle</b>
               </div>
             </div>
 
             <!-- Full Width Progress Bar -->
             <div class="hero-progress-bar-wrap">
-              <div class="hero-progress-bar-fill" id="hero-bar-fill" style="width: 68%;"></div>
+              <div class="hero-progress-bar-fill" id="hero-bar-fill" style="width: 0%;"></div>
             </div>
 
             <!-- Bottom Actions -->
@@ -612,8 +612,8 @@
             <div class="target-left">
               <span class="target-icon">💻</span>
               <div class="target-text">
-                <b id="send-target-name">Maya's MacBook Pro</b>
-                <span class="target-badge">Nearby • Secure</span>
+                <b id="send-target-name">Select Target Device</b>
+                <span class="target-badge" id="send-target-badge">Click to choose peer</span>
               </div>
             </div>
             <span class="chevron-down">⌄</span>
@@ -745,67 +745,11 @@
           </div>
 
           <div class="paired-devices-col-list" id="paired-devices-col-list">
-            <!-- Device 1: Maya's MacBook Pro -->
-            <div class="paired-dev-card">
-              <div class="dev-screen-thumb">
-                <div class="fractal-screen fractal-gold"></div>
-              </div>
-              <div class="dev-info-col">
-                <b class="dev-title">Maya's MacBook Pro</b>
-                <span class="dev-ip-sub">LAN connection • 192.168.1.12</span>
-                <span class="dev-trusted-tag">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#00A3FF" stroke-width="2.5">
-                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                  </svg>
-                  <span>Trusted</span>
-                </span>
-              </div>
-              <div class="dev-actions-col">
-                <button class="btn-dark-pill btn-manage-dev" data-id="dev-macbook">Manage</button>
-                <button class="btn-more-dots">⋯</button>
-              </div>
-            </div>
-
-            <!-- Device 2: Studio iMac -->
-            <div class="paired-dev-card">
-              <div class="dev-screen-thumb">
-                <div class="fractal-screen fractal-imac"></div>
-              </div>
-              <div class="dev-info-col">
-                <b class="dev-title">Studio iMac</b>
-                <span class="dev-ip-sub">LAN connection • 192.168.1.27</span>
-                <span class="dev-trusted-tag">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#00A3FF" stroke-width="2.5">
-                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                  </svg>
-                  <span>Trusted</span>
-                </span>
-              </div>
-              <div class="dev-actions-col">
-                <button class="btn-dark-pill btn-manage-dev" data-id="dev-imac">Manage</button>
-                <button class="btn-more-dots">⋯</button>
-              </div>
-            </div>
-
-            <!-- Device 3: Pixel 9 -->
-            <div class="paired-dev-card">
-              <div class="dev-screen-thumb phone-thumb">
-                <div class="fractal-screen fractal-phone"></div>
-              </div>
-              <div class="dev-info-col">
-                <b class="dev-title">Pixel 9</b>
-                <span class="dev-ip-sub">LAN connection • 192.168.1.45</span>
-                <span class="dev-trusted-tag">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#00A3FF" stroke-width="2.5">
-                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                  </svg>
-                  <span>Trusted</span>
-                </span>
-              </div>
-              <div class="dev-actions-col">
-                <button class="btn-dark-pill btn-manage-dev" data-id="dev-pixel">Manage</button>
-                <button class="btn-more-dots">⋯</button>
-              </div>
+            <div class="paired-empty-placeholder" id="paired-empty-placeholder" style="text-align: center; padding: 40px 20px; color: var(--text-dim); border: 1px dashed var(--border-subtle); border-radius: var(--radius-lg); background: rgba(15, 23, 42, 0.4);">
+              <div style="font-size: 32px; margin-bottom: 8px;">🔗</div>
+              <b style="color: var(--text-white); font-size: 15px; display: block; margin-bottom: 4px;">No paired devices yet</b>
+              <p style="font-size: 13px; max-width: 360px; margin: 0 auto 16px auto; color: var(--text-muted);">Pair other phones, tablets, or computers via 6-digit PIN or QR code to save them for instant 1-click sharing.</p>
+              <button class="btn-gold-solid btn-sm" id="btn-paired-empty-add" style="margin: 0 auto;">Pair a Device</button>
             </div>
           </div>
 
@@ -1001,7 +945,7 @@
     <div class="modal-sender-card">
       <div class="sender-gold-icon">💻</div>
       <div class="sender-info-text">
-        <b class="sender-name" id="incoming-sender-title">Jordan's MacBook Air wants to send files</b>
+        <b class="sender-name" id="incoming-sender-title">Incoming transfer request</b>
         <span class="sender-badge">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#00A3FF" stroke-width="2.5">
             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
@@ -1510,7 +1454,7 @@
     <div class="dev-manage-stats">
       <div class="dev-stat-row">
         <span>Device Name</span>
-        <input type="text" class="pair-input" id="dev-manage-name-input" value="Maya's MacBook Pro" />
+        <input type="text" class="pair-input" id="dev-manage-name-input" value="Paired Device" />
       </div>
       <div class="dev-stat-row">
         <span>Network Address</span>
